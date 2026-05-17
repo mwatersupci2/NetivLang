@@ -14,11 +14,28 @@ Track planned Netiv language and toolchain work here.
 
 ---
 
-## 3. Machine-Lowered Reserved Words Unit Testing Backlog
+## 3. Exhaustive Reserved Words & API Unit Testing Backlog
 
-This backlog outlines the comprehensive unit testing checklist for every single register, memory operator, and machine instruction emitter, validating the exact x64 binary assembly code generation:
+This backlog outlines the comprehensive unit testing checklist for the complete, absolute union of all reserved words, registers, dereferences, operators, namespaces, and library APIs:
 
-### A. 64-Bit General Purpose CPU Registers
+### A. Structural Tags & Boundaries
+* [ ] Test `<Netiv>` and `</Netiv>` root tags validation.
+* [ ] Test `<meta>{...};` metadata layout parsing.
+* [ ] Test `<edges>{...};` active dependency link resolution.
+* [ ] Test `<book>` and `</book>` module boundary enclosures.
+* [ ] Test `○|` and `|●` Unicode anthology segments.
+* [ ] Test `□|` and `|■` Unicode bookend layouts.
+
+### B. Control Flow & Function Keywords
+* [ ] Test `fn` function declarations and parameter lists.
+* [ ] Test `return` x64 stack frame tear-downs.
+* [ ] Test `if` conditional branches.
+* [ ] Test `goto` absolute labels.
+* [ ] Test `label` local assembler offsets.
+* [ ] Test `syscall` delegate table routing.
+* [ ] Test `EMIT_PE` standard Windows binary generation.
+
+### C. 64-Bit General Purpose CPU Registers
 * [ ] Test `rax` code emitter offsets.
 * [ ] Test `rcx` parameter assignment.
 * [ ] Test `rdx` parameter assignment.
@@ -30,13 +47,13 @@ This backlog outlines the comprehensive unit testing checklist for every single 
 * [ ] Test `r8` and `r9` extended register assignments.
 * [ ] Test `r10` through `r15` compiler registers.
 
-### B. Register Sub-Bytes & Floating Points
+### D. Sub-Register Bytes & Floating Points
 * [ ] Test `rax_u8` lower AL accumulator byte writes.
 * [ ] Test `rax_u16` lower AX accumulator word writes.
 * [ ] Test `rax_u32` lower EAX accumulator doubleword writes.
 * [ ] Test SSE floating point registers `xmm0` through `xmm7` float logic.
 
-### C. Low-Level Memory Dereferencing Operators
+### E. Low-Level Memory Dereferencing Operators
 * [ ] Test `*(u8*)` 1-byte read/write dereferencing.
 * [ ] Test `*(u16*)` 2-byte read/write dereferencing.
 * [ ] Test `*(u32*)` 4-byte read/write dereferencing.
@@ -44,20 +61,32 @@ This backlog outlines the comprehensive unit testing checklist for every single 
 * [ ] Test `*(f32*)` single float memory reading.
 * [ ] Test `*(f64*)` double float memory reading.
 
-### D. Core Assembler Emitter Keywords
+### F. Low-Level Assembler Conditionals
 * [ ] Test `cmp_rax` immediate comparison emitter logic.
 * [ ] Test `if_z_goto` conditional zero jump.
 * [ ] Test `if_ne_goto` conditional non-zero jump.
 * [ ] Test `if_z_return` conditional zero stack exit.
 * [ ] Test `rax_is_null` register check branch.
-* [ ] Test `syscall` compiler and host delegate jumps.
 * [ ] Test `call` internal subroutine offset calculations.
-* [ ] Test `goto` absolute address jumps.
-* [ ] Test `label` local address anchor compilation.
-* [ ] Test `return` instruction and stack restoration.
-* [ ] Test `EMIT_PE` standalone native binary production.
 
-### E. Binary x64 Mathematical & Logic Operators
+### G. Type Annotations & Mutability Modifiers
+* [ ] Test `°struct` structure size mappings and padding.
+* [ ] Test `°enum` enumeration indices.
+* [ ] Test `°const` compile-time values.
+* [ ] Test `°bool` validation using boolean primitives `°true` and `°false`.
+* [ ] Test `°scalar` (float/int precision mappings).
+* [ ] Test `°f32` (IEEE single precision).
+* [ ] Test `°f64` (IEEE double precision).
+* [ ] Test `°usize` (word-aligned unsigned values).
+* [ ] Test `°array` contiguous elements sequence.
+* [ ] Test `°tuple` anonymous structure offsets.
+* [ ] Test `°vector` mathematical dimension spaces.
+* [ ] Test `°embedding` deep learning vector arrays.
+* [ ] Test `°pointer` address dereferences.
+* [ ] Test `°mutable` write-access constraints.
+* [ ] Test `°void` empty function outputs.
+
+### H. Binary x64 Mathematical & Logic Operators
 * [ ] Test `+` (addition instruction `add`) operation.
 * [ ] Test `-` (subtraction instruction `sub`) operation.
 * [ ] Test `*` (multiplication instruction `imul`) operation.
@@ -68,11 +97,33 @@ This backlog outlines the comprehensive unit testing checklist for every single 
 * [ ] Test `<<` (shift left `shl`) and `>>` (shift right `sar`) operations.
 * [ ] Test comparisons `==`, `!=`, `<`, `>` (using `cmp` and set-byte conditional modifiers).
 
+### I. Standard Library Namespaces & Exposed APIs
+* [ ] Test `std.core` sizing, register operators, and machine-code instruction emitters.
+* [ ] Test `std.io` print streams, filesystem saving, and recursive path crawling.
+* [ ] Test `std.mem` copy/fill and Align-8 Arena Allocator.
+* [ ] Test `std.time` millisecond clocks and wait-delays.
+* [ ] Test `std.math` Newton-Raphson square root, absolute values, and exponents.
+* [ ] Test `std.graph` semantic compiler nodes and Edge structures.
+* [ ] Test `std.build` package configuration and manifest targets.
+* [ ] Test `std.test` assertion validations.
+* [ ] Test `std.trace` diagnostic warnings and logging levels.
+* [ ] Test `std.mcp` AI Model Context Protocol JSON-RPC responses and server contexts.
+* [ ] Test `std.restful` REST client request payloads and HTTP headers.
+* [ ] Test `std.llm` AI completion requests and models configurations.
+* [ ] Test `std.serv` server socket routers and listening loops.
+* [ ] Test `std.http` low-level socket connections.
+
+### J. Adjunct Library Namespaces & Exposed APIs
+* [ ] Test `adj.mermaid` diagram builders and dependency exporters.
+* [ ] Test `adj.tui` ANSI slate panels and double-border layouts.
+* [ ] Test `adj.sqlite` database cached queries.
+* [ ] Test `adj.nray` Raylib window initialization and Vector3/Color space math.
+
 ---
 
 ## Completed Tasks
 
-* [x] Draft machine-lowered CPU registers, dereference operators, and assembler keyword listings at `docs/reserved_words.list`.
+* [x] Draft exhaustive master reserved words list at `docs/reserved_words.list`.
 * [x] Promote HTTP library `adj.http` to high-priority standard `std.http` (`src/std_http.ntv`).
 * [x] Implement standard libraries `std.restful` for REST API request/responses, `std.llm` for AI completions client stubs, and `std.serv` for HTTP web servers.
 * [x] Implement AI Model Context Protocol `std.mcp` library supporting JSON-RPC response structures and initialize frames (`src/std_mcp.ntv`).

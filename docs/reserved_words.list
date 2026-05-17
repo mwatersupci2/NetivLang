@@ -1,6 +1,27 @@
-# NetivLang Machine-Lowered Reserved Words List
+# NetivLang Master Reserved Words List
 
-# 1. 64-Bit General Purpose CPU Registers
+# 1. Structural Tags & Boundaries
+<Netiv>
+</Netiv>
+<meta>
+<edges>
+<book>
+</book>
+○|
+|●
+□|
+|■
+
+# 2. Control Flow & Function Keywords
+fn
+return
+if
+goto
+label
+syscall
+EMIT_PE
+
+# 3. CPU General Purpose Registers (64-Bit)
 rax
 rcx
 rdx
@@ -18,12 +39,10 @@ r13
 r14
 r15
 
-# 2. 8-Bit, 16-Bit, and 32-Bit Register Sub-Bytes
+# 4. CPU Sub-Register Bytes & Floating Points
 rax_u8
 rax_u16
 rax_u32
-
-# 3. SSE Floating Point Registers
 xmm0
 xmm1
 xmm2
@@ -33,7 +52,7 @@ xmm5
 xmm6
 xmm7
 
-# 4. Low-Level Memory Dereferencing Operators
+# 5. Low-Level Memory Dereferencing Operators
 *(u8*)
 *(u16*)
 *(u32*)
@@ -41,20 +60,34 @@ xmm7
 *(f32*)
 *(f64*)
 
-# 5. Core Assembler Emitter Keywords
+# 6. Low-Level Assembler Conditionals
 cmp_rax
 if_z_goto
 if_ne_goto
 if_z_return
 rax_is_null
-syscall
 call
-goto
-label
-return
-EMIT_PE
 
-# 6. Binary x64 Mathematical & Logic Operators
+# 7. Type Annotations & Mutability Modifiers
+°struct
+°enum
+°const
+°bool
+°true
+°false
+°scalar
+°f32
+°f64
+°usize
+°array
+°tuple
+°vector
+°embedding
+°pointer
+°mutable
+°void
+
+# 8. Binary x64 Mathematical & Logic Operators
 +
 -
 *
@@ -68,3 +101,96 @@ EMIT_PE
 !=
 <
 >
+
+# 9. Standard Library Namespaces
+std.core
+std.io
+std.mem
+std.time
+std.math
+std.graph
+std.build
+std.test
+std.trace
+std.mcp
+std.restful
+std.llm
+std.serv
+std.http
+
+# 10. Adjunct Library Namespaces
+adj.mermaid
+adj.tui
+adj.sqlite
+adj.nray
+
+# 11. Standard Library Function API Symbols
+•print
+•println
+•println_native
+•print_raw
+•now
+•save_binary
+•resolve
+•get_files
+•copy
+•fill
+•arena_init
+•arena_alloc
+•get_ticks
+•delay
+•to_seconds
+•abs
+•abs_int
+•min
+•max
+•pow
+•sqrt
+•node_init
+•edge_init
+•package_init
+•assert_true
+•assert_eq_int
+•trace_log
+•trace_metric
+•mcp_init
+•mcp_tool_init
+•mcp_write_response
+•rest_init
+•rest_send
+•llm_init
+•llm_chat
+•serv_init
+•serv_register_route
+•serv_listen_and_serve
+•http_init
+•http_connect
+•get_primitive_size
+•emit_op_addr
+•emit_op_deref_byte
+•emit_op_deref_dword
+•emit_op_deref_qword
+•emit_op_index
+•emit_op_sizeof
+•emit_cast_double_to_int
+•emit_cast_int_to_double
+•emit_op_if_z
+•get_function_count
+•get_function_name
+
+# 12. Adjunct Library Function API Symbols
+•mermaid_init
+•mermaid_write_str
+•mermaid_add_node
+•mermaid_add_edge
+•mermaid_save
+•tui_clear
+•tui_color
+•tui_move
+•tui_reset
+•tui_show_cursor
+•tui_draw_header
+•sqlite_init
+•sqlite_execute
+•nray_init_window
+•nray_draw_pixel
