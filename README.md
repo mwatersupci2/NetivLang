@@ -74,21 +74,40 @@ Use at your own risk.
 
 ---
 
+## 🤝 Private Collaboration
+
+NetivLang is not currently open source.
+
+This public repository exists so interested engineers, researchers, employers, and technical reviewers can inspect the project, evaluate the architecture, and understand the direction of the language.
+
+I am open to private collaboration with selected contributors.
+
+Contribution access is granted by invitation only. Anyone interested in contributing should contact the author directly. Accepted contributors may be given access to private repositories, private planning materials, internal design notes, or assigned project areas under separate written permission.
+
+Public visibility of this repository does not grant contribution rights, usage rights, redistribution rights, or permission to fork this work into a competing or derivative project.
+
+Do not submit unsolicited large changes, forks, ports, rewrites, or derivative implementations without prior written permission.
+
+---
+
 ## 🔒 License & Usage Restrictions
 
 NetivLang is **proprietary, experimental software**.
 
-This repository is publicly visible for documentation, timestamping, research transparency, and project demonstration purposes only.
+This repository is publicly visible for portfolio review, professional demonstration, timestamping, recruitment of private collaborators, and technical transparency.
 
-Public visibility does **not** grant permission to use, copy, fork, modify, compile, redistribute, sublicense, commercialize, reverse engineer, or create derivative works from this software.
+Public visibility does **not** mean open source.
 
-All rights are reserved by the author unless explicit written permission is granted.
+No permission is granted to use, copy, fork, modify, compile, redistribute, sublicense, commercialize, reverse engineer, train models on, or create derivative works from this software without prior express written permission from the author.
 
-No license is granted by implication, estoppel, public availability, repository visibility, download access, or any other means.
+All rights are reserved by the author.
 
-You may not use this software in personal, academic, commercial, production, research, training, benchmarking, or derivative projects without prior written permission from the author.
+Private contribution may be allowed by invitation only. Any contributor access, permissions, rights, ownership terms, confidentiality expectations, or licensing terms must be agreed to separately in writing before contribution.
 
-Unauthorized use, redistribution, or modification is prohibited.
+No license is granted by implication, estoppel, public availability, repository visibility, download access, cloning access, issue participation, pull request submission, discussion participation, or any other means.
 
-For permission, collaboration, or licensing inquiries, contact the author directly.
+This software is experimental and provided without warranty of any kind. The author is not responsible for damage, data loss, system failure, security issues, financial loss, business interruption, legal exposure, or other harm resulting from access to, use of, misuse of, reliance on, or inability to use this software.
+
+For employment review, private collaboration, or licensing inquiries, contact the author directly.
+
 
