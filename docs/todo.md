@@ -14,9 +14,9 @@ Track planned Netiv language and toolchain work here.
 
 ---
 
-## 3. Reserved Keyword Unit Testing Backlog
+## 3. Reserved Keyword & Library API Unit Testing Backlog
 
-This backlog outlines the comprehensive unit testing checklist for every single reserved keyword, ensuring parser, lexer, and x64 machine code generation correctness:
+This backlog outlines the comprehensive unit testing checklist for every single reserved keyword, library namespace, and exposed function symbol, ensuring absolute language and API stability:
 
 ### A. Structural Tags & Boundaries
 * [ ] Test `<Netiv>` and `</Netiv>` root tags validation.
@@ -64,10 +64,33 @@ This backlog outlines the comprehensive unit testing checklist for every single 
 * [ ] Test `°mutable` write-access constraints.
 * [ ] Test `°void` empty function outputs.
 
+### H. Standard Library Namespaces & Exposed APIs
+* [ ] Test `std.core` sizing, register operators, and machine-code instruction emitters.
+* [ ] Test `std.io` print streams, filesystem saving, and recursive path crawling.
+* [ ] Test `std.mem` copy/fill and Align-8 Arena Allocator.
+* [ ] Test `std.time` millisecond clocks and wait-delays.
+* [ ] Test `std.math` Newton-Raphson square root, absolute values, and exponents.
+* [ ] Test `std.graph` semantic compiler nodes and Edge structures.
+* [ ] Test `std.build` package configuration and manifest targets.
+* [ ] Test `std.test` assertion validations.
+* [ ] Test `std.trace` diagnostic warnings and logging levels.
+* [ ] Test `std.mcp` AI Model Context Protocol JSON-RPC responses and server contexts.
+* [ ] Test `std.restful` REST client request payloads and HTTP headers.
+* [ ] Test `std.llm` AI completion requests and models configurations.
+* [ ] Test `std.serv` server socket routers and listening loops.
+* [ ] Test `std.http` low-level socket connections.
+
+### I. Adjunct Library Namespaces & Exposed APIs
+* [ ] Test `adj.mermaid` diagram builders and dependency exporters.
+* [ ] Test `adj.tui` ANSI slate panels and double-border layouts.
+* [ ] Test `adj.sqlite` database cached queries.
+* [ ] Test `adj.nray` Raylib window initialization and Vector3/Color space math.
+
 ---
 
 ## Completed Tasks
 
+* [x] Expand reserved words list to include all 14 standard libraries, 4 adjunct libraries, and their 82 core API function symbols at `docs/reserved_words.list`.
 * [x] Formulate complete reserved words list at `docs/reserved_words.list`.
 * [x] Promote HTTP library `adj.http` to high-priority standard `std.http` (`src/std_http.ntv`).
 * [x] Implement standard libraries `std.restful` for REST API request/responses, `std.llm` for AI completions client stubs, and `std.serv` for HTTP web servers.
