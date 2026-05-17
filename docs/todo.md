@@ -19,6 +19,7 @@ These core packages establish the baseline system abstractions and decouple comp
 * [x] `std.restful` — REST API requests, response mappings, and custom headers (`src/std_restful.ntv`).
 * [x] `std.llm` — LLM chat completions, configurations, and API credentials (`src/std_llm.ntv`).
 * [x] `std.serv` — HTTP socket server stubs, router pathways, and listeners (`src/std_serv.ntv`).
+* [x] `std.http` — Socket structures and basic web client/server communication (`src/std_http.ntv`).
 
 ---
 
@@ -28,7 +29,6 @@ These secondary libraries will support advanced graphics, local storage, network
 
 * [x] `adj.mermaid` — Graph structure exports, dependency visualizers, and documentation generators (`src/adj_mermaid.ntv`).
 * [x] `adj.tui` — Dynamic terminal user interfaces, cursor positioning, and styled panels (`src/adj_tui.ntv`).
-* [x] `adj.http` — Socket structures and basic web client/server communication (`src/adj_http.ntv`).
 * [x] `adj.sqlite` — Local database caching client and structured queries (`src/adj_sqlite.ntv`).
 * [x] `adj.nray.*` — Color profiles, Vector3 3D spaces, and Raylib stubs (`src/adj_nray.ntv`).
 
@@ -36,6 +36,7 @@ These secondary libraries will support advanced graphics, local storage, network
 
 ## Completed Tasks
 
+* [x] Promote HTTP library `adj.http` to high-priority standard `std.http` (`src/std_http.ntv`).
 * [x] Implement standard libraries `std.restful` for REST API request/responses, `std.llm` for AI completions client stubs, and `std.serv` for HTTP web servers.
 * [x] Implement AI Model Context Protocol `std.mcp` library supporting JSON-RPC response structures and initialize frames (`src/std_mcp.ntv`).
 * [x] Implement all 5 secondary adjunct libraries (`adj.mermaid`, `adj.tui`, `adj.http`, `adj.sqlite`, `adj.nray`) in standard canonical page formats under `src/`.
