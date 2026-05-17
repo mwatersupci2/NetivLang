@@ -1,0 +1,49 @@
+<Netiv="std_serv.ntv">
+○|
+  □|
+    <meta>{
+      "type": "module",
+      "name": "std",
+      "id": "std.serv",
+      "version": "1.0.0",
+      "error": "terminal"
+    };
+
+    <edges>{};
+
+    <book>{
+      °struct •HttpServer {
+        •port: °usize,
+        •socket_handle: °usize,
+        •active: °bool
+      }
+
+      // Initialize the native HTTP web server context
+      °function •serv_init(•server: °pointer<°struct •HttpServer>, •port: °usize) -> °void {
+        °unsafe {
+            *(°usize*)(•server) = •port
+            *(°usize*)(•server + 8) = 0   // socket_handle
+            *(°bool*)(•server + 16) = °false // active
+            return
+        }
+      }
+
+      // Register web route handler stubs
+      °function •serv_register_route(•server: °pointer<°struct •HttpServer>, •path: °pointer<°const °u8>, •handler: °pointer<°void>) -> °void {
+        °unsafe {
+            // Placeholder: stubs router configuration
+            return
+        }
+      }
+
+      // Start socket listening and connection processing loops
+      °function •serv_listen_and_serve(•server: °pointer<°struct •HttpServer>) -> °void {
+        °unsafe {
+            *(°bool*)(•server + 16) = °true
+            return
+        }
+      }
+    };
+  |■
+|●
+</Netiv>

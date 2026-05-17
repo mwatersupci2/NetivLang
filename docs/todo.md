@@ -16,6 +16,9 @@ These core packages establish the baseline system abstractions and decouple comp
 * [x] `std.test` — Compiler assertion tests and audit testing suites (`src/std_test.ntv`).
 * [x] `std.trace` — Log tracers, diagnostic warning outputs, and metrics (`src/std_trace.ntv`).
 * [x] `std.mcp` — AI Model Context Protocol stdio and JSON-RPC stubs (`src/std_mcp.ntv`).
+* [x] `std.restful` — REST API requests, response mappings, and custom headers (`src/std_restful.ntv`).
+* [x] `std.llm` — LLM chat completions, configurations, and API credentials (`src/std_llm.ntv`).
+* [x] `std.serv` — HTTP socket server stubs, router pathways, and listeners (`src/std_serv.ntv`).
 
 ---
 
@@ -33,6 +36,7 @@ These secondary libraries will support advanced graphics, local storage, network
 
 ## Completed Tasks
 
+* [x] Implement standard libraries `std.restful` for REST API request/responses, `std.llm` for AI completions client stubs, and `std.serv` for HTTP web servers.
 * [x] Implement AI Model Context Protocol `std.mcp` library supporting JSON-RPC response structures and initialize frames (`src/std_mcp.ntv`).
 * [x] Implement all 5 secondary adjunct libraries (`adj.mermaid`, `adj.tui`, `adj.http`, `adj.sqlite`, `adj.nray`) in standard canonical page formats under `src/`.
 * [x] Implement the entire suite of 9 core standard libraries (`std.core`, `std.io`, `std.mem`, `std.time`, `std.math`, `std.graph`, `std.build`, `std.test`, `std.trace`) in standard canonical page formats under `src/`.

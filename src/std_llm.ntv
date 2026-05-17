@@ -1,0 +1,48 @@
+<Netiv="std_llm.ntv">
+○|
+  □|
+    <meta>{
+      "type": "module",
+      "name": "std",
+      "id": "std.llm",
+      "version": "1.0.0",
+      "error": "terminal"
+    };
+
+    <edges>{};
+
+    <book>{
+      °struct •LlmClient {
+        •api_key: °pointer<°const °u8>,
+        •endpoint: °pointer<°const °u8>,
+        •model: °pointer<°const °u8>
+      }
+
+      // Initialize the LLM AI client parameters
+      °function •llm_init(•client: °pointer<°struct •LlmClient>, •api_key: °pointer<°const °u8>, •model: °pointer<°const °u8>) -> °void {
+        °unsafe {
+            *(°pointer<°const °u8>*)(•client) = •api_key
+            *(°pointer<°const °u8>*)(•client + 8) = "https://api.openai.com/v1/chat/completions"
+            *(°pointer<°const °u8>*)(•client + 16) = •model
+            return
+        }
+      }
+
+      // Query AI completions for chat generation
+      °function •llm_chat(•client: °pointer<°struct •LlmClient>, •prompt: °pointer<°const °u8>, •out_response: °pointer<°u8>, •max_tokens: °usize) -> °usize {
+        °unsafe {
+            // Placeholder: copies a mock completions payload
+            *(°u8*)(•out_response) = 0x48     // 'H'
+            *(°u8*)(•out_response + 1) = 0x65 // 'e'
+            *(°u8*)(•out_response + 2) = 0x6c // 'l'
+            *(°u8*)(•out_response + 3) = 0x6c // 'l'
+            *(°u8*)(•out_response + 4) = 0x6f // 'o'
+            *(°u8*)(•out_response + 5) = 0x00 // '\0'
+            rax = 5
+            return
+        }
+      }
+    };
+  |■
+|●
+</Netiv>

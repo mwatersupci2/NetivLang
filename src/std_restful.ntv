@@ -1,0 +1,55 @@
+<Netiv="std_restful.ntv">
+○|
+  □|
+    <meta>{
+      "type": "module",
+      "name": "std",
+      "id": "std.restful",
+      "version": "1.0.0",
+      "error": "terminal"
+    };
+
+    <edges>{};
+
+    <book>{
+      °struct •RestRequest {
+        •method: °pointer<°const °u8>,
+        •host: °pointer<°const °u8>,
+        •path: °pointer<°const °u8>,
+        •body: °pointer<°const °u8>,
+        •headers: °pointer<°const °u8>
+      }
+
+      °struct •RestResponse {
+        •status_code: °usize,
+        •body: °pointer<°const °u8>,
+        •headers: °pointer<°const °u8>
+      }
+
+      // Initialize a REST request structure
+      °function •rest_init(•req: °pointer<°struct •RestRequest>, •method: °pointer<°const °u8>, •host: °pointer<°const °u8>, •path: °pointer<°const °u8>) -> °void {
+        °unsafe {
+            *(°pointer<°const °u8>*)(•req) = •method
+            *(°pointer<°const °u8>*)(•req + 8) = •host
+            *(°pointer<°const °u8>*)(•req + 16) = •path
+            *(°pointer<°const °u8>*)(•req + 24) = "" // body
+            *(°pointer<°const °u8>*)(•req + 32) = "" // headers
+            return
+        }
+      }
+
+      // Send the REST request and populate the response parameters
+      °function •rest_send(•req: °pointer<°struct •RestRequest>, •resp: °pointer<°struct •RestResponse>) -> °usize {
+        °unsafe {
+            // Placeholder: stub for REST connection and transmission
+            *(°usize*)(•resp) = 200 // Status OK
+            *(°pointer<°const °u8>*)(•resp + 8) = "{\"status\":\"success\"}" // body
+            *(°pointer<°const °u8>*)(•resp + 16) = "Content-Type: application/json" // headers
+            rax = 200
+            return
+        }
+      }
+    };
+  |■
+|●
+</Netiv>
