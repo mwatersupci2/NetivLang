@@ -1,0 +1,27 @@
+PROPRIETARY LICENSE
+
+Copyright (c) 2026 mwatersupci2. All rights reserved.
+
+This software and associated documentation files (the "Software") are proprietary and confidential.
+
+No permission is granted to any person obtaining a copy of this Software to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, or to permit persons to whom the Software is furnished to do so.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+---
+
+## ⚠️ EXPERIMENTAL SOFTWARE DISCLAIMER
+
+NetivLang is highly experimental software.
+
+This project is under active research and development. It may contain bugs, incomplete features, unstable behavior, breaking changes, security issues, data-loss risks, incorrect compiler output, or platform-specific failures.
+
+By using, compiling, or running this Software, you do so entirely at your own risk.
+
+The author makes no guarantees that this Software is safe, correct, secure, stable, performant, production-ready, or suitable for any particular purpose. No warranty is provided, express or implied.
+
+The author is not responsible for any damage, loss of data, system failure, security breach, financial loss, business interruption, legal issue, or other harm resulting from the use or misuse of this Software.
+
+This Software should not be used in production systems, safety-critical systems, financial systems, medical systems, legal systems, military systems, or any environment where failure could cause harm unless you have independently audited, tested, and accepted all risks yourself.
+
+Use at your own risk.
