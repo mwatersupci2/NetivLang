@@ -9,12 +9,16 @@
       "error": "terminal"
     };
 
-    <edges>{};
+    <edges>{
+      "dependencies": [
+        "std.http"
+      ]
+    };
 
     <book>{
       °struct •HttpServer {
         •port: °usize,
-        •socket_handle: °usize,
+        •listen_socket: °pointer<°struct •Socket>,
         •active: °bool
       }
 
@@ -22,7 +26,7 @@
       °function •serv_init(•server: °pointer<°struct •HttpServer>, •port: °usize) -> °void {
         °unsafe {
             *(°usize*)(•server) = •port
-            *(°usize*)(•server + 8) = 0   // socket_handle
+            *(°pointer<°void>*)(•server + 8) = 0   // listen_socket
             *(°bool*)(•server + 16) = °false // active
             return
         }
