@@ -45,14 +45,77 @@ Netiv is designed for developers who need close-to-metal control, high-efficienc
 - A Windows environment (64-bit).
 - Netiv native bootstrap tools.
 
+### Installing the CLI on Windows
+
+Netiv can be installed as a local Windows command by placing the toolchain files
+under a folder already on PATH, such as `C:\Tools\Netiv`.
+
+From the repository root:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\tools\install-netiv.ps1
+```
+
+The installed layout is:
+
+```text
+C:\Tools\Netiv\netiv.cmd
+C:\Tools\Netiv\netiv-host.exe
+C:\Tools\Netiv\build\bootstrap_compiler.bin
+C:\Tools\Netiv\build\netiv_build_entry.bin
+C:\Tools\Netiv\src\compiler.ntv
+C:\Tools\Netiv\netiv.sqlite-template
+```
+
+After installation, a new PowerShell window can run:
+
+```powershell
+netiv help
+netiv witness
+```
+
+### Initializing a Project
+
+From an empty project folder:
+
+```powershell
+netiv init
+```
+
+Or create the scaffold at a specific path:
+
+```powershell
+netiv init "C:\Netiv Test Project"
+```
+
+The scaffold creates `src`, `docs`, `build`, `bin`, `db`, `logs`,
+`logs\graph`, `logs\list`, and `logs\meta`, plus project-local `db\netiv.db`,
+starter `src\main.ntv`, `src\build.ntv`, `docs\language-guide.md`,
+`docs\todo.md`, `docs\asbuilt.md`, `docs\project.md`, `.gitignore`, and
+`README.md`, and `LICENSE` files.
+
+Generated path lists and database-list dumps belong under `logs\list`.
+
 ### Building the Compiler
 
 The compiler handles its own build cycle using the driver routine inside `src/build.ntv`.
 
 To trigger the native compilation pipeline:
-```bash
-# Execute the Netiv native build tool on build.ntv
-netiv build.ntv
+```powershell
+netiv write
+```
+
+### Core Commands
+
+```powershell
+netiv read     # inspect source pages
+netiv audit    # validate the project scaffold
+netiv write    # compile and emit the artifact
+netiv invoke   # execute the newest emitted artifact
+netiv prune    # remove build and binary artifacts
+netiv graph    # export logs\graph\netiv.graph.mmd
+netiv list     # export logs\list\netiv.files.list
+netiv meta     # export logs\meta\netiv.meta.json
 ```
 ---
 
@@ -109,5 +172,3 @@ No license is granted by implication, estoppel, public availability, repository 
 This software is experimental and provided without warranty of any kind. The author is not responsible for damage, data loss, system failure, security issues, financial loss, business interruption, legal exposure, or other harm resulting from access to, use of, misuse of, reliance on, or inability to use this software.
 
 For employment review, private collaboration, or licensing inquiries, contact the author directly.
-
-
