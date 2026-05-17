@@ -1,12 +1,14 @@
-# Contributing to NetivLang
+# Contributing
 
-NetivLang is a proprietary, experimental project.
+NetivLang is currently a private-permission experimental project.
 
-This repository is public for review and demonstration only. It is not an open-source project and does not accept public contributions by default.
+Public visibility of this repository does not mean the project is open source.
 
-Private collaboration may be available by invitation only.
+Contributions are welcome only by prior discussion and express permission. Contributors may be invited to work on private branches, private planning documents, or controlled issues depending on project needs.
 
 Before contributing, you must receive express written permission from the author and agree to the applicable contribution, confidentiality, and ownership terms.
+
+By proposing a contribution, you acknowledge that no right to use, redistribute, commercialize, or fork the project is granted unless explicitly agreed in writing.
 
 Unsolicited pull requests, forks, rewrites, ports, derivative implementations, or copied code submissions are not authorized and may be closed or ignored.
 

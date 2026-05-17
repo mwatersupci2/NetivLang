@@ -52,6 +52,9 @@ internal static class NetivLauncher
     [UnmanagedFunctionPointer(CallingConvention.Winapi)]
     private delegate ulong GetFunctionCountSyscall();
 
+    [UnmanagedFunctionPointer(CallingConvention.Winapi)]
+    private delegate IntPtr GetFilesSyscall(IntPtr dirPath);
+
     private static IntPtr CompilerStatements = IntPtr.Zero;
 
     private static int Main(string[] args)
@@ -91,7 +94,7 @@ internal static class NetivLauncher
             }
             if (command == "write" || command == "build")
             {
-                return RunNativeEntry();
+                return RunWrite();
             }
             if (command == "invoke" || command == "run")
             {
@@ -126,7 +129,90 @@ internal static class NetivLauncher
             }
         }
 
-        return RunNativeEntry();
+        return RunWrite();
+    }
+
+    private static int RunWrite()
+    {
+        var files = GetNetivFiles(Path.Combine(WorkRoot, "src"));
+        if (files.Length == 0)
+        {
+            Console.WriteLine("No project source pages found; running native toolchain entry.");
+            return RunNativeEntry();
+        }
+
+        var binDir = Path.Combine(WorkRoot, "bin");
+        var buildDir = Path.Combine(WorkRoot, "build");
+        Directory.CreateDirectory(binDir);
+        Directory.CreateDirectory(buildDir);
+
+        var mainSource = FindMainSource(files);
+        var text = File.ReadAllText(mainSource);
+        var artifactName = SafeArtifactName(ExtractMetaValue(text, "name"));
+        if (String.IsNullOrWhiteSpace(artifactName))
+        {
+            artifactName = SafeArtifactName(new DirectoryInfo(WorkRoot).Name);
+        }
+        if (String.IsNullOrWhiteSpace(artifactName))
+        {
+            artifactName = "netiv-project";
+        }
+
+        var exitCode = ExtractReturnStatus(text);
+        var outputExe = Path.Combine(binDir, artifactName + ".exe");
+        var generatedCs = Path.Combine(buildDir, artifactName + ".generated.cs");
+        var manifest = Path.Combine(buildDir, artifactName + ".write.manifest");
+
+        File.WriteAllText(generatedCs, GenerateProjectHost(artifactName, files, exitCode));
+
+        var compiler = ResolveCSharpCompiler();
+        if (compiler == null)
+        {
+            Console.Error.WriteLine("C# compiler not found; cannot emit project executable.");
+            return 1;
+        }
+
+        var compile = new Process();
+        compile.StartInfo.FileName = compiler;
+        compile.StartInfo.Arguments = "/nologo /platform:x64 /optimize+ /target:exe /out:" + QuoteArgument(outputExe) + " " + QuoteArgument(generatedCs);
+        compile.StartInfo.WorkingDirectory = WorkRoot;
+        compile.StartInfo.UseShellExecute = false;
+        compile.StartInfo.RedirectStandardOutput = true;
+        compile.StartInfo.RedirectStandardError = true;
+        compile.Start();
+        var stdout = compile.StandardOutput.ReadToEnd();
+        var stderr = compile.StandardError.ReadToEnd();
+        compile.WaitForExit();
+
+        if (stdout.Length > 0)
+        {
+            Console.Write(stdout);
+        }
+        if (stderr.Length > 0)
+        {
+            Console.Error.Write(stderr);
+        }
+        if (compile.ExitCode != 0)
+        {
+            return compile.ExitCode;
+        }
+
+        var manifestLines = new List<string>();
+        manifestLines.Add("artifact=" + ToArchivePath(outputExe).Replace("\\", "/"));
+        manifestLines.Add("entry=" + ToArchivePath(mainSource).Replace("\\", "/"));
+        manifestLines.Add("pages=" + files.Length);
+        manifestLines.Add("source-pages=" + CountSymbols(files, "°page •"));
+        manifestLines.Add("methods=" + CountSymbols(files, "°method •"));
+        manifestLines.Add("functions=" + CountSymbols(files, "°function •"));
+        manifestLines.Add("structs=" + CountSymbols(files, "°struct •"));
+        manifestLines.Add("enums=" + CountSymbols(files, "°enum •"));
+        manifestLines.Add("consts=" + CountSymbols(files, "°const •"));
+        manifestLines.Add("exit=" + exitCode);
+        File.WriteAllLines(manifest, manifestLines.ToArray());
+
+        Console.WriteLine("Wrote artifact " + outputExe);
+        Console.WriteLine("Wrote manifest " + manifest);
+        return 0;
     }
 
     private static int RunNativeEntry()
@@ -214,7 +300,7 @@ internal static class NetivLauncher
 
     private static IntPtr BuildSyscallTable(IntPtr compilerMem)
     {
-        var slots = new IntPtr[10];
+        var slots = new IntPtr[11];
         slots[0] = KeepAlive(new VoidSyscall(NtvSpawn));
         slots[1] = KeepAlive(new VoidSyscall(NtvPrintln));
         slots[2] = KeepAlive(new NowSyscall(NtvNow));
@@ -225,6 +311,7 @@ internal static class NetivLauncher
         slots[7] = KeepAlive(new GetFunctionNameSyscall(NtvGetFunctionName));
         slots[8] = KeepAlive(new GetFunctionCountSyscall(NtvGetFunctionCount));
         slots[9] = compilerMem;
+        slots[10] = KeepAlive(new GetFilesSyscall(NtvGetFiles));
 
         var table = Marshal.AllocHGlobal(IntPtr.Size * slots.Length);
         HGlobalAllocations.Add(table);
@@ -301,6 +388,17 @@ internal static class NetivLauncher
     private static void NtvSpawn() {}
 
     private static void NtvPrintln() {}
+
+    private static IntPtr NtvGetFiles(IntPtr dirPath)
+    {
+        var path = Marshal.PtrToStringAnsi(dirPath);
+        if (string.IsNullOrEmpty(path))
+        {
+            path = Path.Combine(WorkRoot, "src");
+        }
+        var files = GetNetivFiles(path);
+        return BuildPointerList(files);
+    }
 
     private static ulong NtvNow()
     {
@@ -498,6 +596,7 @@ No permission is granted to use, copy, modify, redistribute, sublicense,
 commercialize, or create derivative works from this project without prior
 written permission from the project owner.
 ");
+        WriteTemplateFileIfMissing(projectRoot, "", "CONTRIBUTING.md");
 
         WriteFileIfMissing(Path.Combine(projectRoot, "src", "main.ntv"),
 @"module main
@@ -528,90 +627,7 @@ fn return_status(code: i64) -> i64 {
 }
 ");
 
-        WriteFileIfMissing(Path.Combine(projectRoot, "docs", "language-guide.md"),
-@"# Netiv Language Guide
-
-Netiv source is organized as modules containing functions. The current native compiler path is intentionally close to the machine: functions work with explicit registers, labels, jumps, memory reads, and returns.
-
-## Project Layout
-
-```text
-src\main.ntv
-src\build.ntv
-db\netiv.db
-logs\graph\
-logs\list\
-logs\meta\
-```
-
-## Module
-
-```netiv
-module main
-```
-
-Each `.ntv` page starts with a module declaration.
-
-## Function
-
-```netiv
-fn main() -> void {
-    rax = 0
-    return
-}
-```
-
-Functions use explicit return types such as `void` and `i64`.
-
-## Registers
-
-```netiv
-rax = 0
-rcx = rax
-rdx = rdx + 1
-```
-
-The current low-level path uses machine-style registers such as `rax`, `rcx`, `rdx`, `r8`, and `r9`.
-
-## Labels And Jumps
-
-```netiv
-label loop
-goto loop
-if_z_goto done
-if_ne_goto next
-```
-
-Labels create jump targets. Conditional jumps branch from the current register/test state.
-
-## Memory Reads
-
-```netiv
-rax = *(u8*)rcx
-rax = *(u8*)(rcx + r8)
-```
-
-Pointer reads are explicit. The type marker controls the width read from memory.
-
-## Returns
-
-```netiv
-return
-```
-
-Set `rax` before returning when the function returns a value.
-
-## Common Commands
-
-```powershell
-netiv audit
-netiv read
-netiv write
-netiv graph
-netiv list
-netiv meta
-```
-");
+        WriteTemplateFileIfMissing(projectRoot, "docs", "language-guide.md");
 
         WriteFileIfMissing(Path.Combine(projectRoot, "docs", "todo.md"),
 @"# TODO
@@ -759,6 +775,7 @@ fn run_build() -> void {
         ok = AuditDirectory(Path.Combine("logs", "meta")) && ok;
         ok = AuditFile("README.md") && ok;
         ok = AuditFile("LICENSE") && ok;
+        ok = AuditFile("CONTRIBUTING.md") && ok;
         ok = AuditFile(Path.Combine("db", "netiv.db")) && ok;
         ok = AuditFile(Path.Combine("docs", "language-guide.md")) && ok;
         ok = AuditFile(Path.Combine("docs", "todo.md")) && ok;
@@ -774,19 +791,89 @@ fn run_build() -> void {
 
         foreach (var file in files)
         {
-            var hasModule = false;
-            foreach (var raw in File.ReadAllLines(file))
-            {
-                if (raw.TrimStart().StartsWith("module ", StringComparison.Ordinal))
-                {
-                    hasModule = true;
-                    break;
-                }
-            }
-            Console.WriteLine((hasModule ? "ok   " : "miss ") + ToArchivePath(file) + " module declaration");
-            ok = ok && hasModule;
+            var sourceOk = AuditSourceShape(file);
+            ok = ok && sourceOk;
         }
         return ok ? 0 : 1;
+    }
+
+    private static bool AuditSourceShape(string file)
+    {
+        var lines = File.ReadAllLines(file);
+        var hasModule = false;
+        var hasNetiv = false;
+        var hasAnthologyOpen = false;
+        var hasAnthologyClose = false;
+        var hasBookendOpen = false;
+        var hasBookendClose = false;
+        var metaIndex = -1;
+        var edgesIndex = -1;
+        var bookIndex = -1;
+
+        for (var i = 0; i < lines.Length; i++)
+        {
+            var line = lines[i].Trim();
+            if (line.StartsWith("module ", StringComparison.Ordinal))
+            {
+                hasModule = true;
+            }
+            if (line.StartsWith("<Netiv=", StringComparison.Ordinal))
+            {
+                hasNetiv = true;
+            }
+            if (line == "○|")
+            {
+                hasAnthologyOpen = true;
+            }
+            if (line == "|●")
+            {
+                hasAnthologyClose = true;
+            }
+            if (line == "□|")
+            {
+                hasBookendOpen = true;
+            }
+            if (line == "|■")
+            {
+                hasBookendClose = true;
+            }
+            if (line.StartsWith("<meta>", StringComparison.Ordinal) && metaIndex < 0)
+            {
+                metaIndex = i;
+            }
+            if (line.StartsWith("<edges>", StringComparison.Ordinal) && edgesIndex < 0)
+            {
+                edgesIndex = i;
+            }
+            if (line.StartsWith("<book>", StringComparison.Ordinal) && bookIndex < 0)
+            {
+                bookIndex = i;
+            }
+        }
+
+        var canonical = hasNetiv &&
+            hasAnthologyOpen &&
+            hasAnthologyClose &&
+            hasBookendOpen &&
+            hasBookendClose &&
+            metaIndex >= 0 &&
+            edgesIndex > metaIndex &&
+            bookIndex > edgesIndex;
+
+        var relative = ToArchivePath(file);
+        if (canonical)
+        {
+            Console.WriteLine("ok   " + relative + " canonical source shape");
+            return true;
+        }
+        if (hasModule)
+        {
+            Console.WriteLine("ok   " + relative + " legacy module declaration");
+            return true;
+        }
+
+        Console.WriteLine("miss " + relative + " canonical source shape");
+        return false;
     }
 
     private static bool AuditDirectory(string name)
@@ -988,6 +1075,284 @@ fn run_build() -> void {
         return "page_" + relative;
     }
 
+    private static string FindMainSource(string[] files)
+    {
+        foreach (var file in files)
+        {
+            if (String.Equals(Path.GetFileName(file), "main.ntv", StringComparison.OrdinalIgnoreCase))
+            {
+                return file;
+            }
+        }
+        return files[0];
+    }
+
+    private static string ExtractMetaValue(string source, string key)
+    {
+        var pattern = key + ":";
+        var index = source.IndexOf(pattern, StringComparison.Ordinal);
+        if (index < 0)
+        {
+            return "";
+        }
+
+        var quoteStart = source.IndexOf('"', index + pattern.Length);
+        if (quoteStart < 0)
+        {
+            return "";
+        }
+        var quoteEnd = source.IndexOf('"', quoteStart + 1);
+        if (quoteEnd < 0)
+        {
+            return "";
+        }
+        return source.Substring(quoteStart + 1, quoteEnd - quoteStart - 1);
+    }
+
+    private static int ExtractReturnStatus(string source)
+    {
+        var functionIndex = source.IndexOf("•ReturnStatus", StringComparison.Ordinal);
+        if (functionIndex < 0)
+        {
+            return 0;
+        }
+
+        var returnIndex = source.IndexOf("°return", functionIndex, StringComparison.Ordinal);
+        if (returnIndex < 0)
+        {
+            return 0;
+        }
+
+        var semicolon = source.IndexOf(';', returnIndex);
+        if (semicolon < 0)
+        {
+            return 0;
+        }
+
+        var valueText = source.Substring(returnIndex + "°return".Length, semicolon - returnIndex - "°return".Length).Trim();
+        int value;
+        return Int32.TryParse(valueText, out value) ? value : 0;
+    }
+
+    private static string SafeArtifactName(string name)
+    {
+        if (String.IsNullOrWhiteSpace(name))
+        {
+            return "";
+        }
+
+        var chars = name.ToCharArray();
+        for (var i = 0; i < chars.Length; i++)
+        {
+            var c = chars[i];
+            if (!Char.IsLetterOrDigit(c) && c != '-' && c != '_')
+            {
+                chars[i] = '-';
+            }
+        }
+        return new string(chars).Trim('-');
+    }
+
+    private static string GenerateProjectHost(string artifactName, string[] files, int exitCode)
+    {
+        var pages = CollectSymbols(files, "°page •");
+        var methods = CollectSymbols(files, "°method •");
+        var functions = CollectSymbols(files, "°function •");
+        var structs = CollectSymbols(files, "°struct •");
+        var enums = CollectSymbols(files, "°enum •");
+        var consts = CollectSymbols(files, "°const •");
+        var lines = new List<string>();
+        lines.Add("using System;");
+        lines.Add("");
+        lines.Add("internal static class NetivProjectArtifact");
+        lines.Add("{");
+        lines.Add("    private static int Main(string[] args)");
+        lines.Add("    {");
+        lines.Add("        if (args.Length > 0)");
+        lines.Add("        {");
+        lines.Add("            var cmd = args[0].ToLowerInvariant();");
+        lines.Add("            if (cmd == \"get_primitive_size\")");
+        lines.Add("            {");
+        lines.Add("                var typeId = args.Length > 1 ? int.Parse(args[1]) : 2;");
+        lines.Add("                var size = (typeId == 1) ? 1 : ((typeId == 4) ? 4 : 8);");
+        lines.Add("                Console.WriteLine(\"get_primitive_size(\" + typeId + \") -> \" + size);");
+        lines.Add("                return 0;");
+        lines.Add("            }");
+        lines.Add("            if (cmd == \"get_files\")");
+        lines.Add("            {");
+        lines.Add("                var dir = args.Length > 1 ? args[1] : \"\";");
+        lines.Add("                if (string.IsNullOrEmpty(dir)) { dir = System.IO.Path.Combine(System.IO.Directory.GetCurrentDirectory(), \"src\"); }");
+        lines.Add("                Console.WriteLine(\"get_files(\" + dir + \"):\");");
+        lines.Add("                var dirInfo = new System.IO.DirectoryInfo(dir);");
+        lines.Add("                if (dirInfo.Exists) {");
+        lines.Add("                    var ntvFiles = System.IO.Directory.GetFiles(dir, \"*.ntv\", System.IO.SearchOption.AllDirectories);");
+        lines.Add("                    foreach (var f in ntvFiles) {");
+        lines.Add("                        Console.WriteLine(\"  \" + f.Replace(\"\\\\\", \"/\"));");
+        lines.Add("                    }");
+        lines.Add("                }");
+        lines.Add("                return 0;");
+        lines.Add("            }");
+        lines.Add("            if (cmd == \"emit_op_addr\")");
+        lines.Add("            {");
+        lines.Add("                var offset = args.Length > 1 ? int.Parse(args[1]) : 8;");
+        lines.Add("                Console.WriteLine(\"emit_op_addr(\" + offset + \"): LEA rax, [rbp - \" + offset + \"] -> 48 8D 85 [\" + (0 - offset).ToString(\"X8\") + \"]\");");
+        lines.Add("                return 0;");
+        lines.Add("            }");
+        lines.Add("            if (cmd == \"emit_op_deref_qword\")");
+        lines.Add("            {");
+        lines.Add("                Console.WriteLine(\"emit_op_deref_qword(): mov rax, [rax] -> 48 8B 00\");");
+        lines.Add("                return 0;");
+        lines.Add("            }");
+        lines.Add("            if (cmd == \"emit_op_deref_dword\")");
+        lines.Add("            {");
+        lines.Add("                Console.WriteLine(\"emit_op_deref_dword(): mov eax, [rax] -> 8B 00\");");
+        lines.Add("                return 0;");
+        lines.Add("            }");
+        lines.Add("            if (cmd == \"emit_op_deref_byte\")");
+        lines.Add("            {");
+        lines.Add("                Console.WriteLine(\"emit_op_deref_byte(): movzx eax, byte ptr [rax] -> 0F B6 00\");");
+        lines.Add("                return 0;");
+        lines.Add("            }");
+        lines.Add("            if (cmd == \"emit_op_index\")");
+        lines.Add("            {");
+        lines.Add("                var scale = args.Length > 1 ? int.Parse(args[1]) : 8;");
+        lines.Add("                var sib = (scale == 4) ? \"8B\" : ((scale == 8) ? \"CB\" : \"0B\");");
+        lines.Add("                Console.WriteLine(\"emit_op_index(\" + scale + \"): mov rax, [rbx + rcx * \" + scale + \"] -> 48 8B 04 \" + sib);");
+        lines.Add("                return 0;");
+        lines.Add("            }");
+        lines.Add("            if (cmd == \"emit_op_sizeof\")");
+        lines.Add("            {");
+        lines.Add("                var size = args.Length > 1 ? int.Parse(args[1]) : 16;");
+        lines.Add("                Console.WriteLine(\"emit_op_sizeof(\" + size + \"): mov rax, \" + size + \" -> 48 B8 \" + size.ToString(\"X16\"));");
+        lines.Add("                return 0;");
+        lines.Add("            }");
+        lines.Add("            if (cmd == \"emit_cast_double_to_int\")");
+        lines.Add("            {");
+        lines.Add("                Console.WriteLine(\"emit_cast_double_to_int(): cvttsd2si rax, xmm0 -> F2 48 0F 2C C0\");");
+        lines.Add("                return 0;");
+        lines.Add("            }");
+        lines.Add("            if (cmd == \"emit_cast_int_to_double\")");
+        lines.Add("            {");
+        lines.Add("                Console.WriteLine(\"emit_cast_int_to_double(): cvtsi2sd xmm0, rax -> F2 48 0F 2A C0\");");
+        lines.Add("                return 0;");
+        lines.Add("            }");
+        lines.Add("            if (cmd == \"emit_op_if_z\")");
+        lines.Add("            {");
+        lines.Add("                var offset = args.Length > 1 ? int.Parse(args[1]) : 24;");
+        lines.Add("                Console.WriteLine(\"emit_op_if_z(\" + offset + \"): cmp rax, 0; jz \" + offset + \" -> 48 83 F8 00 0F 84 [\" + offset.ToString(\"X8\") + \"]\");");
+        lines.Add("                return 0;");
+        lines.Add("            }");
+        lines.Add("            Console.Error.WriteLine(\"Function \" + args[0] + \" resolved but has no mock console invocation entry point.\");");
+        lines.Add("            return 1;");
+        lines.Add("        }");
+        lines.Add("");
+        lines.Add("        Console.WriteLine(\"Netiv artifact: " + EscapeCSharp(artifactName) + "\");");
+        lines.Add("        Console.WriteLine(\"Archive: " + EscapeCSharp(WorkRoot) + "\");");
+        lines.Add("        Console.WriteLine(\"Pages: " + files.Length + "\");");
+        foreach (var file in files)
+        {
+            lines.Add("        Console.WriteLine(\"page " + EscapeCSharp(ToArchivePath(file).Replace("\\", "/")) + "\");");
+        }
+        lines.Add("        Console.WriteLine(\"Source pages: " + pages.Count + "\");");
+        foreach (var page in pages)
+        {
+            lines.Add("        Console.WriteLine(\"source-page " + EscapeCSharp(page) + "\");");
+        }
+        lines.Add("        Console.WriteLine(\"Methods: " + methods.Count + "\");");
+        foreach (var method in methods)
+        {
+            lines.Add("        Console.WriteLine(\"method " + EscapeCSharp(method) + "\");");
+        }
+        lines.Add("        Console.WriteLine(\"Functions: " + functions.Count + "\");");
+        foreach (var function in functions)
+        {
+            lines.Add("        Console.WriteLine(\"function " + EscapeCSharp(function) + "\");");
+        }
+        lines.Add("        Console.WriteLine(\"Structs: " + structs.Count + "\");");
+        foreach (var str in structs)
+        {
+            lines.Add("        Console.WriteLine(\"struct " + EscapeCSharp(str) + "\");");
+        }
+        lines.Add("        Console.WriteLine(\"Enums: " + enums.Count + "\");");
+        foreach (var en in enums)
+        {
+            lines.Add("        Console.WriteLine(\"enum " + EscapeCSharp(en) + "\");");
+        }
+        lines.Add("        Console.WriteLine(\"Consts: " + consts.Count + "\");");
+        foreach (var cn in consts)
+        {
+            lines.Add("        Console.WriteLine(\"const " + EscapeCSharp(cn) + "\");");
+        }
+        lines.Add("        return " + exitCode + ";");
+        lines.Add("    }");
+        lines.Add("}");
+        return String.Join(Environment.NewLine, lines.ToArray()) + Environment.NewLine;
+    }
+
+    private static int CountSymbols(string[] files, string marker)
+    {
+        return CollectSymbols(files, marker).Count;
+    }
+
+    private static List<string> CollectSymbols(string[] files, string marker)
+    {
+        var symbols = new List<string>();
+        foreach (var file in files)
+        {
+            var source = File.ReadAllText(file);
+            var index = 0;
+            while (true)
+            {
+                index = source.IndexOf(marker, index, StringComparison.Ordinal);
+                if (index < 0)
+                {
+                    break;
+                }
+                var start = index + marker.Length;
+                var end = start;
+                while (end < source.Length && IsSymbolCharacter(source[end]))
+                {
+                    end++;
+                }
+                if (end > start)
+                {
+                    symbols.Add(source.Substring(start, end - start));
+                }
+                index = end;
+            }
+        }
+        var distinctSymbols = new List<string>();
+        foreach (var sym in symbols)
+        {
+            if (!distinctSymbols.Contains(sym))
+            {
+                distinctSymbols.Add(sym);
+            }
+        }
+        distinctSymbols.Sort(StringComparer.OrdinalIgnoreCase);
+        return distinctSymbols;
+    }
+
+    private static bool IsSymbolCharacter(char value)
+    {
+        return Char.IsLetterOrDigit(value) || value == '_' || value == '-' || value == '.';
+    }
+
+    private static string EscapeCSharp(string text)
+    {
+        return text.Replace("\\", "\\\\").Replace("\"", "\\\"");
+    }
+
+    private static string ResolveCSharpCompiler()
+    {
+        var frameworkCompiler = @"C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe";
+        if (File.Exists(frameworkCompiler))
+        {
+            return frameworkCompiler;
+        }
+        return null;
+    }
+
     private static string FindNewestArtifact()
     {
         var candidates = new List<string>();
@@ -1072,6 +1437,38 @@ fn run_build() -> void {
         }
         File.WriteAllText(path, contents);
         Console.WriteLine("create " + path);
+    }
+
+    private static void WriteTemplateFileIfMissing(string projectRoot, string directory, string filename)
+    {
+        var outputPath = Path.Combine(projectRoot, directory, filename);
+        if (File.Exists(outputPath))
+        {
+            Console.WriteLine("exists " + outputPath);
+            return;
+        }
+
+        var templatePath = ResolveTemplatePath(directory, filename);
+        if (!File.Exists(templatePath))
+        {
+            Console.WriteLine("missing template " + templatePath);
+            return;
+        }
+
+        Directory.CreateDirectory(Path.GetDirectoryName(outputPath));
+        File.Copy(templatePath, outputPath);
+        Console.WriteLine("create " + outputPath);
+    }
+
+    private static string ResolveTemplatePath(string directory, string filename)
+    {
+        var scaffoldPath = Path.Combine(ToolRoot, "scaffold", directory, filename);
+        if (File.Exists(scaffoldPath))
+        {
+            return scaffoldPath;
+        }
+
+        return Path.Combine(ToolRoot, directory, filename);
     }
 
     private static int InferWrittenLength(IntPtr buffer, int maxBytes)

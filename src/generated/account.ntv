@@ -1,9 +1,29 @@
+<Netiv="account_generated.netiv">
+○|
+  □|
+    <meta>{
+      "type": "module",
+      "name": "account",
+      "id": "account.main",
+      "version": "1.0.0",
+      "error": "terminal"
+    };
 
-module account
+    <edges>{};
 
-fn transfer(()) -> void {
-    if from.balance >= amount {
-    from.balance -= amount
-    to.balance += amount
-}
-
+    <book>{
+      °function •transfer(•from: °pointer<°mutable °struct •Account>, •to: °pointer<°mutable °struct •Account>, •amount: °scalar) -> °void {
+        °define •from_balance: °scalar = °deref (•from).•balance;
+        °define •to_balance: °scalar = °deref (•to).•balance;
+        °if (•from_balance >= •amount) {
+          °define •new_from: °scalar = •from_balance - •amount;
+          °define •new_to: °scalar = •to_balance + •amount;
+          °write (•from).•balance = •new_from;
+          °write (•to).•balance = •new_to;
+        };
+        °return;
+      };
+    };
+  |■
+|●
+</Netiv>

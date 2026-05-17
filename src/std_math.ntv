@@ -1,0 +1,115 @@
+<Netiv="std_math.ntv">
+○|
+  □|
+    <meta>{
+      "type": "module",
+      "name": "std",
+      "id": "std.math",
+      "version": "1.0.0",
+      "error": "terminal"
+    };
+
+    <edges>{};
+
+    <book>{
+      // Return absolute value of a scalar floating point number
+      °function •abs(•val: °scalar) -> °scalar {
+        °if (•val < 0.0) {
+            rax = 0.0 - •val
+            return
+        }
+        rax = •val
+        return
+      }
+
+      // Return absolute value of an integer
+      °function •abs_int(•val: °usize) -> °usize {
+        °unsafe {
+            rax = •val
+            cmp_rax 0
+            if_z_goto zero_val
+            // Check sign bit
+            rax = rax >> 63
+            cmp_rax 1
+            if_z_goto negative_val
+            rax = •val
+            return
+
+            label zero_val
+            rax = 0
+            return
+
+            label negative_val
+            rax = 0
+            rax = rax - •val
+            return
+        }
+      }
+
+      // Return the smaller of two scalar values
+      °function •min(•a: °scalar, •b: °scalar) -> °scalar {
+        °if (•a < •b) {
+            rax = •a
+            return
+        }
+        rax = •b
+        return
+      }
+
+      // Return the larger of two scalar values
+      °function •max(•a: °scalar, •b: °scalar) -> °scalar {
+        °if (•a > •b) {
+            rax = •a
+            return
+        }
+        rax = •b
+        return
+      }
+
+      // Raise a scalar base to an integer exponent
+      °function •pow(•base: °scalar, •exp: °usize) -> °scalar {
+        °if (•exp == 0) {
+            rax = 1.0
+            return
+        }
+        °scalar •result
+        •result = •base
+        °usize •i
+        •i = 1
+        °label pow_loop
+        °if (•i >= •exp) {
+            rax = •result
+            return
+        }
+        •result = •result * •base
+        •i = •i + 1
+        °goto pow_loop
+      }
+
+      // Calculate square root of a scalar using Newton-Raphson approximation
+      °function •sqrt(•val: °scalar) -> °scalar {
+        °if (•val < 0.0) {
+            rax = 0.0
+            return
+        }
+        °if (•val == 0.0) {
+            rax = 0.0
+            return
+        }
+        °scalar •x
+        •x = •val
+        °usize •i
+        •i = 0
+        °label sqrt_loop
+        °if (•i >= 12) {
+            rax = •x
+            return
+        }
+        •x = 0.5 * (•x + (•val / •x))
+        •i = •i + 1
+        °goto sqrt_loop
+      }
+    };
+  |■
+|●
+</Netiv>

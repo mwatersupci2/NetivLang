@@ -1,0 +1,50 @@
+<Netiv="std_test.ntv">
+○|
+  □|
+    <meta>{
+      "type": "module",
+      "name": "std",
+      "id": "std.test",
+      "version": "1.0.0",
+      "error": "terminal"
+    };
+
+    <edges>{};
+
+    <book>{
+      // Assert that a condition is true, printing a failure message if not
+      °function •assert_true(•condition: °bool, •msg: °pointer<°const °u8>) -> °void {
+        °if (•condition == °false) {
+            °unsafe {
+                // Forward assertion failure string to print
+                °call •println("FAIL: assertion failed!")
+                °call •println(•msg)
+                rax = syscall 6 // Seal process (exit)
+                return
+            }
+        }
+        °unsafe {
+            °call •println("PASS")
+            return
+        }
+      }
+
+      // Assert that two integers are equal
+      °function •assert_eq_int(•a: °usize, •b: °usize, •msg: °pointer<°const °u8>) -> °void {
+        °if (•a != •b) {
+            °unsafe {
+                °call •println("FAIL: integer equality mismatch!")
+                °call •println(•msg)
+                rax = syscall 6
+                return
+            }
+        }
+        °unsafe {
+            °call •println("PASS")
+            return
+        }
+      }
+    };
+  |■
+|●
+</Netiv>

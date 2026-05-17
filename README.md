@@ -6,6 +6,10 @@ Welcome to the **Netiv Lang** repository! This is the official home of the self-
 
 Netiv is designed for developers who need close-to-metal control, high-efficiency code generation, and direct native execution with zero host dependencies.
 
+NetivLang is also designed around the idea that code should not only compile, but also explain its own structure. Functions, methods, pages, metadata, graph edges, database state, and compiled artifacts are intended to become inspectable parts of the toolchain.
+
+See `docs/language-guide.md` for the canonical language guide, including human-facing language explanation, AI authoring rules, examples, CLI behavior, and disclaimer material.
+
 ---
 
 ## 🚀 Key Features
@@ -33,7 +37,10 @@ Netiv is designed for developers who need close-to-metal control, high-efficienc
 │   ├── low_level_emitter.ntv # Low-level code emitter (PE generator)
 │   └── generated/            # Generated compiler sources and test files
 ├── .gitignore                # Files excluded from git tracking
-└── README.md                 # Project documentation (this file)
+├── README.md                 # Public overview
+├── CONTRIBUTING.md           # Private collaboration rules
+└── docs/
+    └── language-guide.md     # Canonical language guide
 ```
 
 ---
@@ -91,8 +98,8 @@ netiv init "C:\Netiv Test Project"
 The scaffold creates `src`, `docs`, `build`, `bin`, `db`, `logs`,
 `logs\graph`, `logs\list`, and `logs\meta`, plus project-local `db\netiv.db`,
 starter `src\main.ntv`, `src\build.ntv`, `docs\language-guide.md`,
-`docs\todo.md`, `docs\asbuilt.md`, `docs\project.md`, `.gitignore`, and
-`README.md`, and `LICENSE` files.
+`docs\todo.md`, `docs\asbuilt.md`, `docs\project.md`, `.gitignore`,
+`README.md`, `LICENSE`, and `CONTRIBUTING.md` files.
 
 Generated path lists and database-list dumps belong under `logs\list`.
 

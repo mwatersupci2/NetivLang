@@ -1,0 +1,55 @@
+<Netiv="std_time.ntv">
+○|
+  □|
+    <meta>{
+      "type": "module",
+      "name": "std",
+      "id": "std.time",
+      "version": "1.0.0",
+      "error": "terminal"
+    };
+
+    <edges>{};
+
+    <book>{
+      // Return high-precision system millisecond ticks
+      °function •get_ticks() -> °usize {
+        °unsafe {
+            // Wraps high-precision timer syscall 2
+            rax = syscall 2
+            return
+        }
+      }
+
+      // Delay thread execution for a duration in milliseconds
+      °function •delay(•ms: °usize) -> °void {
+        °unsafe {
+            °usize •start
+            rax = syscall 2
+            •start = rax
+
+            °label wait_loop
+            °usize •current
+            rax = syscall 2
+            •current = rax
+
+            °usize •elapsed
+            •elapsed = •current - •start
+            °if (•elapsed < •ms) {
+                °goto wait_loop
+            }
+            return
+        }
+      }
+
+      // Convert millisecond ticks to a rounded second count
+      °function •to_seconds(•ticks: °usize) -> °usize {
+        °unsafe {
+            rax = •ticks / 1000
+            return
+        }
+      }
+    };
+  |■
+|●
+</Netiv>

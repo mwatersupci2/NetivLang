@@ -1,0 +1,54 @@
+<Netiv="std_sys.ntv">
+○|
+  □|
+    <meta>{
+      "type": "module",
+      "name": "std",
+      "id": "std.sys",
+      "version": "1.0.0",
+      "error": "terminal"
+    };
+
+    <edges>{};
+
+    <book>{
+      °function •spawn() -> °void {
+        °unsafe {
+            rax = syscall 0
+            return
+        }
+      }
+
+      °function •seal() -> °void {
+        °unsafe {
+            rax = syscall 6
+            return
+        }
+      }
+
+      °function •debug(•value: °usize, •ptr: °usize) -> °void {
+        °unsafe {
+            // value in rcx, ptr in rdx
+            rax = syscall 5
+            return
+        }
+      }
+
+      °function •get_function_name(•index: °usize) -> °pointer<°const °u8> {
+        °unsafe {
+            // index in rcx
+            rax = syscall 7
+            return
+        }
+      }
+
+      °function •get_function_count() -> °usize {
+        °unsafe {
+            rax = syscall 8
+            return
+        }
+      }
+    };
+  |■
+|●
+</Netiv>

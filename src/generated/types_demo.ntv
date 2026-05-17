@@ -1,0 +1,36 @@
+<Netiv="types_demo.netiv">
+○|
+  □|
+    <meta>{
+      name: "types_demo",
+      kind: "page",
+      version: "1.0.0",
+      error: "terminal"
+    };
+
+    <edges>{};
+
+    <book>{
+      °struct •Vector3 {
+        •x: °f32;
+        •y: °f32;
+        •z: °f32;
+      };
+
+      °enum •Status {
+        •Active;
+        •Inactive;
+      };
+
+      °const •MAX_LIMIT: °usize = 512;
+
+      °function •DemonstrateTypes(•val: °scalar) -> °void {
+        °define •flag: °bool = °true;
+        °define •pi_val: °f64 = 3.1415926535;
+        °define •ptr: °pointer<°scalar> = °addr •val;
+        °define •value: °scalar = °deref •ptr;
+        °return;
+      };
+    };
+  |■
+|●

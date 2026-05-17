@@ -1,9 +1,95 @@
-module cli
+<Netiv="cli.ntv">
+○|
+  □|
+    <meta>{
+      "type": "module",
+      "name": "ntv",
+      "id": "ntv.cli",
+      "version": "1.0.0",
+      "error": "terminal"
+    };
 
+    <edges>{};
 
+    <book>{
+      // Expose console writer using native Win32 standard handles (GetStdHandle = -11)
+      °function •print_raw(•str: °pointer<°const °u8>, •len: °usize) -> °void {
+        °unsafe {
+            // Get resolved GetStdHandle and WriteFile function pointers from IAT offsets
+            // IAT[2] = GetStdHandle (RVA 0x1080)
+            // IAT[3] = WriteFile (RVA 0x1088)
+            °pointer<°void> •get_std_handle_ptr
+            •get_std_handle_ptr = *(°pointer<°void>*)(0x1080)
 
+            °pointer<°void> •write_file_ptr
+            •write_file_ptr = *(°pointer<°void>*)(0x1088)
 
-fn main() -> void {
-    goto run_build
-    ~
-}
+            // Invoke GetStdHandle(-11) to retrieve standard output handle
+            rcx = -11
+            °call •get_std_handle_ptr
+            °pointer<°void> •stdout_handle
+            •stdout_handle = rax
+
+            // Invoke WriteFile(stdout_handle, str, len, bytesWritten, NULL)
+            rcx = •stdout_handle
+            rdx = •str
+            r8 = •len
+            r9 = 0
+            °call •write_file_ptr
+            return
+        }
+      }
+
+      // Print an ANSI string followed by a newline natively
+      °function •println_native(•str: °pointer<°const °u8>) -> °void {
+        °unsafe {
+            // Calculate length of null-terminated string
+            °usize •len
+            •len = 0
+            °label len_loop
+            °if (*(°u8*)(•str + •len) == 0) {
+                °goto len_done
+            }
+            •len = •len + 1
+            °goto len_loop
+            °label len_done
+
+            °call •print_raw(•str, •len)
+            
+            // Print trailing CRLF
+            °call •print_raw("\r\n", 2)
+            return
+        }
+      }
+
+      // Main Entry Point of the Native CLI
+      °function •cli_main() -> °void {
+        °unsafe {
+            °call •println_native("=========================================")
+            °call •println_native("   Netiv Lang Standalone Native CLI     ")
+            °call •println_native("=========================================")
+
+            // Get resolved GetCommandLineA pointer from IAT[1] (RVA 0x1078)
+            °pointer<°void> •get_cmd_line_ptr
+            •get_cmd_line_ptr = *(°pointer<°void>*)(0x1078)
+            
+            °call •get_cmd_line_ptr
+            °pointer<°const °u8> •cmd_line
+            •cmd_line = rax
+
+            °call •print_raw("Command Line: ", 14)
+            °call •println_native(•cmd_line)
+
+            // Exit cleanly using resolved ExitProcess from IAT[0] (RVA 0x1070)
+            °pointer<°void> •exit_process_ptr
+            •exit_process_ptr = *(°pointer<°void>*)(0x1070)
+
+            rcx = 0
+            °call •exit_process_ptr
+            return
+        }
+      }
+    };
+  |■
+|●
+</Netiv>

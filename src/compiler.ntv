@@ -31777,8 +31777,8 @@ fn emit_pe_header() -> void {
     rax = 0x00; *ptr = rax_u8; ptr = ptr + 1
     rax = 0x00; *ptr = rax_u8; ptr = ptr + 1
     
-    // AddressOfEntryPoint (0x1000)
-    rax = 0x00; *ptr = rax_u8; ptr = ptr + 1
+    // AddressOfEntryPoint (0x105c)
+    rax = 0x5c; *ptr = rax_u8; ptr = ptr + 1
     rax = 0x10; *ptr = rax_u8; ptr = ptr + 1
     rax = 0x00; *ptr = rax_u8; ptr = ptr + 1
     rax = 0x00; *ptr = rax_u8; ptr = ptr + 1
@@ -31872,11 +31872,51 @@ fn emit_pe_header() -> void {
     rax = 0x00; *ptr = rax_u8; ptr = ptr + 1
     rax = 0x00; *ptr = rax_u8; ptr = ptr + 1
     rax = 0x00; *ptr = rax_u8; ptr = ptr + 1
+    rax = 0x10; *ptr = rax_u8; ptr = ptr + 1 // NumberOfRvaAndSizes = 16
     rax = 0x00; *ptr = rax_u8; ptr = ptr + 1
     rax = 0x00; *ptr = rax_u8; ptr = ptr + 1
     rax = 0x00; *ptr = rax_u8; ptr = ptr + 1
-    rax = 0x00; *ptr = rax_u8; ptr = ptr + 1
-    rax = 0x00; *ptr = rax_u8; ptr = ptr + 1
+
+    // Dir 0: Export Table (8 bytes)
+    rax = 0; *ptr = rax_u8; ptr = ptr + 1; rax = 0; *ptr = rax_u8; ptr = ptr + 1
+    rax = 0; *ptr = rax_u8; ptr = ptr + 1; rax = 0; *ptr = rax_u8; ptr = ptr + 1
+    rax = 0; *ptr = rax_u8; ptr = ptr + 1; rax = 0; *ptr = rax_u8; ptr = ptr + 1
+    rax = 0; *ptr = rax_u8; ptr = ptr + 1; rax = 0; *ptr = rax_u8; ptr = ptr + 1
+
+    // Dir 1: Import Table (RVA = 0x1000, Size = 40)
+    rax = 0x00; *ptr = rax_u8; ptr = ptr + 1; rax = 0x10; *ptr = rax_u8; ptr = ptr + 1
+    rax = 0x00; *ptr = rax_u8; ptr = ptr + 1; rax = 0x00; *ptr = rax_u8; ptr = ptr + 1
+    rax = 40;   *ptr = rax_u8; ptr = ptr + 1; rax = 0;    *ptr = rax_u8; ptr = ptr + 1
+    rax = 0;    *ptr = rax_u8; ptr = ptr + 1; rax = 0;    *ptr = rax_u8; ptr = ptr + 1
+
+    // Dir 2 to 11: 10 empty directories (80 bytes of zero)
+    °usize •d
+    •d = 0
+    °label d_loop
+    °if (•d >= 80) {
+        °goto d_done
+    }
+    rax = 0; *ptr = rax_u8; ptr = ptr + 1
+    •d = •d + 1
+    °goto d_loop
+    °label d_done
+
+    // Dir 12: IAT Table (RVA = 0x1030, Size = 8)
+    rax = 0x30; *ptr = rax_u8; ptr = ptr + 1; rax = 0x10; *ptr = rax_u8; ptr = ptr + 1
+    rax = 0x00; *ptr = rax_u8; ptr = ptr + 1; rax = 0x00; *ptr = rax_u8; ptr = ptr + 1
+    rax = 8;    *ptr = rax_u8; ptr = ptr + 1; rax = 0;    *ptr = rax_u8; ptr = ptr + 1
+    rax = 0;    *ptr = rax_u8; ptr = ptr + 1; rax = 0;    *ptr = rax_u8; ptr = ptr + 1
+
+    // Dir 13 to 15: 3 empty directories (24 bytes of zero)
+    •d = 0
+    °label d_loop2
+    °if (•d >= 24) {
+        °goto d_done2
+    }
+    rax = 0; *ptr = rax_u8; ptr = ptr + 1
+    •d = •d + 1
+    °goto d_loop2
+    °label d_done2
     
     // .text section header
     rax = 0x2e; *ptr = rax_u8; ptr = ptr + 1
@@ -31938,6 +31978,94 @@ fn emit_pe_header() -> void {
     ptr = ptr + 1
     goto pad_loop
     label pad_done
+
+    // Write standard PE Import Directory Table and Import Address Table for kernel32.dll ExitProcess
+    // 1. Import Directory Entry (20 bytes at offset 0x00)
+    // ILT RVA: 0x00001028
+    rax = 0x28; *ptr = rax_u8; ptr = ptr + 1; rax = 0x10; *ptr = rax_u8; ptr = ptr + 1
+    rax = 0x00; *ptr = rax_u8; ptr = ptr + 1; rax = 0x00; *ptr = rax_u8; ptr = ptr + 1
+    // TimeDateStamp: 0
+    rax = 0x00; *ptr = rax_u8; ptr = ptr + 1; rax = 0x00; *ptr = rax_u8; ptr = ptr + 1
+    rax = 0x00; *ptr = rax_u8; ptr = ptr + 1; rax = 0x00; *ptr = rax_u8; ptr = ptr + 1
+    // ForwarderChain: 0
+    rax = 0x00; *ptr = rax_u8; ptr = ptr + 1; rax = 0x00; *ptr = rax_u8; ptr = ptr + 1
+    rax = 0x00; *ptr = rax_u8; ptr = ptr + 1; rax = 0x00; *ptr = rax_u8; ptr = ptr + 1
+    // Name RVA: 0x00001040
+    rax = 0x40; *ptr = rax_u8; ptr = ptr + 1; rax = 0x10; *ptr = rax_u8; ptr = ptr + 1
+    rax = 0x00; *ptr = rax_u8; ptr = ptr + 1; rax = 0x00; *ptr = rax_u8; ptr = ptr + 1
+    // IAT RVA: 0x00001030
+    rax = 0x30; *ptr = rax_u8; ptr = ptr + 1; rax = 0x10; *ptr = rax_u8; ptr = ptr + 1
+    rax = 0x00; *ptr = rax_u8; ptr = ptr + 1; rax = 0x00; *ptr = rax_u8; ptr = ptr + 1
+
+    // 2. Null Directory Entry (20 bytes of zeros at offset 0x14)
+    •d = 0
+    °label null_dir_loop
+    °if (•d >= 20) {
+        °goto null_dir_done
+    }
+    rax = 0; *ptr = rax_u8; ptr = ptr + 1
+    •d = •d + 1
+    °goto null_dir_loop
+    °label null_dir_done
+
+    // 3. Import Lookup Table (ILT) (8 bytes at offset 0x28)
+    // Points to Hint/Name Table at 0x0000104d
+    rax = 0x4d; *ptr = rax_u8; ptr = ptr + 1; rax = 0x10; *ptr = rax_u8; ptr = ptr + 1
+    rax = 0x00; *ptr = rax_u8; ptr = ptr + 1; rax = 0x00; *ptr = rax_u8; ptr = ptr + 1
+    rax = 0x00; *ptr = rax_u8; ptr = ptr + 1; rax = 0x00; *ptr = rax_u8; ptr = ptr + 1
+    rax = 0x00; *ptr = rax_u8; ptr = ptr + 1; rax = 0x00; *ptr = rax_u8; ptr = ptr + 1
+
+    // 4. Import Address Table (IAT) (8 bytes at offset 0x30)
+    // Points to same Hint/Name Table at 0x0000104d
+    rax = 0x4d; *ptr = rax_u8; ptr = ptr + 1; rax = 0x10; *ptr = rax_u8; ptr = ptr + 1
+    rax = 0x00; *ptr = rax_u8; ptr = ptr + 1; rax = 0x00; *ptr = rax_u8; ptr = ptr + 1
+    rax = 0x00; *ptr = rax_u8; ptr = ptr + 1; rax = 0x00; *ptr = rax_u8; ptr = ptr + 1
+    rax = 0x00; *ptr = rax_u8; ptr = ptr + 1; rax = 0x00; *ptr = rax_u8; ptr = ptr + 1
+
+    // 5. Padding/Zeros (8 bytes at offset 0x38)
+    •d = 0
+    °label pad_zeros_loop
+    °if (•d >= 8) {
+        °goto pad_zeros_done
+    }
+    rax = 0; *ptr = rax_u8; ptr = ptr + 1
+    •d = •d + 1
+    °goto pad_zeros_loop
+    °label pad_zeros_done
+
+    // 6. DLL Name String: "kernel32.dll\0" (13 bytes at offset 0x40)
+    rax = 0x6b; *ptr = rax_u8; ptr = ptr + 1 // 'k'
+    rax = 0x65; *ptr = rax_u8; ptr = ptr + 1 // 'e'
+    rax = 0x72; *ptr = rax_u8; ptr = ptr + 1 // 'r'
+    rax = 0x6e; *ptr = rax_u8; ptr = ptr + 1 // 'n'
+    rax = 0x65; *ptr = rax_u8; ptr = ptr + 1 // 'e'
+    rax = 0x6c; *ptr = rax_u8; ptr = ptr + 1 // 'l'
+    rax = 0x33; *ptr = rax_u8; ptr = ptr + 1 // '3'
+    rax = 0x32; *ptr = rax_u8; ptr = ptr + 1 // '2'
+    rax = 0x2e; *ptr = rax_u8; ptr = ptr + 1 // '.'
+    rax = 0x64; *ptr = rax_u8; ptr = ptr + 1 // 'd'
+    rax = 0x6c; *ptr = rax_u8; ptr = ptr + 1 // 'l'
+    rax = 0x6c; *ptr = rax_u8; ptr = ptr + 1 // 'l'
+    rax = 0x00; *ptr = rax_u8; ptr = ptr + 1 // '\0'
+
+    // 7. Hint/Name Table Entry for "ExitProcess\0" (15 bytes at offset 0x4d)
+    // Hint: 0x0000
+    rax = 0x00; *ptr = rax_u8; ptr = ptr + 1
+    rax = 0x00; *ptr = rax_u8; ptr = ptr + 1
+    // Name: "ExitProcess\0"
+    rax = 0x45; *ptr = rax_u8; ptr = ptr + 1 // 'E'
+    rax = 0x78; *ptr = rax_u8; ptr = ptr + 1 // 'x'
+    rax = 0x69; *ptr = rax_u8; ptr = ptr + 1 // 'i'
+    rax = 0x74; *ptr = rax_u8; ptr = ptr + 1 // 't'
+    rax = 0x50; *ptr = rax_u8; ptr = ptr + 1 // 'P'
+    rax = 0x72; *ptr = rax_u8; ptr = ptr + 1 // 'r'
+    rax = 0x6f; *ptr = rax_u8; ptr = ptr + 1 // 'o'
+    rax = 0x63; *ptr = rax_u8; ptr = ptr + 1 // 'c'
+    rax = 0x65; *ptr = rax_u8; ptr = ptr + 1 // 'e'
+    rax = 0x73; *ptr = rax_u8; ptr = ptr + 1 // 's'
+    rax = 0x73; *ptr = rax_u8; ptr = ptr + 1 // 's'
+    rax = 0x00; *ptr = rax_u8; ptr = ptr + 1 // '\0'
+    rax = 0x00; *ptr = rax_u8; ptr = ptr + 1 // Align byte
 
     return
 }
