@@ -44,7 +44,8 @@ Canonical source files use a wrapped anthology shape:
   □|
     <meta>{
       name: "example",
-      version: "0.1.0"
+      version: "0.1.0",
+      notes: "A standard entry point for NetivLang applications."
     };
 
     <edges>{
@@ -99,7 +100,8 @@ Every bookend should be independently inspectable, hashable, and exportable.
   name: "compile_operation",
   kind: "method",
   error: "terminal",
-  version: "0.1.0"
+  version: "0.1.0",
+  notes: "Orchestrates parser, lowerer, and machine instruction emitter pipelines."
 };
 ```
 
@@ -113,6 +115,7 @@ Recommended minimum fields:
 - `kind`
 - `version`
 - `error`
+- `notes`
 
 ## 6. Edges Section
 
