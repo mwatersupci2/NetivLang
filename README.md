@@ -60,3 +60,4 @@ This repository contains the source code for the **Netiv experimental language a
 
 - **Proprietary & Experimental**: This is an experimental, closed-source system language. All rights reserved.
 - **No Forking or Redistribution**: No permission is granted for copying, forking, modifying, or redistributing this software.
+- **Contributions**: If you would like to contribute or collaborate on this project, please contact the author directly.
