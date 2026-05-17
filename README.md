@@ -27,13 +27,34 @@ Netiv is being designed around the following principles:
 
 ---
 
+## Current Project Status
+
+Netiv has reached a current self-hosting milestone in which the active build path can be driven through Netiv-authored binary artifacts for the current project workflow.
+
+That milestone should not be read as a claim that the entire development environment is dependency-free or that every supporting component is Netiv-owned. SQLite is currently used for project-local database state, metadata tracking, inspection workflows, and related tooling support. SQLite is an external dependency and is not authored or owned by Netiv.
+
+Because of that, this project should not be described as having “zero dependencies,” a fully Netiv-owned stack, or a completely independent runtime/tooling environment. The more accurate claim is that Netiv has a confirmed self-hosting path for its current compiler artifacts while still using external supporting tools where appropriate.
+
+---
+
 ## Current Direction
 
 - **Compiler and Tooling Experiments**: Netiv is being developed through compilation and build-pipeline experiments while the toolchain is still changing.
+- **Self-Hosting Work**: The current Netiv workflow has confirmed self-hosting behavior for the active compiler artifact path, while supporting tools and storage layers may still rely on external components.
 - **Graph-Aware Source Structure**: Source files are intended to carry metadata and graph-edge information alongside executable code.
 - **Method / Function Separation**: Netiv distinguishes higher-order orchestration from lower-level function behavior to support separation of concerns.
 - **Inspectable Build Artifacts**: Compiler outputs, metadata, graph exports, logs, and database state are intended to be auditable parts of the development workflow.
-- **Database-Backed Tooling Direction**: Netiv is being designed with database-aware build tracking, metadata inspection, and future incremental compilation workflows in mind.
+- **Database-Backed Tooling Direction**: Netiv currently uses SQLite for tooling state, but the long-term direction includes investigating a Netiv-built database specific to the Netiv toolchain.
+
+---
+
+## Future Database Direction
+
+SQLite is useful for the current phase because it provides stable local storage while the language and compiler tooling are still being developed.
+
+Longer term, Netiv may replace SQLite with a database written in Netiv and designed specifically for the Netiv toolchain. That future database direction may include SQL-like query behavior over a B-tree style storage layer, with pointer-oriented relationships and node/edge metadata layers built directly into the storage model.
+
+The goal is not to claim that this database exists today. The goal is to document the design direction: a toolchain-native database where source files, compiler artifacts, graph relationships, metadata, and build records can be stored and inspected in a way that matches Netiv’s own philosophy.
 
 ---
 
@@ -66,6 +87,7 @@ Netiv is being designed around the following principles:
 
 - A Windows environment (64-bit).
 - Netiv bootstrap tooling.
+- SQLite-backed project database files are used by the current tooling workflow.
 
 ### Installing the CLI on Windows
 
