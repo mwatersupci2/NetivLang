@@ -5,17 +5,21 @@
       "type": "module",
       "name": "adj",
       "id": "adj.tachyons",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "error": "terminal",
-      "notes": "Programmatic HTML GUI component builder styled using Tachyons utility CSS."
+      "notes": "Unified HTML GUI & Console TUI component styling library modeled after Tachyons."
     };
 
     <edges>{
-      %% adj.tachyons -> std.mem
+      %% adj.tachyons -> adj.tui
       %% adj.tachyons -> std.io
     };
 
     <book>{
+      // ==========================================
+      // SECTION 1: HTML/WEB WIDGET DEFINITIONS
+      // ==========================================
+
       °struct •HtmlNode {
         •tag: °pointer<°const °u8>,
         •classes: °pointer<°u8>,
@@ -196,6 +200,194 @@
             *(°u8*)(•dest + •ptr) = 0x3E // '>'
             *(°u8*)(•dest + •ptr + 1) = 0 // Null-terminate
             return
+        }
+      }
+
+
+      // ==========================================
+      // SECTION 2: CONSOLE/TERMINAL TUI WIDGETS
+      // ==========================================
+
+      °struct •TuiWidget {
+        •x: °usize,
+        •y: °usize,
+        •w: °usize,
+        •h: °usize,
+        •fg: °usize,
+        •bg: °usize,
+        •content: °pointer<°const °u8>,
+        •border_style: °usize
+      }
+
+      // Initialize a terminal console widget
+      °function •tachyons_init_widget(•widget: °pointer<°struct •TuiWidget>, •content: °pointer<°const °u8>) -> °void {
+        °unsafe {
+            *(°usize*)(•widget) = 1       // x = 1
+            *(°usize*)(•widget + 8) = 1   // y = 1
+            *(°usize*)(•widget + 16) = 20  // w = 20
+            *(°usize*)(•widget + 24) = 3   // h = 3
+            *(°usize*)(•widget + 32) = 0   // fg = 0 (Default text color)
+            *(°usize*)(•widget + 40) = 0   // bg = 0 (Black)
+            *(°pointer<°const °u8>*)(•widget + 48) = •content
+            *(°usize*)(•widget + 56) = 0   // border_style = 0 (None)
+            return
+        }
+      }
+
+      // Set coordinate offsets (equivalent to margins)
+      °function •tachyons_widget_pos(•widget: °pointer<°struct •TuiWidget>, •x: °usize, •y: °usize) -> °void {
+        °unsafe {
+            *(°usize*)(•widget) = •x
+            *(°usize*)(•widget + 8) = •y
+            return
+        }
+      }
+
+      // Set dimensions (equivalent to width/height limits)
+      °function •tachyons_widget_size(•widget: °pointer<°struct •TuiWidget>, •w: °usize, •h: °usize) -> °void {
+        °unsafe {
+            *(°usize*)(•widget + 16) = •w
+            *(°usize*)(•widget + 24) = •h
+            return
+        }
+      }
+
+      // Set border style (0 = None, 1 = Single Unicode, 2 = Double Unicode)
+      °function •tachyons_widget_border(•widget: °pointer<°struct •TuiWidget>, •style: °usize) -> °void {
+        °unsafe {
+            *(°usize*)(•widget + 56) = •style
+            return
+        }
+      }
+
+      // Set terminal color palettes (equivalent to bg-color and text-color)
+      °function •tachyons_widget_color(•widget: °pointer<°struct •TuiWidget>, •fg: °usize, •bg: °usize) -> °void {
+        °unsafe {
+            *(°usize*)(•widget + 32) = •fg
+            *(°usize*)(•widget + 40) = •bg
+            return
+        }
+      }
+
+      // Render the TuiWidget to the console terminal using ANSI/Unicode controls
+      °function •tachyons_render_tui(•widget: °pointer<°struct •TuiWidget>) -> °void {
+        °unsafe {
+            °usize •x
+            •x = *(°usize*)(•widget)
+            °usize •y
+            •y = *(°usize*)(•widget + 8)
+            °usize •w
+            •w = *(°usize*)(•widget + 16)
+            °usize •h
+            •h = *(°usize*)(•widget + 24)
+            °usize •fg
+            •fg = *(°usize*)(•widget + 32)
+            °usize •bg
+            •bg = *(°usize*)(•widget + 40)
+            °pointer<°const °u8> •content
+            •content = *(°pointer<°const °u8>*)(•widget + 48)
+            °usize •border
+            •border = *(°usize*)(•widget + 56)
+
+            // Activate terminal colors
+            °call •tui_color(•fg, •bg)
+
+            // 1. Draw Top Border if requested
+            °if (•border > 0) {
+                °call •tui_move(•x, •y)
+                °if (•border == 1) {
+                    °call •print("┌")
+                    °usize •col
+                    •col = 1
+                    °label top_border_single
+                    °if (•col < (•w - 1)) {
+                        °call •print("─")
+                        •col = •col + 1
+                        °goto top_border_single
+                    }
+                    °call •print("┐")
+                }
+                °if (•border == 2) {
+                    °call •print("╔")
+                    °usize •col
+                    •col = 1
+                    °label top_border_double
+                    °if (•col < (•w - 1)) {
+                        °call •print("═")
+                        •col = •col + 1
+                        °goto top_border_double
+                    }
+                    °call •print("╗")
+                }
+            }
+
+            // 2. Draw Content Row(s)
+            °usize •content_y
+            •content_y = •y
+            °if (•border > 0) {
+                •content_y = •y + 1
+            }
+            °call •tui_move(•x, •content_y)
+            °if (•border > 0) {
+                °if (•border == 1) {
+                    °call •print("│ ")
+                }
+                °if (•border == 2) {
+                    °call •print("║ ")
+                }
+            }
+            
+            // Print text contents
+            °call •print(•content)
+
+            // Fill trailing spaces to match width bounds
+            // Simplistic: jump to right border column
+            °if (•border > 0) {
+                °usize •right_col
+                •right_col = •x + •w - 1
+                °call •tui_move(•right_col, •content_y)
+                °if (•border == 1) {
+                    °call •print("│")
+                }
+                °if (•border == 2) {
+                    °call •print("║")
+                }
+            }
+
+            // 3. Draw Bottom Border if requested
+            °if (•border > 0) {
+                °usize •bottom_y
+                •bottom_y = •y + •h - 1
+                °call •tui_move(•x, •bottom_y)
+                °if (•border == 1) {
+                    °call •print("└")
+                    °usize •col
+                    •col = 1
+                    °label bottom_border_single
+                    °if (•col < (•w - 1)) {
+                        °call •print("─")
+                        •col = •col + 1
+                        °goto bottom_border_single
+                    }
+                    °call •print("┘")
+                }
+                °if (•border == 2) {
+                    °call •print("╚")
+                    °usize •col
+                    •col = 1
+                    °label bottom_border_double
+                    °if (•col < (•w - 1)) {
+                        °call •print("═")
+                        •col = •col + 1
+                        °goto bottom_border_double
+                    }
+                    °call •print("╝")
+                }
+            }
+
+            // Reset terminal attributes
+            °call •tui_reset()
+            °return
         }
       }
     };
