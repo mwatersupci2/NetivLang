@@ -1,0 +1,7 @@
+bin/
+build/
+db/
+logs/
+*.db
+*.db-shm
+*.db-wal

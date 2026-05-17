@@ -1,0 +1,20 @@
+<Netiv="netiv_readme_alt.ntv">
+<imports>
+  generated
+</imports>
+○|
+    □|
+        <meta>{"type":"module","name":"demo_alt","id":"demo.alt","ordinal":2,"error":"retry","observability":"commandline+logfile","bug_handling":"retry"};
+        <edges>{};
+        <book>{
+            °function •DemoAlt(•out_ptr: °pointer<°mutable °u8>) -> °void {
+                °define •opcode: °u8 = 0xC3
+                °unsafe {
+                    °write •out_ptr = •opcode
+                }
+                °return
+            }
+        };
+    |■
+|●
+</Netiv>

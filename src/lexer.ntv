@@ -1,0 +1,112 @@
+module assembler
+
+
+
+
+
+
+fn find_delimiter(input: *const i8, delimiter: u8) -> i64 {
+
+    rdx = 0
+    label loop
+    rax = *(u8*)(rcx + rdx)
+    rax_is_null
+    if_z_goto done
+
+
+
+    cmp_rax 0x3C
+    if_z_goto done
+
+    cmp_rax 0x3B
+    if_z_goto done
+
+    rdx = rdx + 1
+    goto loop
+    done:
+    rax = rdx
+    return
+}
+
+fn scan_netiv_head() -> i64 {
+
+
+
+
+
+
+    rax = 0
+    return
+}
+
+fn scan_netiv_open() -> i64 {
+
+    rax = 1
+    return
+}
+
+fn scan_imports_open() -> i64 {
+
+    rax = 2
+    return
+}
+
+fn scan_anthology_open() -> i64 {
+
+    rax = 3
+    return
+}
+
+fn scan_anthology_close() -> i64 {
+
+    rax = 4
+    return
+}
+
+fn scan_bookend_open() -> i64 {
+
+    rax = 5
+    return
+}
+
+fn scan_bookend_close() -> i64 {
+
+    rax = 6
+    return
+}
+
+fn scan_meta_open() -> i64 {
+
+    rax = 7
+    return
+}
+
+fn scan_edges_open() -> i64 {
+
+    rax = 8
+    return
+}
+
+fn scan_book_open() -> i64 {
+
+    rax = 9
+    return
+}
+
+fn scan_netiv_named_open() -> i64 {
+
+    rax = 10
+    return
+}
+
+fn scan_netiv_close() -> i64 {
+
+    rax = 11
+    return
+}
+
+fn scan_imports_close() -> i64 {
+
+    rax = 12
+    return
+}

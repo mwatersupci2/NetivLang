@@ -1,0 +1,962 @@
+module compiler
+
+
+
+fn ntv_compiler() -> void {
+    rax = rcx
+    r15 = rax
+    rbp = r15
+    S
+    rax = r9
+    r13 = rax
+    rax = r8
+    r12 = rax
+    r8 = r12
+    r9 = r13
+    r8 = rcx
+    r9 = r8
+    r8 = 0
+    r9 = 0
+    r8 = r8 + 1
+    r10 = rax
+    r11 = rax
+    rsi = rax
+    rdx = 0
+    rcx = rax
+    
+    rsi = ptr
+    rdi = 0
+
+    label passes
+    r15 = rbp
+    ptr = rsi
+
+    rax = 0x41
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0x54
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0x41
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0x55
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0x41
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0x56
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0x41
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0x57
+    *ptr = rax_u8
+    ptr = ptr + 1
+
+    rax = 0x48
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0x89
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0xCF
+    *ptr = rax_u8
+    ptr = ptr + 1
+
+    rax = 0x49
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0x89
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0xD6
+    *ptr = rax_u8
+    ptr = ptr + 1
+
+    rax = 0x4D
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0x89
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0xCD
+    *ptr = rax_u8
+    ptr = ptr + 1
+
+    rax = 0x4D
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0x89
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0xC4
+    *ptr = rax_u8
+    ptr = ptr + 1
+
+    rax = 0x48
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0x83
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0xEC
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0x28
+    *ptr = rax_u8
+    ptr = ptr + 1
+    
+    label loop
+    rax = *r15
+    rax_is_null
+    if_z_goto done_loop
+    
+    rbx = rax
+    
+    label dispatch
+    rax = *(u8*)rbx
+    cmp_rax 0x72
+    if_z_goto check_r
+    cmp_rax 0x73
+    if_z_goto check_s
+    cmp_rax 0x6A
+    if_z_goto check_jump_to_ret
+    cmp_rax 0x64
+    if_z_goto check_debug_val
+    cmp_rax 0x6C
+    if_z_goto handle_label
+    cmp_rax 0x67
+    if_z_goto handle_goto
+    cmp_rax 0x69
+    if_z_goto handle_if_z_goto
+    cmp_rax 0x6E
+    if_z_goto handle_if_ne_goto
+    cmp_rax 0x63
+    if_z_goto check_call
+    goto next
+
+    label check_s
+    rax = *(u8*)(rbx + 1)
+    cmp_rax 0x79
+    if_z_goto check_syscall
+    goto check_save_result
+    
+    label check_r
+    rbx = rbx + 4
+    rax = *(u8*)rbx
+    cmp_rax 0x69
+    if_z_goto check_ris
+    cmp_rax 0x3D
+    if_z_goto check_eq
+    cmp_rax 0x78
+    if_z_goto check_rdx
+    cmp_rax 0x39
+    if_z_goto check_r9
+    cmp_rax 0x62
+    if_z_goto emit_rbx_rcx
+    goto next
+    
+    label check_ris
+    rax = *(u8*)(rbx + 3)
+    cmp_rax 0x73
+    if_z_goto emit_rax_is_seven
+    cmp_rax 0x6E
+    if_z_goto emit_rax_is_null
+    goto next
+
+    label check_rdx
+    rax = *(u8*)(rbx + 4)
+    cmp_rax 0x20
+    if_z_goto emit_rdx_inc
+    goto next
+
+    label check_r9
+    rax = *(u8*)(rbx + 7)
+    cmp_rax 0x2B
+    if_z_goto emit_r9_inc
+    cmp_rax 0x2D
+    if_z_goto emit_r9_dec
+    goto next
+
+    label emit_r9_inc
+    rax = 0x49
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0x83
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0xC1
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0x01
+    *ptr = rax_u8
+    ptr = ptr + 1
+    goto next
+
+    label emit_r9_dec
+    rax = 0x49
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0x83
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0xE9
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0x01
+    *ptr = rax_u8
+    ptr = ptr + 1
+    goto next
+
+    label emit_rbx_rcx
+    rax = 0x48
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0x89
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0xCB
+    *ptr = rax_u8
+    ptr = ptr + 1
+    goto next
+
+    label check_eq
+    rbx = rbx + 2
+    rax = *(u8*)rbx
+    cmp_rax 0x72
+    if_z_goto emit_reg_copy
+    cmp_rax 0x30
+    if_z_goto emit_rdx_zero
+    cmp_rax 0x2A
+    if_z_goto emit_mem_load_rcx_check
+    cmp_rax 0x61
+    if_z_goto emit_rax_sub_rcx_check
+    cmp_rax 0x61
+    if_z_goto emit_rax_sub_0x30_check
+    cmp_rax 0x73
+    if_z_goto emit_rax_rsi_check
+    goto next
+
+    label emit_mem_load_rcx_check
+    rax = *(u8*)(rbx + 10)
+    cmp_rax 0x2B
+    if_z_goto emit_mem_load_rcx_6_check
+    rax = *(u8*)(rbx + 7)
+    cmp_rax 0x63
+    if_z_goto emit_mem_load_rcx
+    cmp_rax 0x38
+    if_z_goto emit_mem_load_r8
+    goto emit_mem_load
+
+    label emit_mem_load_rcx_6_check
+    rax = *(u8*)(rbx + 12)
+    cmp_rax 0x36
+    if_z_goto emit_mem_load_rcx_6
+    cmp_rax 0x32
+    if_z_goto emit_mem_load_rcx_2
+    cmp_rax 0x31
+    if_z_goto emit_mem_load_rcx_1
+    cmp_rax 0x33
+    if_z_goto emit_mem_load_rcx_3
+    goto emit_mem_load_rcx
+
+    label emit_mem_load_rcx
+    rax = 0x48
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0x0F
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0xB6
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0x01
+    *ptr = rax_u8
+    ptr = ptr + 1
+    goto next
+
+    label emit_mem_load_rcx_6
+    rax = 0x48
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0x0F
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0xB6
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0x41
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0x06
+    *ptr = rax_u8
+    ptr = ptr + 1
+    goto next
+
+    label emit_mem_load_rcx_2
+    rax = 0x48
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0x0F
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0xB6
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0x41
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0x02
+    *ptr = rax_u8
+    ptr = ptr + 1
+    goto next
+
+    label emit_mem_load_rcx_1
+    rax = 0x48
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0x0F
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0xB6
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0x41
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0x01
+    *ptr = rax_u8
+    ptr = ptr + 1
+    goto next
+
+    label emit_mem_load_rcx_3
+    rax = 0x48
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0x0F
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0xB6
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0x41
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0x03
+    *ptr = rax_u8
+    ptr = ptr + 1
+    goto next
+
+    label emit_mem_load_r8
+    rax = 0x49
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0x0F
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0xB6
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0x00
+    *ptr = rax_u8
+    ptr = ptr + 1
+    goto next
+
+    label check_syscall
+    rax = *(u8*)(rbx + 14)
+    cmp_rax 0x37
+    if_z_goto emit_syscall_7
+    cmp_rax 0x33
+    if_z_goto emit_syscall_3
+    cmp_rax 0x39
+    if_z_goto emit_syscall_9
+    cmp_rax 0x34
+    if_z_goto emit_syscall_4
+    goto next
+
+    label emit_syscall_3
+    rax = 0x49
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0x8B
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0x45
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0x18
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0xFF
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0xD0
+    *ptr = rax_u8
+    ptr = ptr + 1
+    goto next
+
+    label emit_syscall_4
+    rax = 0x49
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0x8B
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0x45
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0x20
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0xFF
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0xD0
+    *ptr = rax_u8
+    ptr = ptr + 1
+    goto next
+
+    label emit_syscall_7
+    rax = 0x49
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0x8B
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0x45
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0x38
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0xFF
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0xD0
+    *ptr = rax_u8
+    ptr = ptr + 1
+    goto next
+
+    label emit_syscall_9
+    rax = 0x49
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0x8B
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0x45
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0x48
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0xFF
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0xD0
+    *ptr = rax_u8
+    ptr = ptr + 1
+    goto next
+    
+    label emit_rdx_plus_rax_check
+    rax = *(u8*)(rbx + 4)
+    cmp_rax 0x2B
+    if_z_goto emit_rdx_plus_rax_rhs
+    goto emit_reg_copy
+
+    label emit_rdx_plus_rax_rhs
+    rax = *(u8*)(rbx + 6)
+    cmp_rax 0x72
+    if_z_goto emit_rdx_plus_rax
+    cmp_rax 0x31
+    if_z_goto emit_rdx_inc
+    goto next
+
+    label emit_rdx_plus_rax
+    rax = 0x48
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0x01
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0xC2
+    *ptr = rax_u8
+    ptr = ptr + 1
+    goto next
+
+    label emit_rax_sub_rcx_check
+    rax = *(u8*)(rbx + 4)
+    cmp_rax 0x2D
+    if_z_goto emit_rax_sub_rcx_rhs
+    goto next
+
+    label emit_rax_sub_rcx_rhs
+    rax = *(u8*)(rbx + 6)
+    cmp_rax 0x72
+    if_z_goto emit_rax_sub_rcx_tail
+    goto next
+
+    label emit_rax_sub_rcx_tail
+    rax = *(u8*)(rbx + 11)
+    cmp_rax 0x63
+    if_z_goto emit_rax_sub_rcx
+    goto next
+
+    label emit_rax_sub_rcx
+    rax = 0x48
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0x29
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0xC8
+    *ptr = rax_u8
+    ptr = ptr + 1
+    goto next
+
+    label emit_rax_sub_0x30_check
+    rax = *(u8*)(rbx + 11)
+    cmp_rax 0x30
+    if_z_goto emit_rax_sub_0x30
+    goto next
+
+    label emit_rax_sub_0x30
+    rax = 0x48
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0x83
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0xE8
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0x30
+    *ptr = rax_u8
+    ptr = ptr + 1
+    goto next
+
+    label emit_rax_rsi_check
+    rax = *(u8*)(rbx + 3)
+    cmp_rax 0x69
+    if_z_goto emit_rax_rsi
+    goto next
+
+    label emit_rax_rsi
+    rax = 0x48
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0x89
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0xF0
+    *ptr = rax_u8
+    ptr = ptr + 1
+    goto next
+    
+    label emit_reg_copy
+    rax = *(u8*)(rbx - 7)
+    cmp_rax 0x72
+    if_z_goto emit_rdx_plus_rax_check
+    goto emit_rax_rcx
+
+    label emit_rax_rcx
+    rax = 0x48
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0x89
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0xC8
+    *ptr = rax_u8
+    ptr = ptr + 1
+    goto next
+
+    label emit_rdx_rcx
+    rax = 0x48
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0x89
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0xCA
+    *ptr = rax_u8
+    ptr = ptr + 1
+    goto next
+
+    label emit_r8_r12
+    rax = 0x4D
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0x89
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0xE0
+    *ptr = rax_u8
+    ptr = ptr + 1
+    goto next
+
+    label emit_r9_r13
+    rax = 0x4D
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0x89
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0xE9
+    *ptr = rax_u8
+    ptr = ptr + 1
+    goto next
+
+    label emit_mem_load
+    rax = 0x48
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0x0F
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0xB6
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0x02
+    *ptr = rax_u8
+    ptr = ptr + 1
+    goto next
+
+    label handle_label
+    rax = rdi
+    rax_is_null
+    if_z_goto label_pass1
+    goto next
+    
+    label label_pass1
+    rax = ptr
+    rax = rax - rsi
+    rdx = rax
+    rax = *(u8*)(rbx + 6)
+    cmp_rax 0x6C
+    if_z_goto set_loop
+    cmp_rax 0x64
+    if_z_goto set_done
+    goto next
+    
+    label set_loop
+    rax = rdx
+    *r12 = rax
+    goto next
+    
+    label set_done
+    rax = rdx
+    *(r12 + 8) = rax
+    goto next
+
+    label handle_goto
+    rax = rdi
+    rax_is_null
+    if_z_goto dry_emit_goto
+    rbx = rbx + 5
+    rax = *(u8*)rbx
+    cmp_rax 0x6C
+    if_z_goto jump_loop
+    cmp_rax 0x64
+    if_z_goto jump_done
+    goto next
+    
+    label dry_emit_goto
+    ptr = ptr + 2
+    goto next
+
+    label jump_loop
+    rax = *r12
+    goto emit_jmp
+    
+    label jump_done
+    rax = *(r12 + 8)
+    goto emit_jmp
+    
+    label emit_jmp
+    rdx = rax
+    rax = ptr
+    rax = rax - rsi
+    rax = rax + 2
+    rdx = rdx - rax
+    rax = 0xEB
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = rdx
+    *ptr = rax_u8
+    ptr = ptr + 1
+    goto next
+
+    label handle_if_z_goto
+    rax = rdi
+    rax_is_null
+    if_z_goto dry_emit_goto
+    rbx = rbx + 10
+    rax = *(u8*)rbx
+    cmp_rax 0x6C
+    if_z_goto jump_loop_z
+    cmp_rax 0x64
+    if_z_goto jump_done_z
+    goto next
+
+    label jump_loop_z
+    rax = *r12
+    goto emit_jz
+    
+    label jump_done_z
+    rax = *(r12 + 8)
+    goto emit_jz
+    
+    label emit_jz
+    rdx = rax
+    rax = ptr
+    rax = rax - rsi
+    rax = rax + 2
+    rdx = rdx - rax
+    rax = 0x74
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = rdx
+    *ptr = rax_u8
+    ptr = ptr + 1
+    goto next
+
+    label handle_if_ne_goto
+    rax = rdi
+    rax_is_null
+    if_z_goto dry_emit_goto
+    rbx = rbx + 11
+    rax = *(u8*)rbx
+    cmp_rax 0x6C
+    if_z_goto jump_loop_ne
+    cmp_rax 0x64
+    if_z_goto jump_done_ne
+    goto next
+
+    label jump_loop_ne
+    rax = *r12
+    goto emit_jne
+    
+    label jump_done_ne
+    rax = *(r12 + 8)
+    goto emit_jne
+
+    label emit_jne
+    rdx = rax
+    rax = ptr
+    rax = rax - rsi
+    rax = rax + 6
+    rdx = rdx - rax
+    rax = 0x0F
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0x85
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = rdx
+    *ptr = rax_u8
+    ptr = ptr + 1
+    goto next
+
+    label check_debug_val
+    rax = 0x48
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0x89
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0xC1
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0x4C
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0x89
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0xF2
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0x49
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0x8B
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0x45
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0x28
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0xFF
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0xD0
+    *ptr = rax_u8
+    ptr = ptr + 1
+    goto next
+
+    label check_call
+    rbx = rbx + 5
+    rax = *(u8*)rbx
+    cmp_rax 0x72
+    if_z_goto emit_call_rax
+    goto next
+
+    label emit_call_rax
+    rax = 0xFF
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0xD0
+    *ptr = rax_u8
+    ptr = ptr + 1
+    goto next
+
+    label emit_rax_is_null
+    rax = 0x48
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0x85
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0xC0
+    *ptr = rax_u8
+    ptr = ptr + 1
+    goto next
+
+    label emit_rdx_zero
+    rax = 0x48
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0x31
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0xD2
+    *ptr = rax_u8
+    ptr = ptr + 1
+    goto next
+
+    label emit_rdx_inc
+    rax = 0x48
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0x83
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0xC2
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0x01
+    *ptr = rax_u8
+    ptr = ptr + 1
+    goto next
+
+    label check_save_result
+    rax = 0x49
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0x89
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0x46
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0x00
+    *ptr = rax_u8
+    ptr = ptr + 1
+    goto next
+    
+    label check_jump_to_ret
+    rax = 0x48
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0x83
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0xC4
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0x28
+    *ptr = rax_u8
+    ptr = ptr + 1
+    
+    rax = 0x41
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0x5F
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0x41
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0x5E
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0x41
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0x5D
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0x41
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0x5C
+    *ptr = rax_u8
+    ptr = ptr + 1
+    
+    rax = 0xC3
+    *ptr = rax_u8
+    ptr = ptr + 1
+    goto next
+    
+    label emit_rax_is_seven
+    rax = 0x48
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0xB8
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0x07
+    *ptr = rax_u8
+    ptr = ptr + 1
+    rax = 0x00
+    *ptr = rax_u8
+    ptr = ptr + 1
+    *ptr = rax_u8
+    ptr = ptr + 1
+    *ptr = rax_u8
+    ptr = ptr + 1
+    *ptr = rax_u8
+    ptr = ptr + 1
+    *ptr = rax_u8
+    ptr = ptr + 1
+    *ptr = rax_u8
+    ptr = ptr + 1
+    *ptr = rax_u8
+    ptr = ptr + 1
+    goto next
+    
+    label next
+    r15 = r15 + 8
+    goto loop
+    
+    label done_loop
+    rax = rdi
+    rax_is_null
+    if_z_goto start_pass2
+    goto finish
+    
+    label start_pass2
+    rdi = 1
+    goto passes
+
+    label finish
+    rax = ptr
+    rax = rax - rsi
+    ~
+}

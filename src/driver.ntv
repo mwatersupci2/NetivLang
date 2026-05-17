@@ -1,0 +1,41 @@
+module driver
+
+fn run_driver() -> void {
+
+
+
+
+
+
+
+
+    rcx = 1
+    rax = syscall 7
+    rbx = rax
+
+
+    rcx = rbx
+    rax = syscall 3
+    r15 = rax
+
+
+    rcx = r15
+    rdx = r12
+    r8 = r12
+    r9 = r13
+    rax = syscall 9
+
+    call rax
+
+
+    r10 = rax
+
+
+    rcx = rbx
+    rdx = r12
+    r8 = r10
+    rax = syscall 4
+
+    rax = 0
+    ~
+}

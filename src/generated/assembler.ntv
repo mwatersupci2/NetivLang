@@ -1,0 +1,45 @@
+
+module assembler
+
+fn emit_mov_rax_imm7(()) -> void {
+    *ptr = 0xB848
+    ptr = ptr + 2
+    *ptr = 0x07
+    ptr = ptr + 8
+}
+
+fn emit_ret(()) -> void {
+    *ptr = 0xC3
+    ptr = ptr + 1
+}
+
+fn emit_save_result(()) -> void {
+    *ptr = 0x00468949
+    ptr = ptr + 4
+}
+
+fn emit_mov_rax_mem64_rbp_offset(()) -> void {
+    *ptr = 0x458B48
+    ptr = ptr + 3
+}
+
+fn emit_mov_mem64_rbp_offset_rax(()) -> void {
+    *ptr = 0x458948
+    ptr = ptr + 3
+}
+
+fn find_delimiter(()) -> void {
+    rdx = 0
+    loop:
+    rax = *(u8*)(rcx + rdx)
+    rax_is_null
+    if_z_goto done
+    cmp_rax 0x21
+    if_z_goto done
+    rdx = rdx + 1
+    goto loop
+    done:
+    rax = rdx
+    return
+}
+

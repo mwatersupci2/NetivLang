@@ -1,0 +1,196 @@
+module parser
+
+
+
+
+
+fn parse_int(input: *const i8) -> i64 {
+
+    rdx = 0
+    r8 = 0
+
+    label loop
+
+    rax = *(u8*)(rcx + r8)
+
+
+    rax_is_null
+    if_z_goto done
+
+
+
+    cmp_rax 0x30
+    if_ne_goto check_next
+
+
+    rax = rax - 0x30
+
+
+
+    rdx = rax
+
+    r8 = r8 + 1
+    goto loop
+
+    check_next:
+    r8 = r8 + 1
+    goto loop
+
+    done:
+    rax = rdx
+    return
+}
+
+fn parse_document_contract() -> i64 {
+
+
+
+
+
+
+
+
+
+    rax = 0
+    return
+}
+fn extract_filename() -> i64 {
+
+
+
+    rcx = rcx + 8
+    r8 = 0
+
+    label loop
+    rax = *(u8*)rcx
+    rax_is_null
+    if_z_goto done
+
+    cmp_rax 0x22
+    if_z_goto done
+
+    *(u8*)rdx = rax
+
+    rcx = rcx + 1
+    rdx = rdx + 1
+    r8 = r8 + 1
+    goto loop
+
+    label done
+    rax = 0
+    *(u8*)rdx = rax
+    rax = r8
+    return
+}
+
+fn extract_section() -> i64 {
+
+
+
+    r8 = 0
+    r9 = 0
+
+    label loop
+    rax = *(u8*)rcx
+    rax_is_null
+    if_z_goto done
+
+    cmp_rax 0x7B
+    if_ne_goto check_close
+
+    r9 = r9 + 1
+    goto write_char
+
+    label check_close
+    cmp_rax 0x7D
+    if_ne_goto write_char
+
+    r9 = r9 - 1
+
+    label write_char
+    *(u8*)rdx = rax
+
+    rcx = rcx + 1
+    rdx = rdx + 1
+    r8 = r8 + 1
+
+    rax = r9
+    rax_is_null
+    if_z_goto done
+
+    goto loop
+
+    label done
+    rax = 0
+    *(u8*)rdx = rax
+    rax = r8
+    return
+}
+
+fn check_book_comments() -> i64 {
+
+    label loop
+    rax = *(u8*)rcx
+    rax_is_null
+    if_z_goto valid
+
+    cmp_rax 0x2F
+    if_ne_goto next
+
+    rcx = rcx + 1
+    rax = *(u8*)rcx
+    cmp_rax 0x2F
+    if_z_goto invalid
+
+    label next
+    rcx = rcx + 1
+    goto loop
+
+    label valid
+    rax = 1
+    return
+
+    label invalid
+    rax = 0
+    return
+}
+
+fn check_semicolon_validation() -> i64 {
+
+    rdx = 0
+
+    label loop
+    rax = *(u8*)rcx
+    rax_is_null
+    if_z_goto done
+
+    cmp_rax 0x20
+    if_z_goto next
+
+    cmp_rax 0x0A
+    if_z_goto next
+
+    cmp_rax 0x0D
+    if_z_goto next
+
+    cmp_rax 0x09
+    if_z_goto next
+
+    rdx = rax
+
+    label next
+    rcx = rcx + 1
+    goto loop
+
+    label done
+    rax = rdx
+    cmp_rax 0x3B
+    if_ne_goto invalid
+
+    rax = 1
+    return
+
+    label invalid
+    rax = 0
+    return
+}

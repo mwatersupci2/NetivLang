@@ -1,0 +1,25 @@
+<Netiv="multi_call_test.ntv">
+<imports>
+</imports>
+○|
+    □|
+        <meta>{"type":"module","name":"multi_call","id":"test.multi_call","ordinal":1,"error":"retry","observability":"commandline+logfile","bug_handling":"retry"};
+        <edges>{};
+        <book>{
+            °function •Helper() -> °i64 {
+                °return 42
+            }
+
+            °function •Main(•out_ptr: °pointer<°mutable °u8>) -> °void {
+                °define •val: °i64 = 0
+                °define •byte: °u8 = 1
+                °call •Helper()
+                °unsafe {
+                    °write •out_ptr = •byte
+                }
+                °return
+            }
+        };
+    |■
+|●
+</Netiv>

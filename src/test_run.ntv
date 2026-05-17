@@ -1,0 +1,57 @@
+module test
+
+fn simple_test() -> void {
+    rax_is_seven
+    save_result
+    jump_to_ret
+}
+
+fn convention_test() -> void {
+    rax = rcx
+    save_result
+    debug_val
+    jump_to_ret
+}
+
+fn panning_test() -> void {
+    rdx = rcx
+    rdx = rdx + 1
+    rdx = rdx + 1
+    rdx = rdx + 1
+    rax = *(u8*)rdx
+    save_result
+    jump_to_ret
+}
+
+fn loop_test() -> void {
+    rdx = rcx
+    label loop
+    rax = *(u8*)rdx
+    rax_is_null
+    if_z_goto done
+    rdx = rdx + 1
+    goto loop
+    label done
+    rax = rdx
+    rax = rax - rcx
+    save_result
+    jump_to_ret
+}
+
+fn parse_int_test() -> void {
+    rdx = 0
+    r8 = rcx
+    rax = *(u8*)r8
+    rax = rax - 0x30
+    rdx = rdx + rax
+    save_result
+    jump_to_ret
+}
+
+fn parser_test() -> void {
+
+
+    rax = 1
+    save_result
+    jump_to_ret
+}

@@ -1,0 +1,24 @@
+
+module parser
+
+fn parse_int(()) -> void {
+    rdx = 0
+    r8 = 0
+    loop:
+    rax = *(u8*)(rcx + r8)
+    rax_is_null
+    if_z_goto done
+    cmp_rax 0x30
+    if_ne_goto check_next
+    rax = rax - 0x30
+    rdx = rax
+    r8 = r8 + 1
+    goto loop
+    check_next:
+    r8 = r8 + 1
+    goto loop
+    done:
+    rax = rdx
+    return
+}
+

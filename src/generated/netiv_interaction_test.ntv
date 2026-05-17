@@ -1,0 +1,49 @@
+<Netiv="netiv_interaction_test.ntv">
+<imports>
+  generated
+</imports>
+○|
+    □|
+        <meta>{"type":"module","name":"interaction_test","id":"test.interaction","ordinal":3,"error":"retry","observability":"commandline+logfile","bug_handling":"retry"};
+        <edges>{
+            Main -> ParseInput
+            ParseInput -> NormalizeInput
+            NormalizeInput -> HelperAlpha
+            HelperAlpha -> HelperBeta
+            HelperBeta -> PublishResult
+            Main -> PublishResult
+        };
+        <book>{
+            °function •HelperBeta(•value: °i64) -> °i64 {
+                °return •value
+            }
+
+            °function •HelperAlpha(•value: °i64) -> °i64 {
+                °call •HelperBeta(•value)
+                °return •value
+            }
+
+            °function •NormalizeInput(•value: °i64) -> °i64 {
+                °call •HelperAlpha(•value)
+                °return •value
+            }
+
+            °function •ParseInput(•value: °i64) -> °i64 {
+                °call •NormalizeInput(•value)
+                °return •value
+            }
+
+            °function •PublishResult(•value: °i64) -> °void {
+                °return
+            }
+
+            °function •Main(•input: °i64) -> °void {
+                °define •result: °i64 = 0
+                °call •ParseInput(•input)
+                °call •PublishResult(•result)
+                °return
+            }
+        };
+    |■
+|●
+</Netiv>

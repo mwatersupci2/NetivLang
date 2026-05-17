@@ -1,0 +1,43 @@
+module assembler
+
+
+
+
+fn emit_ret() -> void {
+
+    *ptr = 0xC3
+    ptr = ptr + 1
+}
+
+fn emit_mov_rax_imm7(val: i64) -> void {
+
+
+    *ptr = 0xB848
+    ptr = ptr + 2
+    *ptr = 0x07
+    ptr = ptr + 8
+}
+
+fn emit_save_result() -> void {
+
+    *ptr = 0x00468949
+    ptr = ptr + 4
+}
+
+fn emit_mov_rax_mem64_rbp_offset(offset: i64) -> void {
+    rax = 0x458B48
+    *ptr = rax_u8
+    ptr = ptr + 3
+    rax = offset
+    *ptr = rax_u8
+    ptr = ptr + 1
+}
+
+fn emit_mov_mem64_rbp_offset_rax(offset: i64) -> void {
+    rax = 0x458948
+    *ptr = rax_u8
+    ptr = ptr + 3
+    rax = offset
+    *ptr = rax_u8
+    ptr = ptr + 1
+}

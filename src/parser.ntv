@@ -1,0 +1,382 @@
+module parser
+
+
+
+
+
+
+fn parse_statement(text: *const i8) -> i64 {
+
+
+
+
+
+    rax = *(u8*)rcx
+
+
+    cmp_rax 0x3C
+    if_z_goto id_document_tag
+
+
+    cmp_rax 0x72
+    if_z_goto handle_rax
+
+
+    cmp_rax 0x70
+    if_z_goto id_println
+
+
+    cmp_rax 0x7E
+    if_z_goto id_ret
+
+
+    rax = 0
+    ~
+
+    id_document_tag:
+    rax = 10
+    ~
+
+    id_println:
+    rax = 1
+    ~
+
+    id_ret:
+    rax = 2
+    ~
+
+    handle_rax:
+
+
+    rax = *(u8*)(rcx + 6)
+
+    cmp_rax 0x30
+    if_z_goto id_rax_imm
+
+
+
+    rax = 3
+    ~
+
+    id_rax_imm:
+    rax = 4
+    ~
+}
+
+fn parse_bookend_marker() -> i64 {
+
+
+
+
+
+    rax = *(u8*)rcx
+
+    cmp_rax 0xE2
+    if_z_goto open_marker
+
+    cmp_rax 0x7C
+    if_z_goto close_marker
+
+    rax = 0
+    ~
+
+    open_marker:
+    rax = *(u8*)(rcx + 1)
+    cmp_rax 0x97
+    if_z_goto open_anthology_tail
+
+    cmp_rax 0x96
+    if_z_goto open_bookend_tail
+
+    rax = 0
+    ~
+
+    open_anthology_tail:
+    rax = *(u8*)(rcx + 2)
+    cmp_rax 0x8B
+    if_z_goto open_anthology
+    rax = 0
+    ~
+
+    open_bookend_tail:
+    rax = *(u8*)(rcx + 2)
+    cmp_rax 0xA1
+    if_z_goto open_bookend
+    rax = 0
+    ~
+
+    close_marker:
+    rax = *(u8*)(rcx + 1)
+    cmp_rax 0xE2
+    if_ne_goto unknown
+
+    rax = *(u8*)(rcx + 2)
+    cmp_rax 0x97
+    if_z_goto close_anthology_tail
+
+    cmp_rax 0x96
+    if_z_goto close_bookend_tail
+
+    rax = 0
+    ~
+
+    close_anthology_tail:
+    rax = *(u8*)(rcx + 3)
+    cmp_rax 0x8F
+    if_z_goto close_anthology
+    rax = 0
+    ~
+
+    close_bookend_tail:
+    rax = *(u8*)(rcx + 3)
+    cmp_rax 0xA0
+    if_z_goto close_bookend
+    rax = 0
+    ~
+
+    open_anthology:
+    rax = 3
+    ~
+
+    close_anthology:
+    rax = 4
+    ~
+
+    open_bookend:
+    rax = 5
+    ~
+
+    close_bookend:
+    rax = 6
+    ~
+
+    unknown:
+    rax = 0
+    ~
+}
+
+fn parse_document_shape() -> i64 {
+
+    rax = *(u8*)rcx
+
+    cmp_rax 0x3C
+    if_z_goto tag_like
+
+    cmp_rax 0xE2
+    if_z_goto unicode_open_like
+
+    cmp_rax 0x7C
+    if_z_goto unicode_close_like
+
+    rax = 0
+    ~
+
+    tag_like:
+    rax = *(u8*)(rcx + 1)
+    cmp_rax 0x2F
+    if_z_goto close_like
+
+    cmp_rax 0x4E
+    if_z_goto netiv_like
+
+    cmp_rax 0x69
+    if_z_goto imports_like
+
+    cmp_rax 0x6D
+    if_z_goto meta_like
+
+    cmp_rax 0x65
+    if_z_goto edges_like
+
+    cmp_rax 0x62
+    if_z_goto book_like
+
+    rax = 0
+    ~
+
+    close_like:
+    rax = *(u8*)(rcx + 2)
+    cmp_rax 0x4E
+    if_z_goto netiv_close_like
+
+    cmp_rax 0x69
+    if_z_goto imports_close_like
+
+    rax = 0
+    ~
+
+    netiv_like:
+    rax = *(u8*)(rcx + 6)
+    cmp_rax 0x3D
+    if_z_goto named_netiv_like
+    rax = 1
+    ~
+
+    named_netiv_like:
+    rax = 10
+    ~
+
+    netiv_close_like:
+    rax = 11
+    ~
+
+    imports_close_like:
+    rax = 12
+    ~
+
+    imports_like:
+    rax = 2
+    ~
+
+    meta_like:
+    rax = 7
+    ~
+
+    edges_like:
+    rax = 8
+    ~
+
+    book_like:
+    rax = 9
+    ~
+
+    unicode_open_like:
+    rax = *(u8*)(rcx + 1)
+    cmp_rax 0x97
+    if_z_goto unicode_open_anthology_tail
+
+    cmp_rax 0x96
+    if_z_goto unicode_open_bookend_tail
+
+    rax = 0
+    ~
+
+    unicode_open_anthology_tail:
+    rax = *(u8*)(rcx + 2)
+    cmp_rax 0x8B
+    if_z_goto unicode_open_anthology
+    rax = 0
+    ~
+
+    unicode_open_bookend_tail:
+    rax = *(u8*)(rcx + 2)
+    cmp_rax 0xA1
+    if_z_goto unicode_open_bookend
+    rax = 0
+    ~
+
+    unicode_close_like:
+    rax = *(u8*)(rcx + 1)
+    cmp_rax 0xE2
+    if_ne_goto unknown
+
+    rax = *(u8*)(rcx + 2)
+    cmp_rax 0x97
+    if_z_goto unicode_close_anthology_tail
+
+    cmp_rax 0x96
+    if_z_goto unicode_close_bookend_tail
+
+    rax = 0
+    ~
+
+    unicode_close_anthology_tail:
+    rax = *(u8*)(rcx + 3)
+    cmp_rax 0x8F
+    if_z_goto unicode_close_anthology
+    rax = 0
+    ~
+
+    unicode_close_bookend_tail:
+    rax = *(u8*)(rcx + 3)
+    cmp_rax 0xA0
+    if_z_goto unicode_close_bookend
+    rax = 0
+    ~
+
+    unicode_open_anthology:
+    rax = 3
+    ~
+
+    unicode_close_anthology:
+    rax = 4
+    ~
+
+    unicode_open_bookend:
+    rax = 5
+    ~
+
+    unicode_close_bookend:
+    rax = 6
+    ~
+
+    unknown:
+    rax = 0
+    ~
+}
+
+fn parse_outer_wrapper() -> i64 {
+
+
+    rax = *(u8*)rcx
+    cmp_rax 0x3C
+    if_ne_goto outer_unknown
+
+    rax = *(u8*)(rcx + 1)
+    cmp_rax 0x4E
+    if_ne_goto outer_unknown
+
+    rax = *(u8*)(rcx + 6)
+    cmp_rax 0x3D
+    if_z_goto outer_named_netiv
+
+    rax = 1
+    ~
+
+    outer_named_netiv:
+    rax = 10
+    ~
+
+    outer_unknown:
+    rax = 0
+    ~
+}
+
+fn parse_section_header() -> i64 {
+
+
+    rax = *(u8*)rcx
+
+    cmp_rax 0x3C
+    if_ne_goto unknown
+
+    rcx = rcx + 1
+    rax = *(u8*)rcx
+
+    cmp_rax 0x6D
+    if_z_goto meta
+
+    cmp_rax 0x65
+    if_z_goto edges
+
+    cmp_rax 0x62
+    if_z_goto book
+
+    goto unknown
+
+    meta:
+    rax = 7
+    ~
+
+    edges:
+    rax = 8
+    ~
+
+    book:
+    rax = 9
+    ~
+
+    unknown:
+    rax = 0
+    ~
+}

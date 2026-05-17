@@ -1,0 +1,9 @@
+
+module account
+
+fn transfer(()) -> void {
+    if from.balance >= amount {
+    from.balance -= amount
+    to.balance += amount
+}
+

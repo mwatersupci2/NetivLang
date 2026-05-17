@@ -1,0 +1,9 @@
+
+module test
+
+fn simple_test(()) -> void {
+    rax_is_seven
+    save_result
+    jump_to_ret
+}
+

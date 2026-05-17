@@ -1,0 +1,20 @@
+<Netiv="netiv_readme_demo.ntv">
+<imports>
+  generated
+</imports>
+○|
+    □|
+        <meta>{"type":"module","name":"demo","id":"demo.main","ordinal":1,"error":"retry","observability":"commandline+logfile","bug_handling":"retry"};
+        <edges>{};
+        <book>{
+            °function •Demo(•out_ptr: °pointer<°mutable °u8>) -> °void {
+                °define •return_byte: °u8 = 0xC3
+                °unsafe {
+                    °write •out_ptr = •return_byte
+                }
+                °return
+            }
+        };
+    |■
+|●
+</Netiv>

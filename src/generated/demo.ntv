@@ -1,0 +1,12 @@
+
+module demo
+
+fn run_demo((void)) -> void {
+    spawn
+    if 1 == 1 {
+    *out_ptr = 0x25
+    }
+    println
+    *ptr = 0x25
+}
+
