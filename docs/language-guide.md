@@ -158,53 +158,145 @@ Every executable or processable unit must end with `;`.
 
 ## 8. Reserved Words
 
-Reserved words use the `°` prefix.
+The following is the official **NetivLang 1.01 Master Reserved / Protected Symbol List** specifying lexical sigils, structural tags, core language keywords, registers, operators, protected namespaces, and protected API symbols:
 
-Examples:
+### 8.0. Lexical Sigils
+`°` marks compiler/language keywords.
+`•` marks user/API identifiers.
 
-- `°function`
-- `°method`
-- `°page`
-- `°struct`
-- `°enum`
-- `°const`
-- `°bool`
-- `°scalar`
-- `°void`
-- `°i64`
-- `°u8`
-- `°f32`
-- `°f64`
-- `°usize`
-- `°array`
-- `°tuple`
-- `°vector`
-- `°embedding`
-- `°pointer`
-- `°mutable`
-- `°addr`
-- `°deref`
-- `°index`
-- `°sizeof`
-- `°cast`
-- `°extern`
-- `°intrinsic`
-- `°if`
-- `°otherwise`
-- `°and`
-- `°or`
-- `°return`
-- `°call`
-- `°define`
-- `°set`
-- `°write`
-- `°unsafe`
-- `°error`
-- `°observe`
-- `°recover`
-- `°todo`
+### 8.1. Structural Tags & Boundaries
+`<Netiv>`
+`<Netiv="...">`
+`</Netiv>`
+`○|`
+`|●`
+`□|`
+`|■`
+`<meta>`
+`<edges>`
+`<book>`
+`</book>`
 
-A token beginning with `°` is reserved for the language. User-defined identifiers must not use this prefix.
+### 8.2. Core Netiv Language Keywords (Reserved Keywords)
+`°function`
+`°method`
+`°page`
+`°if`
+`°otherwise`
+`°and`
+`°or`
+`°not`
+`°return`
+`°call`
+`°define`
+`°set`
+`°write`
+`°unsafe`
+`°error`
+`°observe`
+`°recover`
+`°todo`
+
+### 8.3. Looping / Branching Keywords (Reserved Keywords)
+`°while`
+`°for`
+`°break`
+`°continue`
+`°switch`
+`°case`
+`°default`
+
+### 8.4. Type System Keywords (Reserved Keywords)
+`°void`
+`°bool`
+`°true`
+`°false`
+`°i64`
+`°u8`
+`°f32`
+`°f64`
+`°usize`
+`°scalar`
+`°pointer`
+`°mutable`
+`°array`
+`°tuple`
+`°vector`
+`°embedding`
+`°struct`
+`°enum`
+`°const`
+
+#### Recommended Future Additions:
+`°i8`, `°i16`, `°i32`, `°u16`, `°u32`, `°u64`, `°isize`, `°char`, `°str`, `°string`, `°bytes`, `°null`
+
+### 8.5. Low-Level Memory / Compiler Intrinsics (Reserved Keywords)
+`°addr`
+`°deref`
+`°index`
+`°sizeof`
+`°cast`
+`°extern`
+`°intrinsic`
+
+### 8.6. Legacy / Low-Level Backend Reserved Words (Reserved Backend Symbols)
+`fn`
+`return`
+`if`
+`goto`
+`label`
+`syscall`
+`EMIT_PE`
+`call`
+
+### 8.7. CPU General Purpose Registers (Reserved Backend Symbols)
+`rax`, `rcx`, `rdx`, `rbx`, `rsp`, `rbp`, `rsi`, `rdi`, `r8`, `r9`, `r10`, `r11`, `r12`, `r13`, `r14`, `r15`
+
+### 8.8. CPU Sub-Registers / Floating Point Registers (Reserved Backend Symbols)
+`rax_u8`, `rax_u16`, `rax_u32`, `xmm0`, `xmm1`, `xmm2`, `xmm3`, `xmm4`, `xmm5`, `xmm6`, `xmm7`, `xmm8`, `xmm9`, `xmm10`, `xmm11`, `xmm12`, `xmm13`, `xmm14`, `xmm15`
+
+### 8.9. Low-Level Memory Dereferencing Operators (Reserved Backend Symbols)
+`*(u8*)`, `*(u16*)`, `*(u32*)`, `*(u64*)`, `*(f32*)`, `*(f64*)`
+
+### 8.10. Low-Level Assembler Conditionals (Reserved Backend Symbols)
+`cmp_rax`, `if_z_goto`, `if_ne_goto`, `if_z_return`, `rax_is_null`
+
+#### Recommended Future Additions:
+`if_eq_goto`, `if_neq_goto`, `if_lt_goto`, `if_lte_goto`, `if_gt_goto`, `if_gte_goto`, `if_null_goto`, `if_not_null_goto`, `if_eq_return`, `if_neq_return`, `if_lt_return`, `if_lte_return`, `if_gt_return`, `if_gte_return`, `if_null_return`, `if_not_null_return`
+
+### 8.11. Operators / Grammar Symbols (Reserved Grammar Symbols)
+`+`, `-`, `*`, `/`, `%`, `&`, `|`, `^`, `!`, `<<`, `>>`, `=`, `==`, `!=`, `<`, `>`, `<=`, `>=`, `&&`, `||`, `:`, `::`, `.`, `,`, `;`, `->`, `=>`, `@`, `?`
+
+### 8.12. Grouping / Container Symbols (Reserved Grammar Symbols)
+`(`, `)`, `[`, `]`, `{`, `}`
+
+### 8.13. Protected Standard Library Namespaces (Protected Namespaces)
+`std.core`, `std.io`, `std.mem`, `std.time`, `std.math`, `std.graph`, `std.build`, `std.test`, `std.trace`, `std.mcp`, `std.restful`, `std.llm`, `std.serv`, `std.http`
+
+#### Recommended Additions:
+`std.db`, `std.fs`, `std.path`, `std.env`, `std.os`, `std.abi`, `std.asm`, `std.binary`, `std.hash`, `std.lex`, `std.parse`, `std.ast`, `std.ir`, `std.codegen`, `std.link`, `std.pkg`, `std.error`, `std.log`
+
+### 8.14. Protected Trit Native Namespaces (Protected Namespaces)
+`trit.core`, `trit.mem`, `trit.math`, `trit.cpu`, `trit.asm`, `trit.tensor`, `trit.graph`
+
+### 8.15. Protected Adjunct Library Namespaces (Protected Namespaces)
+`adj.mermaid`, `adj.tui`, `adj.sqlite`, `adj.nray`
+
+#### Recommended Additions:
+`adj.raylib`, `adj.git`, `adj.github`, `adj.vercel`, `adj.cloudflare`, `adj.htmx`, `adj.json`, `adj.toml`, `adj.yaml`, `adj.markdown`, `adj.svg`, `adj.graphviz`
+
+### 8.16. Protected Standard Library API Symbols (Protected API Symbols)
+`•print`, `•println`, `•println_native`, `•print_raw`, `•now`, `•get_ticks`, `•delay`, `•to_seconds`, `•save_binary`, `•resolve`, `•get_files`, `•copy`, `•fill`, `•arena_init`, `•arena_alloc`, `•abs`, `•abs_int`, `•min`, `•max`, `•pow`, `•sqrt`, `•node_init`, `•edge_init`, `•package_init`, `•assert_true`, `•assert_eq_int`, `•trace_log`, `•trace_metric`, `•mcp_init`, `•mcp_tool_init`, `•mcp_write_response`, `•rest_init`, `•rest_send`, `•llm_init`, `•llm_chat`, `•serv_init`, `•serv_register_route`, `•serv_listen_and_serve`, `•http_init`, `•http_connect`, `•get_primitive_size`, `•emit_op_addr`, `•emit_op_deref_byte`, `•emit_op_deref_dword`, `•emit_op_deref_qword`, `•emit_op_index`, `•emit_op_sizeof`, `•emit_cast_double_to_int`, `•emit_cast_int_to_double`, `•emit_op_if_z`, `•get_function_count`, `•get_function_name`
+
+### 8.17. Protected Adjunct API Symbols (Protected API Symbols)
+`•mermaid_init`, `•mermaid_write_str`, `•mermaid_add_node`, `•mermaid_add_edge`, `•mermaid_save`, `•tui_clear`, `•tui_color`, `•tui_move`, `•tui_reset`, `•tui_show_cursor`, `•tui_draw_header`, `•sqlite_init`, `•sqlite_execute`, `•nray_init_window`, `•nray_draw_pixel`
+
+### 8.18. Recommended Compiler Pipeline API Symbols (Protected API Symbols)
+`•lex`, `•parse`, `•lower`, `•compile`, `•assemble`, `•link`, `•emit`, `•emit_binary`, `•emit_asm`, `•emit_ir`, `•emit_obj`, `•emit_exe`, `•emit_pe`, `•emit_elf`, `•validate`, `•hash`, `•semantic_hash`, `•canonical_export`, `•pretty_export`, `•condensed_export`, `•load_source`, `•save_source`, `•load_graph`, `•save_graph`, `•export_graph`, `•export_meta`
+
+### 8.19. Recommended Database / Graph API Symbols (Protected API Symbols)
+`•db_open`, `•db_close`, `•db_get`, `•db_set`, `•db_delete`, `•db_query`, `•db_exec`, `•db_begin`, `•db_commit`, `•db_rollback`, `•node_save`, `•node_load`, `•edge_save`, `•edge_load`, `•edge_query`
+
 
 ## 9. User Identifiers
 
