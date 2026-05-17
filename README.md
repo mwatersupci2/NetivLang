@@ -2,9 +2,9 @@
 
 > ⚠️ **Warning:** NetivLang is proprietary, experimental software. Public visibility does not grant permission to use, copy, fork, modify, redistribute, or create derivative works. No warranty is provided. Use or reliance on this code is entirely at your own risk and only with express written permission from the author.
 
-Welcome to the **Netiv Lang** repository! This is the official home of the self-hosted, high-performance system programming language and native compiler toolchain.
+Welcome to the **Netiv Lang** repository. This repository documents an experimental, proprietary programming language and native compiler toolchain under active development.
 
-Netiv is designed for developers who need close-to-metal control, high-efficiency code generation, and direct native execution with zero host dependencies.
+Netiv is being built around deterministic source structure, native compilation experiments, graph-aware code organization, and inspectable compiler artifacts. Its current purpose is research, portfolio review, and private development—not public production use.
 
 NetivLang is also designed around the idea that code should not only compile, but also explain its own structure. Functions, methods, pages, metadata, graph edges, database state, and compiled artifacts are intended to become inspectable parts of the toolchain.
 
@@ -12,13 +12,13 @@ See `docs/language-guide.md` for the canonical language guide, including human-f
 
 ---
 
-## 🚀 Key Features
+## 🚀 Current Focus
 
-- **Self-Hosted Compiler**: Built and compiled natively using Netiv itself.
-- **Native PE Generation**: Compiles direct, host-less Windows Portable Executable (`.exe`) binaries.
-- **Low-Level Native Control**: Direct register manipulation (`rax`, `rdx`, etc.), syscall bindings, and high-performance instruction emitting.
-- **Modern Syntax & Primitives**: Combines modern syntax structures with raw assembler flexibility.
-- **SQLite Database Driven Metadata**: Integrates compiler database tracking for efficient build caching and incremental compilation.
+- **Experimental Native Compiler Work**: Netiv is being developed toward native artifact generation while the toolchain is still changing.
+- **Graph-Aware Source Structure**: Source files are intended to carry metadata and graph-edge information alongside executable code.
+- **Method / Function Separation**: Netiv distinguishes higher-order orchestration from lower-level function behavior to support clearer separation of concerns.
+- **Inspectable Build Artifacts**: Compiler outputs, metadata, graph exports, logs, and database state are intended to be auditable parts of the development workflow.
+- **Database-Backed Tooling Direction**: Netiv is being designed with database-aware build tracking, metadata inspection, and future incremental compilation workflows in mind.
 
 ---
 
@@ -34,7 +34,7 @@ See `docs/language-guide.md` for the canonical language guide, including human-f
 │   ├── lexer.ntv             # Lexer / tokenizer
 │   ├── parser.ntv            # Parser
 │   ├── parser_lib.ntv        # Parser helper libraries
-│   ├── low_level_emitter.ntv # Low-level code emitter (PE generator)
+│   ├── low_level_emitter.ntv # Low-level code emitter
 │   └── generated/            # Generated compiler sources and test files
 ├── .gitignore                # Files excluded from git tracking
 ├── README.md                 # Public overview
