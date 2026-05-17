@@ -1,0 +1,53 @@
+# NetivLang Reserved Words List
+
+# 1. Structural Tags & Boundaries
+<Netiv>
+</Netiv>
+<meta>
+<edges>
+<book>
+</book>
+○|
+|●
+□|
+|■
+
+# 2. Control Flow & Function Keywords
+fn
+return
+if
+goto
+label
+syscall
+EMIT_PE
+
+# 3. Low-Level Assembler Conditionals
+if_z_goto
+if_ne_goto
+if_z_return
+rax_is_null
+
+# 4. Canonical Keywords & Boolean Primitives
+°struct
+°enum
+°const
+°bool
+°true
+°false
+
+# 5. Core Mathematical & Integer Types
+°scalar
+°f32
+°f64
+°usize
+
+# 6. High-Dimensional Array & Layout Types
+°array
+°tuple
+°vector
+°embedding
+
+# 7. Low-Level Pointer & Mutability Modifiers
+°pointer
+°mutable
+°void
