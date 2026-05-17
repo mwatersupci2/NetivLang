@@ -52,21 +52,11 @@ To trigger the native compilation pipeline:
 # Execute the Netiv native build tool on build.ntv
 netiv build.ntv
 ```
-
 ---
 
-## 🤝 Contributing
+## 🔒 License & Usage
 
-Contributions are welcome! Please feel free to open issues or submit pull requests.
+This repository contains the source code for the **Netiv experimental language and native compiler toolchain**.
 
-1. Fork the Repository
-2. Create a Feature Branch (`git checkout -b feature/amazing-feature`)
-3. Commit your Changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the Branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
----
-
-## 📄 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
+- **Proprietary & Experimental**: This is an experimental, closed-source system language. All rights reserved.
+- **No Forking or Redistribution**: No permission is granted for copying, forking, modifying, or redistributing this software.
