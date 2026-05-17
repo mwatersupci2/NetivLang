@@ -1,0 +1,204 @@
+<Netiv="tachyons.ntv">
+○|
+  □|
+    <meta>{
+      "type": "module",
+      "name": "adj",
+      "id": "adj.tachyons",
+      "version": "1.0.0",
+      "error": "terminal",
+      "notes": "Programmatic HTML GUI component builder styled using Tachyons utility CSS."
+    };
+
+    <edges>{
+      %% adj.tachyons -> std.mem
+      %% adj.tachyons -> std.io
+    };
+
+    <book>{
+      °struct •HtmlNode {
+        •tag: °pointer<°const °u8>,
+        •classes: °pointer<°u8>,
+        •content: °pointer<°const °u8>,
+        •class_len: °usize
+      }
+
+      // Initialize an HTML node styled with Tachyons
+      °function •tachyons_init_node(•node: °pointer<°struct •HtmlNode>, •tag: °pointer<°const °u8>, •class_buf: °pointer<°u8>, •content: °pointer<°const °u8>) -> °void {
+        °unsafe {
+            *(°pointer<°const °u8>*)(•node) = •tag
+            *(°pointer<°u8>*)(•node + 8) = •class_buf
+            *(°pointer<°const °u8>*)(•node + 16) = •content
+            *(°usize*)(•node + 24) = 0
+            
+            // Null-terminate the classes buffer initially
+            *(°u8*)(•class_buf) = 0
+            return
+        }
+      }
+
+      // Append a class name to the node's class list
+      °function •tachyons_add_class(•node: °pointer<°struct •HtmlNode>, •class_name: °pointer<°const °u8>) -> °void {
+        °unsafe {
+            °pointer<°u8> •classes
+            •classes = *(°pointer<°u8>*)(•node + 8)
+            °usize •len
+            •len = *(°usize*)(•node + 24)
+
+            // If not the first class, append a space separator
+            °if (•len > 0) {
+                *(°u8*)(•classes + •len) = 0x20 // Space ' '
+                •len = •len + 1
+            }
+
+            // Copy class name string
+            °usize •i
+            •i = 0
+            °label copy_loop
+            °u8 •ch
+            •ch = *(°u8*)(•class_name + •i)
+            °if (•ch == 0) {
+                *(°u8*)(•classes + •len) = 0 // Null-terminate
+                *(°usize*)(•node + 24) = •len
+                return
+            }
+            *(°u8*)(•classes + •len) = •ch
+            •len = •len + 1
+            •i = •i + 1
+            °goto copy_loop
+        }
+      }
+
+      // Apply standard Tachyons padding class (pa1 to pa5)
+      °function •tachyons_set_padding(•node: °pointer<°struct •HtmlNode>, •level: °usize) -> °void {
+        °if (•level == 1) { °call •tachyons_add_class(•node, "pa1") }
+        °if (•level == 2) { °call •tachyons_add_class(•node, "pa2") }
+        °if (•level == 3) { °call •tachyons_add_class(•node, "pa3") }
+        °if (•level == 4) { °call •tachyons_add_class(•node, "pa4") }
+        °if (•level == 5) { °call •tachyons_add_class(•node, "pa5") }
+        °return
+      }
+
+      // Apply standard Tachyons margin class (ma1 to ma5)
+      °function •tachyons_set_margin(•node: °pointer<°struct •HtmlNode>, •level: °usize) -> °void {
+        °if (•level == 1) { °call •tachyons_add_class(•node, "ma1") }
+        °if (•level == 2) { °call •tachyons_add_class(•node, "ma2") }
+        °if (•level == 3) { °call •tachyons_add_class(•node, "ma3") }
+        °if (•level == 4) { °call •tachyons_add_class(•node, "ma4") }
+        °if (•level == 5) { °call •tachyons_add_class(•node, "ma5") }
+        °return
+      }
+
+      // Apply Flexbox layout (row or column)
+      °function •tachyons_set_flex(•node: °pointer<°struct •HtmlNode>, •is_column: °bool) -> °void {
+        °call •tachyons_add_class(•node, "flex")
+        °if (•is_column == °true) {
+            °call •tachyons_add_class(•node, "flex-column")
+        }
+        °return
+      }
+
+      // Apply text alignment (tl, tc, tr)
+      °function •tachyons_set_text_align(•node: °pointer<°struct •HtmlNode>, •align_type: °usize) -> °void {
+        °if (•align_type == 1) { °call •tachyons_add_class(•node, "tl") } // Left
+        °if (•align_type == 2) { °call •tachyons_add_class(•node, "tc") } // Center
+        °if (•align_type == 3) { °call •tachyons_add_class(•node, "tr") } // Right
+        °return
+      }
+
+      // Render the HtmlNode as a raw valid HTML tag string styled with Tachyons
+      °function •tachyons_render_html(•node: °pointer<°struct •HtmlNode>, •dest: °pointer<°u8>) -> °void {
+        °unsafe {
+            °pointer<°const °u8> •tag
+            •tag = *(°pointer<°const °u8>*)(•node)
+            °pointer<°u8> •classes
+            •classes = *(°pointer<°u8>*)(•node + 8)
+            °pointer<°const °u8> •content
+            •content = *(°pointer<°const °u8>*)(•node + 16)
+
+            °usize •ptr
+            •ptr = 0
+
+            // 1. Write opening tag prefix "<"
+            *(°u8*)(•dest + •ptr) = 0x3C // '<'
+            •ptr = •ptr + 1
+
+            // 2. Write tag name
+            °usize •i
+            •i = 0
+            °label tag_loop
+            °u8 •tag_ch
+            •tag_ch = *(°u8*)(•tag + •i)
+            °if (•tag_ch != 0) {
+                *(°u8*)(•dest + •ptr) = •tag_ch
+                •ptr = •ptr + 1
+                •i = •i + 1
+                °goto tag_loop
+            }
+
+            // 3. Write class attribute: ' class="'
+            *(°u8*)(•dest + •ptr) = 0x20 // ' '
+            *(°u8*)(•dest + •ptr + 1) = 0x63 // 'c'
+            *(°u8*)(•dest + •ptr + 2) = 0x6C // 'l'
+            *(°u8*)(•dest + •ptr + 3) = 0x61 // 'a'
+            *(°u8*)(•dest + •ptr + 4) = 0x73 // 's'
+            *(°u8*)(•dest + •ptr + 5) = 0x73 // 's'
+            *(°u8*)(•dest + •ptr + 6) = 0x3D // '='
+            *(°u8*)(•dest + •ptr + 7) = 0x22 // '"'
+            •ptr = •ptr + 8
+
+            // 4. Write class list contents
+            •i = 0
+            °label classes_loop
+            °u8 •class_ch
+            •class_ch = *(°u8*)(•classes + •i)
+            °if (•class_ch != 0) {
+                *(°u8*)(•dest + •ptr) = •class_ch
+                •ptr = •ptr + 1
+                •i = •i + 1
+                °goto classes_loop
+            }
+
+            // 5. Close class attribute and open content: '">'
+            *(°u8*)(•dest + •ptr) = 0x22 // '"'
+            *(°u8*)(•dest + •ptr + 1) = 0x3E // '>'
+            •ptr = •ptr + 2
+
+            // 6. Write content body
+            •i = 0
+            °label content_loop
+            °u8 •content_ch
+            •content_ch = *(°u8*)(•content + •i)
+            °if (•content_ch != 0) {
+                *(°u8*)(•dest + •ptr) = •content_ch
+                •ptr = •ptr + 1
+                •i = •i + 1
+                °goto content_loop
+            }
+
+            // 7. Write closing tag: "</"
+            *(°u8*)(•dest + •ptr) = 0x3C // '<'
+            *(°u8*)(•dest + •ptr + 1) = 0x2F // '/'
+            •ptr = •ptr + 2
+
+            // 8. Write tag name again
+            •i = 0
+            °label tag_close_loop
+            •tag_ch = *(°u8*)(•tag + •i)
+            °if (•tag_ch != 0) {
+                *(°u8*)(•dest + •ptr) = •tag_ch
+                •ptr = •ptr + 1
+                •i = •i + 1
+                °goto tag_close_loop
+            }
+
+            // 9. Write final closing angle bracket ">"
+            *(°u8*)(•dest + •ptr) = 0x3E // '>'
+            *(°u8*)(•dest + •ptr + 1) = 0 // Null-terminate
+            return
+        }
+      }
+    };
+  |■
+|●
+</Netiv>
