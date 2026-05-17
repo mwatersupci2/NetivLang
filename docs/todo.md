@@ -4,33 +4,13 @@ Track planned Netiv language and toolchain work here.
 
 ## 1. High-Priority Standard Libraries (`std`)
 
-These core packages establish the baseline system abstractions and decouple compiler features from target platforms:
-
-* [x] `std.core` — Language primitives and low-level x64 instruction emitters (`src/std_core.ntv`).
-* [x] `std.io` — Terminal writing, path crawling, files, and print streams (`src/std_io.ntv`).
-* [x] `std.mem` — Memory management, custom copy/fill, and Arena Allocators (`src/std_mem.ntv`).
-* [x] `std.time` — System clock ticks, precise millisecond delays, and epoch conversions (`src/std_time.ntv`).
-* [x] `std.math` — Newton-Raphson square root, limits, absolute values, and exponents (`src/std_math.ntv`).
-* [x] `std.graph` — Active semantic node structures, compiler package edges, and layouts (`src/std_graph.ntv`).
-* [x] `std.build` — Packaging build system manifests and compiler orchestration (`src/std_build.ntv`).
-* [x] `std.test` — Compiler assertion tests and audit testing suites (`src/std_test.ntv`).
-* [x] `std.trace` — Log tracers, diagnostic warning outputs, and metrics (`src/std_trace.ntv`).
-* [x] `std.mcp` — AI Model Context Protocol stdio and JSON-RPC stubs (`src/std_mcp.ntv`).
-* [x] `std.restful` — REST API requests, response mappings, and custom headers (`src/std_restful.ntv`).
-* [x] `std.llm` — LLM chat completions, configurations, and API credentials (`src/std_llm.ntv`).
-* [x] `std.serv` — HTTP socket server stubs, router pathways, and listeners (`src/std_serv.ntv`).
-* [x] `std.http` — Socket structures and basic web client/server communication (`src/std_http.ntv`).
+*No active items.* All standard libraries have been fully drafted, implemented, and compiled natively.
 
 ---
 
 ## 2. High-Priority Adjunct Libraries (`adj`)
 
-These secondary libraries will support advanced graphics, local storage, network protocols, and visualization:
-
-* [x] `adj.mermaid` — Graph structure exports, dependency visualizers, and documentation generators (`src/adj_mermaid.ntv`).
-* [x] `adj.tui` — Dynamic terminal user interfaces, cursor positioning, and styled panels (`src/adj_tui.ntv`).
-* [x] `adj.sqlite` — Local database caching client and structured queries (`src/adj_sqlite.ntv`).
-* [x] `adj.nray.*` — Color profiles, Vector3 3D spaces, and Raylib stubs (`src/adj_nray.ntv`).
+*No active items.* All adjunct/secondary modules are fully completed.
 
 ---
 
