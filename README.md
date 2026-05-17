@@ -2,21 +2,36 @@
 
 > ⚠️ **Warning:** NetivLang is proprietary, experimental software. Public visibility does not grant permission to use, copy, fork, modify, redistribute, or create derivative works. No warranty is provided. Use or reliance on this code is entirely at your own risk and only with express written permission from the author.
 
-Welcome to the **Netiv Lang** repository. This repository documents an experimental, proprietary programming language and native compiler toolchain under active development.
+Welcome to the **Netiv Lang** repository.
 
-Netiv is being built around deterministic source structure, native compilation experiments, graph-aware code organization, and inspectable compiler artifacts. Its current purpose is research, portfolio review, and private development—not public production use.
+Netiv is an experimental programming language project built around a simple philosophy: source code should be structured enough for machines to process, clear enough for humans to audit, and explicit enough for AI tools to work with without guessing at hidden relationships.
 
-NetivLang is also designed around the idea that code should not only compile, but also explain its own structure. Functions, methods, pages, metadata, graph edges, database state, and compiled artifacts are intended to become inspectable parts of the toolchain.
+Netiv is not presented here as a finished production language, a performance claim, or a replacement for established systems languages. This repository exists to document the language direction, preserve the design work, demonstrate the current compiler and tooling experiments, and support private development.
 
-See `docs/language-guide.md` for the canonical language guide, including human-facing language explanation, AI authoring rules, examples, CLI behavior, and disclaimer material.
+The core idea behind Netiv is that code should not only compile; it should also explain its own structure. Functions, methods, pages, metadata, graph edges, database state, generated artifacts, and build logs are treated as parts of the development record rather than invisible byproducts.
+
+See `docs/language-guide.md` for the language guide, including human-facing language explanation, AI authoring rules, examples, CLI behavior, and disclaimer material.
 
 ---
 
-## 🚀 Current Focus
+## Philosophy
 
-- **Experimental Native Compiler Work**: Netiv is being developed toward native artifact generation while the toolchain is still changing.
+Netiv is being designed around the following principles:
+
+- **Structure before cleverness**: Netiv favors explicit file structure, visible sections, and predictable organization over terse syntax or hidden behavior.
+- **Humans audit; machines remember**: Code should be readable by people, while metadata, graph edges, and build records remain available to tools.
+- **AI should be fenced by structure**: AI-assisted development works best when the language gives the model clear boundaries, stable forms, and inspectable relationships.
+- **Methods and functions should not blur together**: Higher-order orchestration and lower-level behavior are intentionally separated to support clearer reasoning.
+- **Graphs belong in the toolchain**: Relationships between files, functions, methods, pages, and artifacts should be exportable and reviewable instead of trapped inside compiler internals.
+- **Experimental claims should stay honest**: Netiv is under active development. This README should describe intent, direction, and current behavior without presenting the project as more mature than it is.
+
+---
+
+## Current Direction
+
+- **Compiler and Tooling Experiments**: Netiv is being developed through compilation and build-pipeline experiments while the toolchain is still changing.
 - **Graph-Aware Source Structure**: Source files are intended to carry metadata and graph-edge information alongside executable code.
-- **Method / Function Separation**: Netiv distinguishes higher-order orchestration from lower-level function behavior to support clearer separation of concerns.
+- **Method / Function Separation**: Netiv distinguishes higher-order orchestration from lower-level function behavior to support separation of concerns.
 - **Inspectable Build Artifacts**: Compiler outputs, metadata, graph exports, logs, and database state are intended to be auditable parts of the development workflow.
 - **Database-Backed Tooling Direction**: Netiv is being designed with database-aware build tracking, metadata inspection, and future incremental compilation workflows in mind.
 
@@ -40,7 +55,7 @@ See `docs/language-guide.md` for the canonical language guide, including human-f
 ├── README.md                 # Public overview
 ├── CONTRIBUTING.md           # Private collaboration rules
 └── docs/
-    └── language-guide.md     # Canonical language guide
+    └── language-guide.md     # Language guide
 ```
 
 ---
@@ -50,7 +65,7 @@ See `docs/language-guide.md` for the canonical language guide, including human-f
 ### Prerequisites
 
 - A Windows environment (64-bit).
-- Netiv native bootstrap tools.
+- Netiv bootstrap tooling.
 
 ### Installing the CLI on Windows
 
@@ -63,7 +78,7 @@ From the repository root:
 powershell -ExecutionPolicy Bypass -File .\tools\install-netiv.ps1
 ```
 
-The installed layout is:
+The expected installed layout is:
 
 ```text
 C:\Tools\Netiv\netiv.cmd
@@ -95,7 +110,7 @@ Or create the scaffold at a specific path:
 netiv init "C:\Netiv Test Project"
 ```
 
-The scaffold creates `src`, `docs`, `build`, `bin`, `db`, `logs`,
+The scaffold is intended to create `src`, `docs`, `build`, `bin`, `db`, `logs`,
 `logs\graph`, `logs\list`, and `logs\meta`, plus project-local `db\netiv.db`,
 starter `src\main.ntv`, `src\build.ntv`, `docs\language-guide.md`,
 `docs\todo.md`, `docs\asbuilt.md`, `docs\project.md`, `.gitignore`,
@@ -105,9 +120,9 @@ Generated path lists and database-list dumps belong under `logs\list`.
 
 ### Building the Compiler
 
-The compiler handles its own build cycle using the driver routine inside `src/build.ntv`.
+The build command currently routes through the driver routine inside `src/build.ntv`.
 
-To trigger the native compilation pipeline:
+To trigger the current compilation pipeline:
 ```powershell
 netiv write
 ```
