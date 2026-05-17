@@ -1,0 +1,113 @@
+<Netiv="adj_mermaid.ntv">
+○|
+  □|
+    <meta>{
+      "type": "module",
+      "name": "adj",
+      "id": "adj.mermaid",
+      "version": "1.0.0",
+      "error": "terminal"
+    };
+
+    <edges>{};
+
+    <book>{
+      °struct •MermaidExporter {
+        •buffer: °pointer<°u8>,
+        •cursor: °pointer<°u8>,
+        •capacity: °usize,
+        •length: °usize
+      }
+
+      // Initialize the Mermaid graph exporter structure
+      °function •mermaid_init(•exporter: °pointer<°struct •MermaidExporter>, •buffer: °pointer<°void>, •capacity: °usize) -> °void {
+        °unsafe {
+            *(°pointer<°void>*)(•exporter) = •buffer                  // exporter->buffer = buffer
+            *(°pointer<°void>*)(•exporter + 8) = •buffer              // exporter->cursor = buffer
+            *(°usize*)(•exporter + 16) = •capacity                    // exporter->capacity = capacity
+            *(°usize*)(•exporter + 24) = 0                            // exporter->length = 0
+
+            // Pre-populate with standard Mermaid header: "graph TD\r\n"
+            °call •mermaid_write_str(•exporter, "graph TD\r\n")
+            return
+        }
+      }
+
+      // Append a raw string to the Mermaid buffer
+      °function •mermaid_write_str(•exporter: °pointer<°struct •MermaidExporter>, •str: °pointer<°const °u8>) -> °void {
+        °unsafe {
+            °pointer<°u8> •cursor
+            •cursor = *(°pointer<°u8>*)(•exporter + 8)
+            °usize •capacity
+            •capacity = *(°usize*)(•exporter + 16)
+            °usize •len
+            •len = *(°usize*)(•exporter + 24)
+
+            °usize •i
+            •i = 0
+            °label str_loop
+            °u8 •char
+            •char = *(°u8*)(•str + •i)
+            °if (•char == 0) {
+                °goto str_done
+            }
+            
+            // Boundary safety check
+            °if (•len >= •capacity) {
+                °goto str_done
+            }
+
+            *•cursor = •char
+            •cursor = •cursor + 1
+            •len = •len + 1
+            •i = •i + 1
+            °goto str_loop
+
+            °label str_done
+            *(°pointer<°u8>*)(•exporter + 8) = •cursor
+            *(°usize*)(•exporter + 24) = •len
+            return
+        }
+      }
+
+      // Add a node entry to the Mermaid graph: NodeId["Label"]\r\n
+      °function •mermaid_add_node(•exporter: °pointer<°struct •MermaidExporter>, •node_id: °pointer<°const °u8>, •label: °pointer<°const °u8>) -> °void {
+        °unsafe {
+            °call •mermaid_write_str(•exporter, "    ")
+            °call •mermaid_write_str(•exporter, •node_id)
+            °call •mermaid_write_str(•exporter, "[\"")
+            °call •mermaid_write_str(•exporter, •label)
+            °call •mermaid_write_str(•exporter, "\"]\r\n")
+            return
+        }
+      }
+
+      // Add a directed edge connection: FromId --> ToId\r\n
+      °function •mermaid_add_edge(•exporter: °pointer<°struct •MermaidExporter>, •from_id: °pointer<°const °u8>, •to_id: °pointer<°const °u8>) -> °void {
+        °unsafe {
+            °call •mermaid_write_str(•exporter, "    ")
+            °call •mermaid_write_str(•exporter, •from_id)
+            °call •mermaid_write_str(•exporter, " --> ")
+            °call •mermaid_write_str(•exporter, •to_id)
+            °call •mermaid_write_str(•exporter, "\r\n")
+            return
+        }
+      }
+
+      // Save the generated Mermaid diagram to a file
+      °function •mermaid_save(•exporter: °pointer<°struct •MermaidExporter>, •path: °pointer<°const °u8>) -> °usize {
+        °unsafe {
+            °pointer<°void> •buffer
+            •buffer = *(°pointer<°void>*)(•exporter)
+            °usize •len
+            •len = *(°usize*)(•exporter + 24)
+
+            // Save binary buffer using standard IO
+            °call •save_binary(•path, •buffer, •len)
+            return rax
+        }
+      }
+    };
+  |■
+|●
+</Netiv>

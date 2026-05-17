@@ -1,0 +1,42 @@
+<Netiv="adj_sqlite.ntv">
+○|
+  □|
+    <meta>{
+      "type": "module",
+      "name": "adj",
+      "id": "adj.sqlite",
+      "version": "1.0.0",
+      "error": "terminal"
+    };
+
+    <edges>{};
+
+    <book>{
+      °struct •SqliteDb {
+        •handle: °usize,
+        •path: °pointer<°const °u8>,
+        •open: °bool
+      }
+
+      // Initialize SQLite database instance
+      °function •sqlite_init(•db: °pointer<°struct •SqliteDb>, •path: °pointer<°const °u8>) -> °void {
+        °unsafe {
+            *(°usize*)(•db) = 0                                       // db->handle = 0
+            *(°pointer<°const °u8>*)(•db + 8) = •path                 // db->path = path
+            *(°bool*)(•db + 16) = °false                              // db->open = false
+            return
+        }
+      }
+
+      // Execute SQL command against database caching layer
+      °function •sqlite_execute(•db: °pointer<°struct •SqliteDb>, •query: °pointer<°const °u8>) -> °usize {
+        °unsafe {
+            // Placeholder: returns success 0
+            rax = 0
+            return
+        }
+      }
+    };
+  |■
+|●
+</Netiv>

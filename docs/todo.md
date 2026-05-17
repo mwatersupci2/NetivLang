@@ -22,16 +22,17 @@ These core packages establish the baseline system abstractions and decouple comp
 
 These secondary libraries will support advanced graphics, local storage, network protocols, and visualization:
 
-* [ ] `adj.nray.*` — Graphics, spatial geometric matrices, and game/app layer interfaces (Raylib-based).
-* [ ] `adj.sqlite` — Local database storage, structured query execution, and compiler page caching.
-* [ ] `adj.http` — Basic web client, server socket handlers, and network data transmission.
-* [ ] `adj.tui` — Dynamic terminal user interfaces, cursor positioning, and interactive panels.
-* [ ] `adj.mermaid` — Graph structure exports, dependency visualizers, and documentation generators.
+* [x] `adj.mermaid` — Graph structure exports, dependency visualizers, and documentation generators (`src/adj_mermaid.ntv`).
+* [x] `adj.tui` — Dynamic terminal user interfaces, cursor positioning, and styled panels (`src/adj_tui.ntv`).
+* [x] `adj.http` — Socket structures and basic web client/server communication (`src/adj_http.ntv`).
+* [x] `adj.sqlite` — Local database caching client and structured queries (`src/adj_sqlite.ntv`).
+* [x] `adj.nray.*` — Color profiles, Vector3 3D spaces, and Raylib stubs (`src/adj_nray.ntv`).
 
 ---
 
 ## Completed Tasks
 
+* [x] Implement all 5 secondary adjunct libraries (`adj.mermaid`, `adj.tui`, `adj.http`, `adj.sqlite`, `adj.nray`) in standard canonical page formats under `src/`.
 * [x] Implement the entire suite of 9 core standard libraries (`std.core`, `std.io`, `std.mem`, `std.time`, `std.math`, `std.graph`, `std.build`, `std.test`, `std.trace`) in standard canonical page formats under `src/`.
 * [x] Draft the standalone native CLI driver in `src/cli.ntv` replacing `netiv_launcher.cs` to execute C#-free command routing and Windows API outputs.
 * [x] Extend the native compiler's PE builder (`EMIT_PE` in `src/compiler.ntv`) to natively support PE Import Address Table (IAT) directories and symbols.

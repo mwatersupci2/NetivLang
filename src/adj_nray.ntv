@@ -1,0 +1,45 @@
+<Netiv="adj_nray.ntv">
+○|
+  □|
+    <meta>{
+      "type": "module",
+      "name": "adj",
+      "id": "adj.nray",
+      "version": "1.0.0",
+      "error": "terminal"
+    };
+
+    <edges>{};
+
+    <book>{
+      °struct •Color {
+        •r: °u8,
+        •g: °u8,
+        •b: °u8,
+        •a: °u8
+      }
+
+      °struct •Vector3 {
+        •x: °scalar,
+        •y: °scalar,
+        •z: °scalar
+      }
+
+      // Initialize the graphics display window (Raylib equivalent)
+      °function •nray_init_window(•width: °usize, •height: °usize, •title: °pointer<°const °u8>) -> °void {
+        °unsafe {
+            // Placeholder: stub for native display initialization
+            return
+        }
+      }
+
+      // Draw pixel on screen at target coordinates
+      °function •nray_draw_pixel(•x: °usize, •y: °usize, •color: °pointer<°struct •Color>) -> °void {
+        °unsafe {
+            return
+        }
+      }
+    };
+  |■
+|●
+</Netiv>

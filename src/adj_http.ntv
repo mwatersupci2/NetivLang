@@ -1,0 +1,45 @@
+<Netiv="adj_http.ntv">
+○|
+  □|
+    <meta>{
+      "type": "module",
+      "name": "adj",
+      "id": "adj.http",
+      "version": "1.0.0",
+      "error": "terminal"
+    };
+
+    <edges>{};
+
+    <book>{
+      °struct •Socket {
+        •handle: °usize,
+        •port: °usize,
+        •ip_addr: °pointer<°const °u8>,
+        •connected: °bool
+      }
+
+      // Initialize a basic HTTP web client or server socket
+      °function •http_init(•socket: °pointer<°struct •Socket>, •ip: °pointer<°const °u8>, •port: °usize) -> °void {
+        °unsafe {
+            *(°usize*)(•socket) = 0                                   // socket->handle = 0
+            *(°usize*)(•socket + 8) = •port                           // socket->port = port
+            *(°pointer<°const °u8>*)(•socket + 16) = •ip              // socket->ip_addr = ip
+            *(°bool*)(•socket + 24) = °false                          // socket->connected = false
+            return
+        }
+      }
+
+      // Connect socket to the designated host
+      °function •http_connect(•socket: °pointer<°struct •Socket>) -> °usize {
+        °unsafe {
+            // Placeholder: returns standard success (0)
+            *(°bool*)(•socket + 24) = °true
+            rax = 0
+            return
+        }
+      }
+    };
+  |■
+|●
+</Netiv>
