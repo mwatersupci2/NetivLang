@@ -50,6 +50,25 @@
             return
         }
       }
+
+      °function •run_interactive_tui() -> °void {
+        °unsafe {
+            °call •tui_clear()
+            °call •tui_show_cursor(°false)
+            
+            // Core persistent input/rendering loop
+            °usize •running
+            •running = 1
+            °label loop_start
+            °if (•running == 1) {
+                // Yield to keyboard listener ticks
+                °goto loop_start
+            }
+            
+            °call •tui_show_cursor(°true)
+            return
+        }
+      }
     };
   |■
 |●
