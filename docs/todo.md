@@ -15,6 +15,7 @@ These core packages establish the baseline system abstractions and decouple comp
 * [x] `std.build` — Packaging build system manifests and compiler orchestration (`src/std_build.ntv`).
 * [x] `std.test` — Compiler assertion tests and audit testing suites (`src/std_test.ntv`).
 * [x] `std.trace` — Log tracers, diagnostic warning outputs, and metrics (`src/std_trace.ntv`).
+* [x] `std.mcp` — AI Model Context Protocol stdio and JSON-RPC stubs (`src/std_mcp.ntv`).
 
 ---
 
@@ -32,6 +33,7 @@ These secondary libraries will support advanced graphics, local storage, network
 
 ## Completed Tasks
 
+* [x] Implement AI Model Context Protocol `std.mcp` library supporting JSON-RPC response structures and initialize frames (`src/std_mcp.ntv`).
 * [x] Implement all 5 secondary adjunct libraries (`adj.mermaid`, `adj.tui`, `adj.http`, `adj.sqlite`, `adj.nray`) in standard canonical page formats under `src/`.
 * [x] Implement the entire suite of 9 core standard libraries (`std.core`, `std.io`, `std.mem`, `std.time`, `std.math`, `std.graph`, `std.build`, `std.test`, `std.trace`) in standard canonical page formats under `src/`.
 * [x] Draft the standalone native CLI driver in `src/cli.ntv` replacing `netiv_launcher.cs` to execute C#-free command routing and Windows API outputs.
