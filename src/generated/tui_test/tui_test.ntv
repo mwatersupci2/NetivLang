@@ -1,0 +1,56 @@
+<Netiv="tui_test.ntv">
+○|
+  □|
+    <meta>{
+      "type": "module",
+      "name": "test",
+      "id": "test.tui",
+      "version": "1.0.0",
+      "notes": "Programmatic test script demonstrating unified Tachyons TUI rendering."
+    };
+
+    <edges>{
+      %% test.tui -> adj.tachyons
+    };
+
+    <book>{
+      °function •run_tui_demo() -> °void {
+        °unsafe {
+            // Allocate 64 bytes of stack space for each TuiWidget (8 fields * 8 bytes)
+            °u8 •widget1_buf[64]
+            °u8 •widget2_buf[64]
+            
+            °pointer<°struct •TuiWidget> •w1
+            •w1 = °addr •widget1_buf
+            °pointer<°struct •TuiWidget> •w2
+            •w2 = °addr •widget2_buf
+
+            // Clear screen and hide text cursor
+            °call •tui_clear()
+            °call •tui_show_cursor(°false)
+
+            // 1. Sleek Mint Green double-bordered header panel at (x=1, y=1)
+            °call •tachyons_init_widget(•w1, "NETIV 1.01 TACHYONS TUI SYSTEM")
+            °call •tachyons_widget_pos(•w1, 1, 1)
+            °call •tachyons_widget_size(•w1, 40, 3)
+            °call •tachyons_widget_border(•w1, 2) // Double unicode border
+            °call •tachyons_widget_color(•w1, 2, 1) // Mint green text on sleet charcoal
+            °call •tachyons_render_tui(•w1)
+
+            // 2. Coral red single-bordered status panel at (x=1, y=4)
+            °call •tachyons_init_widget(•w2, "STATUS: ALL TUI STYLES OPERATIONAL")
+            °call •tachyons_widget_pos(•w2, 1, 4)
+            °call •tachyons_widget_size(•w2, 40, 3)
+            °call •tachyons_widget_border(•w2, 1) // Single unicode border
+            °call •tachyons_widget_color(•w2, 3, 1) // Coral red text on sleek charcoal
+            °call •tachyons_render_tui(•w2)
+
+            // Restore console cursor state
+            °call •tui_show_cursor(°true)
+            return
+        }
+      }
+    };
+  |■
+|●
+</Netiv>
