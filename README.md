@@ -1,6 +1,6 @@
 # Netiv Language (NetivLang)
 
-> ⚠️ **Warning:** NetivLang is experimental, unstable, and provided without any guarantee. Use at your own risk. The author is not responsible for damages, data loss, security issues, or other consequences from using this code.
+> ⚠️ **Warning:** NetivLang is proprietary, experimental software. Public visibility does not grant permission to use, copy, fork, modify, redistribute, or create derivative works. No warranty is provided. Use or reliance on this code is entirely at your own risk and only with express written permission from the author.
 
 Welcome to the **Netiv Lang** repository! This is the official home of the self-hosted, high-performance system programming language and native compiler toolchain.
 
@@ -74,10 +74,21 @@ Use at your own risk.
 
 ---
 
-## 🔒 License & Usage
+## 🔒 License & Usage Restrictions
 
-This repository contains the source code for the **Netiv experimental language and native compiler toolchain**.
+NetivLang is **proprietary, experimental software**.
 
-- **Proprietary & Experimental**: This is an experimental, closed-source system language. All rights reserved.
-- **No Forking or Redistribution**: No permission is granted for copying, forking, modifying, or redistributing this software.
-- **Contributions**: If you would like to contribute or collaborate on this project, please contact the author directly.
+This repository is publicly visible for documentation, timestamping, research transparency, and project demonstration purposes only.
+
+Public visibility does **not** grant permission to use, copy, fork, modify, compile, redistribute, sublicense, commercialize, reverse engineer, or create derivative works from this software.
+
+All rights are reserved by the author unless explicit written permission is granted.
+
+No license is granted by implication, estoppel, public availability, repository visibility, download access, or any other means.
+
+You may not use this software in personal, academic, commercial, production, research, training, benchmarking, or derivative projects without prior written permission from the author.
+
+Unauthorized use, redistribution, or modification is prohibited.
+
+For permission, collaboration, or licensing inquiries, contact the author directly.
+
