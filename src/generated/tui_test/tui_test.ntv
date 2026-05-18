@@ -25,25 +25,61 @@
             °pointer<°struct •TuiWidget> •w2
             •w2 = °addr •widget2_buf
 
+            // Allocate stack buffers for TabBar and Pager
+            °u8 •tabbar_buf[32]
+            °u8 •pager_buf[32]
+
+            °pointer<°struct •TuiTabBar> •tb
+            •tb = °addr •tabbar_buf
+            °pointer<°struct •TuiPager> •pg
+            •pg = °addr •pager_buf
+
+            // Define multi-panel tabs
+            °pointer<°const °u8> •tab1
+            •tab1 = "DASHBOARD"
+            °pointer<°const °u8> •tab2
+            •tab2 = "SETTINGS"
+            °pointer<°const °u8> •tab3
+            •tab3 = "HELP"
+
+            °pointer<°const °u8> •tab_arr[3]
+            *(°pointer<°const °u8>*)(°addr •tab_arr) = •tab1
+            *(°pointer<°const °u8>*)(°addr •tab_arr + 8) = •tab2
+            *(°pointer<°const °u8>*)(°addr •tab_arr + 16) = •tab3
+
+            // Initialize TabBar state (total 3 tabs, highlight second tab)
+            °call •tachyons_init_tabbar(•tb, °addr •tab_arr, 3)
+            *(°usize*)(•tb) = 2 // Make "SETTINGS" active
+
+            // Initialize Pager state (15 items, 5 per page = 3 pages, set current to page 1)
+            °call •tachyons_init_pager(•pg, 15, 5)
+            *(°usize*)(•pg) = 1
+
             // Clear screen and hide text cursor
             °call •tui_clear()
             °call •tui_show_cursor(°false)
 
             // 1. Sleek Mint Green double-bordered header panel at (x=1, y=1)
-            °call •tachyons_init_widget(•w1, "NETIV 1.01 TACHYONS TUI SYSTEM")
+            °call •tachyons_init_widget(•w1, "NETIV TACHYONS MULTI-PANEL TUI")
             °call •tachyons_widget_pos(•w1, 1, 1)
-            °call •tachyons_widget_size(•w1, 40, 3)
+            °call •tachyons_widget_size(•w1, 46, 3)
             °call •tachyons_widget_border(•w1, 2) // Double unicode border
-            °call •tachyons_widget_color(•w1, 2, 1) // Mint green text on sleet charcoal
+            °call •tachyons_widget_color(•w1, 2, 1) // Mint green text on sleek charcoal
             °call •tachyons_render_tui(•w1)
+            
+            // Draw visual tab selectors bar overlay
+            °call •tachyons_render_tabbar(•tb, •w1)
 
             // 2. Coral red single-bordered status panel at (x=1, y=4)
-            °call •tachyons_init_widget(•w2, "STATUS: ALL TUI STYLES OPERATIONAL")
+            °call •tachyons_init_widget(•w2, "STATUS: MULTI-PANEL PAGINATION ACTIVE")
             °call •tachyons_widget_pos(•w2, 1, 4)
-            °call •tachyons_widget_size(•w2, 40, 3)
+            °call •tachyons_widget_size(•w2, 46, 3)
             °call •tachyons_widget_border(•w2, 1) // Single unicode border
             °call •tachyons_widget_color(•w2, 3, 1) // Coral red text on sleek charcoal
             °call •tachyons_render_tui(•w2)
+
+            // Draw visual pager footer overlay
+            °call •tachyons_render_pager_footer(•pg, •w2)
 
             // Restore console cursor state
             °call •tui_show_cursor(°true)

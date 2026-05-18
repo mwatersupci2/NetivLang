@@ -390,6 +390,207 @@
             °return
         }
       }
+
+
+      // ==========================================
+      // SECTION 3: TUI PAGINATION & TAB STATES
+      // ==========================================
+
+      °struct •TuiPager {
+        •current_page: °usize,
+        •total_pages: °usize,
+        •items_per_page: °usize,
+        •total_items: °usize
+      }
+
+      °struct •TuiTabBar {
+        •active_tab: °usize,
+        •total_tabs: °usize,
+        •tab_names: °pointer<°pointer<°const °u8>>
+      }
+
+      // Initialize pager calculations
+      °function •tachyons_init_pager(•pager: °pointer<°struct •TuiPager>, •total_items: °usize, •items_per_page: °usize) -> °void {
+        °unsafe {
+            *(°usize*)(•pager) = 1 // current_page = 1
+            *(°usize*)(•pager + 16) = •items_per_page
+            *(°usize*)(•pager + 24) = •total_items
+
+            // Compute total pages (total_items / items_per_page, taking ceiling)
+            °usize •pages
+            °if (•total_items == 0) {
+                •pages = 1
+            } °otherwise {
+                •pages = •total_items / •items_per_page
+                °usize •rem
+                •rem = •total_items % •items_per_page
+                °if (•rem > 0) {
+                    •pages = •pages + 1
+                }
+            }
+            *(°usize*)(•pager + 8) = •pages // total_pages
+            return
+        }
+      }
+
+      // Advance pager to next page
+      °function •tachyons_pager_next(•pager: °pointer<°struct •TuiPager>) -> °void {
+        °unsafe {
+            °usize •curr
+            •curr = *(°usize*)(•pager)
+            °usize •tot
+            •tot = *(°usize*)(•pager + 8)
+            °if (•curr < •tot) {
+                *(°usize*)(•pager) = •curr + 1
+            }
+            return
+        }
+      }
+
+      // Decrement pager to previous page
+      °function •tachyons_pager_prev(•pager: °pointer<°struct •TuiPager>) -> °void {
+        °unsafe {
+            °usize •curr
+            •curr = *(°usize*)(•pager)
+            °if (•curr > 1) {
+                *(°usize*)(•pager) = •curr - 1
+            }
+            return
+        }
+      }
+
+      // Render pager status indicator on a widget border
+      °function •tachyons_render_pager_footer(•pager: °pointer<°struct •TuiPager>, •widget: °pointer<°struct •TuiWidget>) -> °void {
+        °unsafe {
+            °usize •x
+            •x = *(°usize*)(•widget)
+            °usize •y
+            •y = *(°usize*)(•widget + 8)
+            °usize •w
+            •w = *(°usize*)(•widget + 16)
+            °usize •h
+            •h = *(°usize*)(•widget + 24)
+
+            °usize •curr
+            •curr = *(°usize*)(•pager)
+            °usize •tot
+            •tot = *(°usize*)(•pager + 8)
+
+            // Jump cursor to bottom-right boundary offset
+            °usize •foot_x
+            •foot_x = •x + •w - 14
+            °usize •foot_y
+            •foot_y = •y + •h - 1
+            °call •tui_move(•foot_x, •foot_y)
+
+            // Print pagination e.g. [ Page 1/3 ]
+            °call •tui_color(2, 1) // Highlight in Mint Green
+            °call •print("[ Page ")
+            
+            °if (•curr == 1) { °call •print("1") }
+            °if (•curr == 2) { °call •print("2") }
+            °if (•curr == 3) { °call •print("3") }
+            °if (•curr == 4) { °call •print("4") }
+            °if (•curr == 5) { °call •print("5") }
+            °call •print("/")
+            °if (•tot == 1) { °call •print("1") }
+            °if (•tot == 2) { °call •print("2") }
+            °if (•tot == 3) { °call •print("3") }
+            °if (•tot == 4) { °call •print("4") }
+            °if (•tot == 5) { °call •print("5") }
+            °call •print(" ]")
+            °call •tui_reset()
+            return
+        }
+      }
+
+      // Initialize visual tabs bar state
+      °function •tachyons_init_tabbar(•tabbar: °pointer<°struct •TuiTabBar>, •tab_names: °pointer<°pointer<°const °u8>>, •total_tabs: °usize) -> °void {
+        °unsafe {
+            *(°usize*)(•tabbar) = 1 // active_tab = 1
+            *(°usize*)(•tabbar + 8) = •total_tabs
+            *(°pointer<°pointer<°const °u8>>*)(•tabbar + 16) = •tab_names
+            return
+        }
+      }
+
+      // Move active tab to next tab
+      °function •tachyons_tabbar_next(•tabbar: °pointer<°struct •TuiTabBar>) -> °void {
+        °unsafe {
+            °usize •active
+            •active = *(°usize*)(•tabbar)
+            °usize •tot
+            •tot = *(°usize*)(•tabbar + 8)
+            •active = •active + 1
+            °if (•active > •tot) {
+                •active = 1
+            }
+            *(°usize*)(•tabbar) = •active
+            return
+        }
+      }
+
+      // Move active tab to previous tab
+      °function •tachyons_tabbar_prev(•tabbar: °pointer<°struct •TuiTabBar>) -> °void {
+        °unsafe {
+            °usize •active
+            •active = *(°usize*)(•tabbar)
+            °usize •tot
+            •tot = *(°usize*)(•tabbar + 8)
+            •active = •active - 1
+            °if (•active == 0) {
+                •active = •tot
+            }
+            *(°usize*)(•tabbar) = •active
+            return
+        }
+      }
+
+      // Render tab selections beautifully within the designated header widget
+      °function •tachyons_render_tabbar(•tabbar: °pointer<°struct •TuiTabBar>, •widget: °pointer<°struct •TuiWidget>) -> °void {
+        °unsafe {
+            °usize •x
+            •x = *(°usize*)(•widget)
+            °usize •y
+            •y = *(°usize*)(•widget + 8)
+
+            °usize •active
+            •active = *(°usize*)(•tabbar)
+            °usize •tot
+            •tot = *(°usize*)(•tabbar + 8)
+            °pointer<°pointer<°const °u8>> •names
+            •names = *(°pointer<°pointer<°const °u8>>*)(•tabbar + 16)
+
+            // Render right under top border
+            °call •tui_move(•x + 2, •y + 1)
+
+            °usize •i
+            •i = 0
+            °label tab_render_loop
+            °if (•i < •tot) {
+                °pointer<°const °u8> •name
+                •name = *(°pointer<°const °u8>*)(•names + •i * 8)
+                
+                °usize •tab_num
+                •tab_num = •i + 1
+                °if (•tab_num == •active) {
+                    °call •tui_color(2, 1) // Highlight Active: Mint Green on Charcoal
+                    °call •print("*")
+                    °call •print(•name)
+                    °call •print("* ")
+                } °otherwise {
+                    °call •tui_color(0, 0) // Default Tab: Slate Gray on Black
+                    °call •print("[")
+                    °call •print(•name)
+                    °call •print("] ")
+                }
+                •i = •i + 1
+                °goto tab_render_loop
+            }
+            °call •tui_reset()
+            return
+        }
+      }
     };
   |■
 |●
