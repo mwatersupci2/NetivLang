@@ -5,9 +5,9 @@
       "type": "module",
       "name": "std",
       "id": "std.test.spec",
-      "version": "1.0.1",
+      "version": "1.0.3",
       "error": "terminal",
-      "notes": "Systematically tests and validates all 1.01 Master Reserved and Protected Symbols. Section 1 defines test_sigils_and_types verifying bool types, stack allocations, registers, and AddressOf/PointerDereference patterns; Section 2 defines test_branchings_and_conditionals; Section 3 defines test_registers_and_sse testing all standard/extended registers; and Section 4 defines run_101_spec_tests master runner."
+      "notes": "Systematically tests and validates all 1.03 Master Reserved and Protected Symbols. Section 1 defines test_sigils_and_types verifying bool types, stack allocations, registers, and AddressOf/PointerDereference patterns; Section 2 defines test_branchings_and_conditionals; Section 3 defines test_registers_and_sse testing all standard/extended registers; and Section 4 defines run_101_spec_tests master runner."
     };
 
     <edges>{
@@ -15,13 +15,13 @@
         "std.test",
         "std.io"
       ],
-      "CompileOperation" --> Notes["Public graph-visible note validating the 1.01 master testing sequence."]
+      "CompileOperation" --> Notes["Public graph-visible note validating the 1.03 master testing sequence."]
     };
 
     <book>{
       °function •test_sigils_and_types() -> °void {
         °unsafe {
-            °call •println("--- Running Netiv 1.01 Sigils & Type System Tests ---")
+            °call •println("--- Running Netiv 1.03 Sigils & Type System Tests ---")
             
             °bool •t_val
             •t_val = °true
@@ -50,7 +50,7 @@
 
       °function •test_branchings_and_conditionals() -> °void {
         °unsafe {
-            °call •println("--- Running Netiv 1.01 Branching & Conditionals Tests ---")
+            °call •println("--- Running Netiv 1.03 Branching & Conditionals Tests ---")
             
             °bool •condition
             •condition = °true
@@ -81,7 +81,7 @@
 
       °function •test_registers_and_sse() -> °void {
         °unsafe {
-            °call •println("--- Running Netiv 1.01 CPU & SSE Register Verification ---")
+            °call •println("--- Running Netiv 1.03 CPU & SSE Register Verification ---")
             
             rax = 1
             rcx = 2
@@ -121,7 +121,7 @@
       °function •run_101_spec_tests() -> °void {
         °unsafe {
             °call •println("=====================================================")
-            °call •println(" Running Netiv 1.01 Master Reserved Symbol Test Suite")
+            °call •println(" Running Netiv 1.03 Master Reserved Symbol Test Suite")
             °call •println("=====================================================")
             
             °call •test_sigils_and_types()
