@@ -130,84 +130,10 @@
             °call •print_raw("Parsed Native Command: ", 23)
             °call •println_native(•arg)
 
-            °bool •is_sync
-            •is_sync = °call •str_eq(•arg, "sync")
-            °if (•is_sync == °true) {
-                °call •println_native("Syncing .ntv files to database...")
-                °call •println_native("Processing src/app.ntv...")
-                °call •println_native("  Synced module: app")
-                °call •println_native("Processing src/ui.ntv...")
-                °call •println_native("  Synced module: ui")
-                °call •println_native("Processing src/main.ntv...")
-                °call •println_native("  Synced module: main")
-                °call •println_native("Sync complete.")
-                °goto cli_exit
-            }
-
-            °bool •is_check
-            •is_check = °call •str_eq(•arg, "check")
-            °if (•is_check == °true) {
-                °call •println_native("Checking project for errors...")
-                °call •println_native("Checking src/app.ntv... OK")
-                °call •println_native("Checking src/ui.ntv... OK")
-                °call •println_native("Checking src/main.ntv... OK")
-                °call •println_native("Project check completed.")
-                °goto cli_exit
-            }
-
             °bool •is_spec
             •is_spec = °call •str_eq(•arg, "run_101_spec_tests")
             °if (•is_spec == °true) {
                 °call •run_101_spec_tests()
-                °goto cli_exit
-            }
-
-            °bool •is_init
-            •is_init = °call •str_eq(•arg, "init")
-            °if (•is_init == °true) {
-                °call •println_native("--- Netiv Package Initializer ---")
-                °call •println_native("Initializing new unmanaged package workspace...")
-                °call •println_native("Creating standard and adjunct library bindings...")
-                °call •println_native("  - std.ds (serialization)")
-                °call •println_native("  - std.compress (checksums)")
-                °call •println_native("  - std.wildmatch (wildcards)")
-                °call •println_native("  - std.zip (archiving)")
-                °call •println_native("  - std.io & std.mem (core systems)")
-                °call •println_native("  - adj.tui & adj.sqlite & adj.mermaid & nray (adjunct packages)")
-                °call •println_native("Created folder: lib/")
-                °call •println_native("  Copied standard and adjunct unmanaged libraries to lib/ folder.")
-                °call •println_native("Created folder: db/")
-                °call •println_native("  Spawned schema.sql and initialized blank netiv.db database.")
-                °call •println_native("Created folder: docs/")
-                °call •println_native("  Spawned language guide, reserved words list, todo list, asbuilt, and project specs.")
-                °call •println_native("Created project folders: src/, build/, bin/, logs/")
-                °call •println_native("  Spawned initial sample program: src/main.ntv")
-                °call •println_native("Spawned workspace assets: .gitignore, CONTRIBUTING.md, LICENSE, README.md")
-                °call •println_native("SUCCESS: Workspace initialized, project folders populated, ready to build!")
-                °goto cli_exit
-            }
-
-            °bool •is_archive_std
-            •is_archive_std = °call •str_eq(•arg, "archive")
-            °if (•is_archive_std == °true) {
-                °call •println_native("--- Netiv Standard Archiver ---")
-                °call •println_native("Archiving unmanaged Netiv standard libraries...")
-                °call •println_native("Reading standard source modules in src/library/std/...")
-                °call •println_native("Packing modules: std_ds.ntv, std_compress.ntv, std_wildmatch.ntv, std_zip.ntv...")
-                °call •println_native("Copied standard unmanaged libraries to lib/ folder.")
-                °call •println_native("SUCCESS: Standard libraries packed into standard Netiv package!")
-                °goto cli_exit
-            }
-
-            °bool •is_archive_adj
-            •is_archive_adj = °call •str_eq(•arg, "archive adj")
-            °if (•is_archive_adj == °true) {
-                °call •println_native("--- Netiv Adjunct Archiver ---")
-                °call •println_native("Archiving unmanaged Netiv adjunct libraries...")
-                °call •println_native("Reading adjunct source modules in src/library/adj/...")
-                °call •println_native("Packing mini-packages: adj_tui.ntv, tachyons.ntv, adj_sqlite.ntv, adj_mermaid.ntv, adj_nray.ntv, nray_window.ntv, rmath.ntv...")
-                °call •println_native("Copied adjunct unmanaged mini-packages to lib/ folder.")
-                °call •println_native("SUCCESS: Adjunct libraries packed into adjunct mini-packages!")
                 °goto cli_exit
             }
 
