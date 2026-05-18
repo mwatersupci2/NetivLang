@@ -6,7 +6,7 @@
       "name": "test",
       "id": "test.tui",
       "version": "1.0.0",
-      "notes": "Programmatic test script demonstrating unified Tachyons TUI rendering."
+      "notes": "Programmatic test script demonstrating unified Tachyons TUI rendering, stack buffer allocations for widgets/tabbars/pagers, and unmanaged I/O execution routes."
     };
 
     <edges>{
@@ -16,7 +16,6 @@
     <book>{
       °function •run_tui_demo() -> °void {
         °unsafe {
-            // Allocate 64 bytes of stack space for each TuiWidget (8 fields * 8 bytes)
             °u8 •widget1_buf[64]
             °u8 •widget2_buf[64]
             
@@ -25,7 +24,6 @@
             °pointer<°struct •TuiWidget> •w2
             •w2 = °addr •widget2_buf
 
-            // Allocate stack buffers for TabBar and Pager
             °u8 •tabbar_buf[32]
             °u8 •pager_buf[32]
 
@@ -34,7 +32,6 @@
             °pointer<°struct •TuiPager> •pg
             •pg = °addr •pager_buf
 
-            // Define multi-panel tabs
             °pointer<°const °u8> •tab1
             •tab1 = "DASHBOARD"
             °pointer<°const °u8> •tab2
@@ -47,41 +44,33 @@
             *(°pointer<°const °u8>*)(°addr •tab_arr + 8) = •tab2
             *(°pointer<°const °u8>*)(°addr •tab_arr + 16) = •tab3
 
-            // Initialize TabBar state (total 3 tabs, highlight second tab)
             °call •tachyons_init_tabbar(•tb, °addr •tab_arr, 3)
-            *(°usize*)(•tb) = 2 // Make "SETTINGS" active
+            *(°usize*)(•tb) = 2
 
-            // Initialize Pager state (15 items, 5 per page = 3 pages, set current to page 1)
             °call •tachyons_init_pager(•pg, 15, 5)
             *(°usize*)(•pg) = 1
 
-            // Clear screen and hide text cursor
             °call •tui_clear()
             °call •tui_show_cursor(°false)
 
-            // 1. Sleek Mint Green double-bordered header panel at (x=1, y=1)
             °call •tachyons_init_widget(•w1, "NETIV TACHYONS MULTI-PANEL TUI")
             °call •tachyons_widget_pos(•w1, 1, 1)
             °call •tachyons_widget_size(•w1, 46, 3)
-            °call •tachyons_widget_border(•w1, 2) // Double unicode border
-            °call •tachyons_widget_color(•w1, 2, 1) // Mint green text on sleek charcoal
+            °call •tachyons_widget_border(•w1, 2)
+            °call •tachyons_widget_color(•w1, 2, 1)
             °call •tachyons_render_tui(•w1)
             
-            // Draw visual tab selectors bar overlay
             °call •tachyons_render_tabbar(•tb, •w1)
 
-            // 2. Coral red single-bordered status panel at (x=1, y=4)
             °call •tachyons_init_widget(•w2, "STATUS: MULTI-PANEL PAGINATION ACTIVE")
             °call •tachyons_widget_pos(•w2, 1, 4)
             °call •tachyons_widget_size(•w2, 46, 3)
-            °call •tachyons_widget_border(•w2, 1) // Single unicode border
-            °call •tachyons_widget_color(•w2, 3, 1) // Coral red text on sleek charcoal
+            °call •tachyons_widget_border(•w2, 1)
+            °call •tachyons_widget_color(•w2, 3, 1)
             °call •tachyons_render_tui(•w2)
 
-            // Draw visual pager footer overlay
             °call •tachyons_render_pager_footer(•pg, •w2)
 
-            // Restore console cursor state
             °call •tui_show_cursor(°true)
             return
         }
@@ -92,12 +81,10 @@
             °call •tui_clear()
             °call •tui_show_cursor(°false)
             
-            // Core persistent input/rendering loop
             °usize •running
             •running = 1
             °label loop_start
             °if (•running == 1) {
-                // Yield to keyboard listener ticks
                 °goto loop_start
             }
             
@@ -110,18 +97,15 @@
         °unsafe {
             °call •println_native("--- Netiv Native I/O & Execution Test ---")
             
-            // 1. Read README.md into stack buffer
             °u8 •file_buf[256]
             °usize •bytes_read
             •bytes_read = °call •read_file("README.md", °addr •file_buf, 250)
             
-            // Null-terminate the read buffer
             *(°u8*)(°addr •file_buf + •bytes_read) = 0
             
             °call •print_raw("Successfully read README.md content preview:\r\n", 46)
             °call •println_native(°addr •file_buf)
             
-            // 2. Spawn external command process
             °call •print_raw("Spawning external system echo command...\r\n", 42)
             °call •spawn_process("cmd.exe /c echo SUCCESS: Process spawned from Netiv!")
             return

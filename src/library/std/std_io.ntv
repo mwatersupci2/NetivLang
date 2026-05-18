@@ -6,17 +6,15 @@
       "name": "std",
       "id": "std.io",
       "version": "1.0.0",
-      "error": "terminal"
+      "error": "terminal",
+      "notes": "Standard input/output and system interaction library. Section 1 defines terminal printing and ticks, Section 2 defines binary file saving, Section 3 handles filesystem crawls, and Section 4 defines native file reading and process spawning via unmanaged syscalls."
     };
 
     <edges>{};
 
     <book>{
-      // 1. Terminal Printing & Time
-
       °function •print(•text: °pointer<°const °u8>) -> °void {
         °unsafe {
-            // Forward text pointer in rcx to syscall 1
             rax = syscall 1
             return
         }
@@ -24,7 +22,6 @@
 
       °function •println(•text: °pointer<°const °u8>) -> °void {
         °unsafe {
-            // Forward text pointer in rcx to syscall 1
             rax = syscall 1
             return
         }
@@ -32,17 +29,13 @@
 
       °function •now() -> °usize {
         °unsafe {
-            // Call system time syscall 2
             rax = syscall 2
             return
         }
       }
 
-      // 2. Filesystem Read, Write & Resolve
-
       °function •resolve(•name: °pointer<°const °u8>) -> °pointer<°const °u8> {
         °unsafe {
-            // Resolve statement name in rcx
             rax = syscall 3
             return
         }
@@ -50,28 +43,20 @@
 
       °function •save_binary(•name: °pointer<°const °u8>, •buffer: °pointer<°const °u8>, •size: °usize) -> °usize {
         °unsafe {
-            // Save binary: name is in rcx, buffer is in rdx, size is in r8
             rax = syscall 4
             return
         }
       }
 
-      // 3. Directory & Filesystem Crawling
-
       °function •get_files(•dir_path: °pointer<°const °u8>) -> °pointer<°pointer<°const °u8>> {
         °unsafe {
-            // Crawl files: dir_path in rcx to syscall 10.
-            // Returns a pointer to a null-terminated array of C-string pointers.
             rax = syscall 10
             return
         }
       }
 
-      // 4. File Reading & Process Spawning
-
       °function •read_file(•path: °pointer<°const °u8>, •buffer: °pointer<°u8>, •max_size: °usize) -> °usize {
         °unsafe {
-            // path in rcx, buffer in rdx, max_size in r8 to syscall 11
             rax = syscall 11
             return
         }
@@ -79,7 +64,6 @@
 
       °function •spawn_process(•cmd: °pointer<°const °u8>) -> °usize {
         °unsafe {
-            // cmd in rcx to spawn syscall 0
             rax = syscall 0
             return
         }
