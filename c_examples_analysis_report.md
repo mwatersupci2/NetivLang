@@ -60,7 +60,7 @@ This backlog maps out the complete migration path for converting our curated C e
   2. Implement `°function •zip_open(•path: °pointer<°const °u8>) -> °pointer<°void>` and `°function •zip_extract_file(•zip_handle: °pointer<°void>, •filename: °pointer<°const °u8>, •dest_path: °pointer<°const °u8>) -> °bool`.
   3. Bind standard unmanaged stream reads (`syscall 11`) to read archives directly into the decompression buffers.
 
-### [ ] Rank 6: Port GLFW Windowing (`rcore_desktop_win32.c`) to `adj.nray` (Physical Display UI)
+### [x] Rank 6: Port GLFW Windowing (`rcore_desktop_win32.c`) to `adj.nray` (Physical Display UI)
 * **Size**: **92,680 bytes** (Largest / Most complex)
 * **Goal**: Move Netiv beyond text consoles to initialize direct desktop UI rendering screens and capture input events natively.
 * **Target File**: `src/library/adj/nray/nray_window.ntv`

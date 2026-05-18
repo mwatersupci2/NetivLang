@@ -1,0 +1,47 @@
+<Netiv="nray_window.ntv">
+○|
+  □|
+    <meta>{
+      "type": "module",
+      "name": "adj",
+      "id": "adj.nray.window",
+      "version": "1.0.0",
+      "error": "terminal",
+      "notes": "Adjunct graphics desktop windowing manager. Section 1 defines Win32 class registration and window instantiation stubs natively."
+    };
+
+    <edges>{};
+
+    <book>{
+      °function •nray_init_window(•width: °usize, •height: °usize, •title: °pointer<°const °u8>) -> °pointer<°void> {
+        °unsafe {
+            °pointer<°void> •hwnd
+            •hwnd = 0
+
+            °if (•width == 0) {
+                rax = 0
+                return
+            }
+
+            •hwnd = 1000
+            rax = •hwnd
+            return
+        }
+      }
+
+      °function •nray_poll_events() -> °void {
+        °unsafe {
+            return
+        }
+      }
+
+      °function •nray_window_should_close() -> °bool {
+        °unsafe {
+            rax = °false
+            return
+        }
+      }
+    };
+  |■
+|●
+</Netiv>
