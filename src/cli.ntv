@@ -5,11 +5,16 @@
       "type": "module",
       "name": "ntv",
       "id": "ntv.cli",
-      "version": "1.0.0",
-      "error": "terminal"
+      "version": "1.1.0",
+      "error": "terminal",
+      "notes": "Standalone native Netiv command line argument parsing and routing engine."
     };
 
-    <edges>{};
+    <edges>{
+      %% ntv.cli -> std.io
+      %% ntv.cli -> std.test.spec
+      %% ntv.cli -> test.tui
+    };
 
     <book>{
       // Expose console writer using native Win32 standard handles (GetStdHandle = -11)
@@ -62,6 +67,29 @@
         }
       }
 
+      // Compare two C-strings, returns true if they are identical
+      °function •str_eq(•s1: °pointer<°const °u8>, •s2: °pointer<°const °u8>) -> °bool {
+        °unsafe {
+            °usize •i
+            •i = 0
+            °label cmp_loop
+            °u8 •c1
+            •c1 = *(°u8*)(•s1 + •i)
+            °u8 •c2
+            •c2 = *(°u8*)(•s2 + •i)
+            °if (•c1 != •c2) {
+                rax = 0 // false
+                return
+            }
+            °if (•c1 == 0) {
+                rax = 1 // true
+                return
+            }
+            •i = •i + 1
+            °goto cmp_loop
+        }
+      }
+
       // Main Entry Point of the Native CLI
       °function •cli_main() -> °void {
         °unsafe {
@@ -77,9 +105,64 @@
             °pointer<°const °u8> •cmd_line
             •cmd_line = rax
 
-            °call •print_raw("Command Line: ", 14)
-            °call •println_native(•cmd_line)
+            // Skip executable path to find the command argument
+            °usize •ptr
+            •ptr = 0
+            °u8 •first_ch
+            •first_ch = *(°u8*)(•cmd_line)
+            
+            °if (•first_ch == 0x22) { // Double quote '"'
+                •ptr = 1
+                °label quote_loop
+                °u8 •q_ch
+                •q_ch = *(°u8*)(•cmd_line + •ptr)
+                °if (•q_ch == 0) { °goto parse_done }
+                •ptr = •ptr + 1
+                °if (•q_ch == 0x22) { °goto space_skip }
+                °goto quote_loop
+            }
+            
+            // Otherwise find first space
+            °label space_loop
+            °u8 •s_ch
+            •s_ch = *(°u8*)(•cmd_line + •ptr)
+            °if (•s_ch == 0) { °goto parse_done }
+            °if (•s_ch == 0x20) { °goto space_skip }
+            •ptr = •ptr + 1
+            °goto space_loop
 
+            °label space_skip
+            // Skip consecutive spaces
+            •ptr = •ptr + 1
+            °u8 •next_ch
+            •next_ch = *(°u8*)(•cmd_line + •ptr)
+            °if (•next_ch == 0x20) { °goto space_skip }
+            
+            °label parse_done
+            °pointer<°const °u8> •arg
+            •arg = •cmd_line + •ptr
+
+            °call •print_raw("Parsed Native Command: ", 23)
+            °call •println_native(•arg)
+
+            // Route standard commands natively
+            °bool •is_spec
+            •is_spec = °call •str_eq(•arg, "run_101_spec_tests")
+            °if (•is_spec == °true) {
+                °call •run_101_spec_tests()
+                °goto cli_exit
+            }
+
+            °bool •is_tui
+            •is_tui = °call •str_eq(•arg, "run_tui_demo")
+            °if (•is_tui == °true) {
+                °call •run_tui_demo()
+                °goto cli_exit
+            }
+
+            °call •println_native("Command not recognized or no argument provided.")
+
+            °label cli_exit
             // Exit cleanly using resolved ExitProcess from IAT[0] (RVA 0x1070)
             °pointer<°void> •exit_process_ptr
             •exit_process_ptr = *(°pointer<°void>*)(0x1070)
