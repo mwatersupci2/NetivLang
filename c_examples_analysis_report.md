@@ -1,12 +1,13 @@
 # C Examples Native Conversion & Integration Backlog
 
-This backlog maps out the complete migration path for converting our curated C example files into native Netiv standard libraries. Each task is formulated as a detailed, step-by-step TODO item with target namespace mappings and file outputs.
+This backlog maps out the complete migration path for converting our curated C example files into native Netiv standard libraries. Tasks are ranked **by source file size** (from smallest/simplest to largest/most complex).
 
 ---
 
-## 💎 The Conversion TODO Backlog
+## 💎 The Conversion TODO Backlog (Ranked by Size)
 
-### [ ] Task 1: Port `varint.c` to `std.ds` (Variable Integers)
+### [ ] Rank 1: Port `varint.c` to `std.ds` (Variable Integers)
+* **Size**: **1,101 bytes** (Easiest / Smallest)
 * **Goal**: Enable highly compressed, variable-length integer serialization for Netiv binary stream parsers.
 * **Target File**: `src/library/std/std_ds.ntv`
 * **Namespace**: `std.ds`
@@ -17,18 +18,18 @@ This backlog maps out the complete migration path for converting our curated C e
   4. Port standard overflow and bitwise shift checks (`<< 7`, `>> 7`, and MSB masks).
   5. Add test coverage in `src/library/std/std_test_spec_101.ntv` to ensure correct serialization and round-tripping of values up to 64 bits.
 
-### [ ] Task 2: Port `adler32.c` & `crc32.c` to `std.compress` (Data Checksums)
-* **Goal**: Provide standard data hashing and integrity validation stubs for unmanaged file readers and sqlite drivers.
+### [ ] Rank 2: Port `adler32.c` to `std.compress` (Adler Checksum)
+* **Size**: **5,128 bytes** (Second smallest)
+* **Goal**: Provide lightning-fast data block verification stubs for standard memory streams and file validation.
 * **Target File**: `src/library/std/std_compress.ntv`
 * **Namespace**: `std.compress`
 * **Execution Blueprint**:
   1. Define a prime modulus base constant (`BASE = 65521`) inside `<book>` via direct integer wrappers.
-  2. Translate Zlib's unrolled `DO16` loop optimizations into standard label-based branch iterations (`°label`, `°goto`).
+  2. Translate Zlib's unrolled loop optimizations (`DO16`) into standard label-based branch iterations (`°label`, `°goto`).
   3. Implement `°function •adler32(•adler: °usize, •buf: °pointer<°const °u8>, •len: °usize) -> °usize`.
-  4. Implement `°function •crc32(•crc: °usize, •buf: °pointer<°const °u8>, •len: °usize) -> °usize` using a pre-calculated 256-word CRC table compiled into unmanaged static memory.
-  5. Integrate checksum validation checks inside our standard file reading and writing utilities in `std_io.ntv`.
 
-### [ ] Task 3: Port `wildmatch.c` to `std.wildmatch` (Wildcard Globbing)
+### [ ] Rank 3: Port `wildmatch.c` to `std.wildmatch` (Wildcard Globbing)
+* **Size**: **9,769 bytes** (Third smallest)
 * **Goal**: Empower the compiler and CLI with powerful wildcard globbing patterns (`*`, `?`, `[]`) to handle recursive source file crawling natively.
 * **Target File**: `src/library/std/std_wildmatch.ntv`
 * **Namespace**: `std.wildmatch`
@@ -38,9 +39,19 @@ This backlog maps out the complete migration path for converting our curated C e
      * Check for literal matches.
      * Check for single character glob matches (`?`).
      * Check for multi-character glob matches (`*`), branching into standard lookahead iterations.
-  3. Relocate developer comments to `<meta>` notes and enforce standard clean `<book>` compilation.
 
-### [ ] Task 4: Port `unzip.c` / `miniunz.c` to `std.zip` (Archive Decompression)
+### [ ] Rank 4: Port `crc32.c` to `std.compress` (Cyclic Redundancy Hashing)
+* **Size**: **30,718 bytes** (Medium size)
+* **Goal**: Enable standard 32-bit CRC validation for file formats and SQLite database page crawlers.
+* **Target File**: `src/library/std/std_compress.ntv` (Appended)
+* **Namespace**: `std.compress`
+* **Execution Blueprint**:
+  1. Implement a pre-calculated 256-word CRC table compiled into unmanaged static memory.
+  2. Implement `°function •crc32(•crc: °usize, •buf: °pointer<°const °u8>, •len: °usize) -> °usize`.
+  3. Integrate checksum validation checks inside standard file utilities in `std_io.ntv`.
+
+### [ ] Rank 5: Port Minizip Decompression (`miniunz.c` / `unzip.c`) to `std.zip` (Archive Extractors)
+* **Size**: **88,508 bytes** combined (Large size)
 * **Goal**: Enable the native Netiv compiler to extract library modules, packages, and toolchains directly from zipped distributions.
 * **Target File**: `src/library/std/std_zip.ntv`
 * **Namespace**: `std.zip`
@@ -49,7 +60,8 @@ This backlog maps out the complete migration path for converting our curated C e
   2. Implement `°function •zip_open(•path: °pointer<°const °u8>) -> °pointer<°void>` and `°function •zip_extract_file(•zip_handle: °pointer<°void>, •filename: °pointer<°const °u8>, •dest_path: °pointer<°const °u8>) -> °bool`.
   3. Bind standard unmanaged stream reads (`syscall 11`) to read archives directly into the decompression buffers.
 
-### [ ] Task 5: Port GLFW Windowing (`rcore_desktop_win32.c`) to `adj.nray` (Physical Display UI)
+### [ ] Rank 6: Port GLFW Windowing (`rcore_desktop_win32.c`) to `adj.nray` (Physical Display UI)
+* **Size**: **92,680 bytes** (Largest / Most complex)
 * **Goal**: Move Netiv beyond text consoles to initialize direct desktop UI rendering screens and capture input events natively.
 * **Target File**: `src/library/adj/nray/nray_window.ntv`
 * **Namespace**: `adj.nray.window`
@@ -57,7 +69,6 @@ This backlog maps out the complete migration path for converting our curated C e
   1. Port GLFW/Win32 structure mappings including window handle binds (`HWND`, `HDC`), display modes, and pixel formats.
   2. Implement `°function •nray_init_window(•width: °usize, •height: °usize, •title: °pointer<°const °u8>) -> °pointer<°void>`.
   3. Implement `°function •nray_poll_events() -> °void` to route mouse clicks, window resizes, and keystrokes directly into Netiv event handlers.
-  4. Integrate these native windowing pipelines directly with `adj_nray.ntv` and the premium multi-panel interactive Tui dashboard wrappers.
 
 ---
 
