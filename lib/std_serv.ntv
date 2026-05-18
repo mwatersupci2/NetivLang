@@ -1,0 +1,50 @@
+<Netiv="std_serv.ntv">
+○|
+  □|
+    <meta>{
+      "type": "module",
+      "name": "std",
+      "id": "std.serv",
+      "version": "1.0.0",
+      "error": "terminal",
+      "notes": "Native HTTP web server listening loops and router. Section 1 defines HttpServer configuration structure, and Section 2 contains TCP listening socket initialization, web route registrations, and event processing stubs."
+    };
+
+    <edges>{
+      "dependencies": [
+        "std.http"
+      ]
+    };
+
+    <book>{
+      °struct •HttpServer {
+        •port: °usize,
+        •listen_socket: °pointer<°struct •Socket>,
+        •active: °bool
+      }
+
+      °function •serv_init(•server: °pointer<°struct •HttpServer>, •port: °usize) -> °void {
+        °unsafe {
+            *(°usize*)(•server) = •port
+            *(°pointer<°void>*)(•server + 8) = 0
+            *(°bool*)(•server + 16) = °false
+            return
+        }
+      }
+
+      °function •serv_register_route(•server: °pointer<°struct •HttpServer>, •path: °pointer<°const °u8>, •handler: °pointer<°void>) -> °void {
+        °unsafe {
+            return
+        }
+      }
+
+      °function •serv_listen_and_serve(•server: °pointer<°struct •HttpServer>) -> °void {
+        °unsafe {
+            *(°bool*)(•server + 16) = °true
+            return
+        }
+      }
+    };
+  |■
+|●
+</Netiv>

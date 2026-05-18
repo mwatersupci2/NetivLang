@@ -1,0 +1,140 @@
+<Netiv="std_test_spec_101.ntv">
+○|
+  □|
+    <meta>{
+      "type": "module",
+      "name": "std",
+      "id": "std.test.spec",
+      "version": "1.0.3",
+      "error": "terminal",
+      "notes": "Systematically tests and validates all 1.03 Master Reserved and Protected Symbols. Section 1 defines test_sigils_and_types verifying bool types, stack allocations, registers, and AddressOf/PointerDereference patterns; Section 2 defines test_branchings_and_conditionals; Section 3 defines test_registers_and_sse testing all standard/extended registers; and Section 4 defines run_101_spec_tests master runner."
+    };
+
+    <edges>{
+      "dependencies": [
+        "std.test",
+        "std.io"
+      ],
+      "CompileOperation" --> Notes["Public graph-visible note validating the 1.03 master testing sequence."]
+    };
+
+    <book>{
+      °function •test_sigils_and_types() -> °void {
+        °unsafe {
+            °call •println("--- Running Netiv 1.03 Sigils & Type System Tests ---")
+            
+            °bool •t_val
+            •t_val = °true
+            °bool •f_val
+            •f_val = °false
+            °call •assert_true(•t_val, "t_val should be true")
+            
+            °usize •size_val
+            •size_val = 101
+            °call •assert_eq_int(•size_val, 101, "size_val should match 101")
+            
+            rax = 42
+            °call •assert_eq_int(rax, 42, "rax register write/read check")
+            
+            °usize •mem_ptr
+            °usize •mem_val
+            •mem_val = 99
+            •mem_ptr = °addr •mem_val
+            rax = *(°usize*)•mem_ptr
+            °call •assert_eq_int(rax, 99, "AddressOf and PointerDereference validation")
+            
+            °call •println("PASS: Sigils and type system validated.")
+            return
+        }
+      }
+
+      °function •test_branchings_and_conditionals() -> °void {
+        °unsafe {
+            °call •println("--- Running Netiv 1.03 Branching & Conditionals Tests ---")
+            
+            °bool •condition
+            •condition = °true
+            °usize •result
+            •result = 0
+            
+            °if (•condition == °true) {
+                •result = 1
+            }
+            °call •assert_eq_int(•result, 1, "°if conditional block statement execution")
+            
+            rax = 0
+            cmp_rax 0
+            if_z_goto is_zero_label
+            •result = 99
+            °goto done_label
+            
+            °label is_zero_label
+            •result = 100
+            
+            °label done_label
+            °call •assert_eq_int(•result, 100, "Low-level cmp_rax, if_z_goto, and labels validation")
+            
+            °call •println("PASS: Branchings and conditionals validated.")
+            return
+        }
+      }
+
+      °function •test_registers_and_sse() -> °void {
+        °unsafe {
+            °call •println("--- Running Netiv 1.03 CPU & SSE Register Verification ---")
+            
+            rax = 1
+            rcx = 2
+            rdx = 3
+            rbx = 4
+            rsi = 5
+            rdi = 6
+            °call •assert_eq_int(rax, 1, "rax register check")
+            °call •assert_eq_int(rcx, 2, "rcx register check")
+            °call •assert_eq_int(rdx, 3, "rdx register check")
+            °call •assert_eq_int(rbx, 4, "rbx register check")
+            °call •assert_eq_int(rsi, 5, "rsi register check")
+            °call •assert_eq_int(rdi, 6, "rdi register check")
+            
+            r8 = 8
+            r9 = 9
+            r10 = 10
+            r11 = 11
+            r12 = 12
+            r13 = 13
+            r14 = 14
+            r15 = 15
+            °call •assert_eq_int(r8, 8, "r8 register check")
+            °call •assert_eq_int(r9, 9, "r9 register check")
+            °call •assert_eq_int(r10, 10, "r10 register check")
+            °call •assert_eq_int(r11, 11, "r11 register check")
+            °call •assert_eq_int(r12, 12, "r12 register check")
+            °call •assert_eq_int(r13, 13, "r13 register check")
+            °call •assert_eq_int(r14, 14, "r14 register check")
+            °call •assert_eq_int(r15, 15, "r15 register check")
+            
+            °call •println("PASS: CPU general purpose registers verified.")
+            return
+        }
+      }
+
+      °function •run_101_spec_tests() -> °void {
+        °unsafe {
+            °call •println("=====================================================")
+            °call •println(" Running Netiv 1.03 Master Reserved Symbol Test Suite")
+            °call •println("=====================================================")
+            
+            °call •test_sigils_and_types()
+            °call •test_branchings_and_conditionals()
+            °call •test_registers_and_sse()
+            
+            °call •println("=====================================================")
+            °call •println(" ALL SPECIFICATION UNIT TESTS PASSED SUCCESSFULLY!   ")
+            °call •println("=====================================================")
+            return
+        }
+      }
+    };
+  |■
+|●
+</Netiv>

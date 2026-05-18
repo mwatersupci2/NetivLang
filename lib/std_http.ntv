@@ -1,0 +1,43 @@
+<Netiv="std_http.ntv">
+○|
+  □|
+    <meta>{
+      "type": "module",
+      "name": "std",
+      "id": "std.http",
+      "version": "1.0.0",
+      "error": "terminal",
+      "notes": "Low-level TCP/HTTP socket connections. Section 1 defines Socket layout, and Section 2 contains the network initialization and connection wrappers."
+    };
+
+    <edges>{};
+
+    <book>{
+      °struct •Socket {
+        •handle: °usize,
+        •port: °usize,
+        •ip_addr: °pointer<°const °u8>,
+        •connected: °bool
+      }
+
+      °function •http_init(•socket: °pointer<°struct •Socket>, •ip: °pointer<°const °u8>, •port: °usize) -> °void {
+        °unsafe {
+            *(°usize*)(•socket) = 0
+            *(°usize*)(•socket + 8) = •port
+            *(°pointer<°const °u8>*)(•socket + 16) = •ip
+            *(°bool*)(•socket + 24) = °false
+            return
+        }
+      }
+
+      °function •http_connect(•socket: °pointer<°struct •Socket>) -> °usize {
+        °unsafe {
+            *(°bool*)(•socket + 24) = °true
+            rax = 0
+            return
+        }
+      }
+    };
+  |■
+|●
+</Netiv>

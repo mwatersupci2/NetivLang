@@ -1,0 +1,169 @@
+<Netiv="std_core.ntv">
+○|
+  □|
+    <meta>{
+      "type": "module",
+      "name": "std",
+      "id": "std.core",
+      "version": "1.0.0",
+      "error": "terminal",
+      "notes": "Core low-level x64 assembler emitter instructions. Section 1 defines get_primitive_size type mappings; Section 2 exposes pointer address-of and dereference emitters (QWORD, DWORD, BYTE); Section 3 handles index scale ModR/M and immediate sizeof loaders; and Section 4 defines SSE float/int conversion and relative jump conditional branch emitters."
+    };
+
+    <edges>{};
+
+    <book>{
+      °function •get_primitive_size(•type_id: °usize) -> °usize {
+        °unsafe {
+            rax = •type_id
+            cmp_rax 1
+            if_z_goto bool_size
+            cmp_rax 4
+            if_z_goto f32_size
+            goto qword_size
+
+            label bool_size
+            rax = 1
+            return
+
+            label f32_size
+            rax = 4
+            return
+
+            label qword_size
+            rax = 8
+            return
+        }
+      }
+
+      °function •emit_op_addr(•offset: °usize) -> °void {
+        °unsafe {
+            rax = 0x48; *ptr = rax_u8; ptr = ptr + 1
+            rax = 0x8D; *ptr = rax_u8; ptr = ptr + 1
+            rax = 0x85; *ptr = rax_u8; ptr = ptr + 1
+
+            rax = 0
+            rax = rax - •offset
+            *ptr = rax_u8; ptr = ptr + 1
+            rax = rax >> 8; *ptr = rax_u8; ptr = ptr + 1
+            rax = rax >> 8; *ptr = rax_u8; ptr = ptr + 1
+            rax = rax >> 8; *ptr = rax_u8; ptr = ptr + 1
+            return
+        }
+      }
+
+      °function •emit_op_deref_qword() -> °void {
+        °unsafe {
+            rax = 0x48; *ptr = rax_u8; ptr = ptr + 1
+            rax = 0x8B; *ptr = rax_u8; ptr = ptr + 1
+            rax = 0x00; *ptr = rax_u8; ptr = ptr + 1
+            return
+        }
+      }
+
+      °function •emit_op_deref_dword() -> °void {
+        °unsafe {
+            rax = 0x8B; *ptr = rax_u8; ptr = ptr + 1
+            rax = 0x00; *ptr = rax_u8; ptr = ptr + 1
+            return
+        }
+      }
+
+      °function •emit_op_deref_byte() -> °void {
+        °unsafe {
+            rax = 0x0F; *ptr = rax_u8; ptr = ptr + 1
+            rax = 0xB6; *ptr = rax_u8; ptr = ptr + 1
+            rax = 0x00; *ptr = rax_u8; ptr = ptr + 1
+            return
+        }
+      }
+
+      °function •emit_op_index(•scale: °usize) -> °void {
+        °unsafe {
+            rax = 0x48; *ptr = rax_u8; ptr = ptr + 1
+            rax = 0x8B; *ptr = rax_u8; ptr = ptr + 1
+            rax = 0x04; *ptr = rax_u8; ptr = ptr + 1
+
+            rax = •scale
+            cmp_rax 4
+            if_z_goto scale_four
+            cmp_rax 8
+            if_z_goto scale_eight
+            goto scale_one
+
+            label scale_four
+            rax = 0x8B; *ptr = rax_u8; ptr = ptr + 1
+            return
+
+            label scale_eight
+            rax = 0xCB; *ptr = rax_u8; ptr = ptr + 1
+            return
+
+            label scale_one
+            rax = 0x0B; *ptr = rax_u8; ptr = ptr + 1
+            return
+        }
+      }
+
+      °function •emit_op_sizeof(•size: °usize) -> °void {
+        °unsafe {
+            rax = 0x48; *ptr = rax_u8; ptr = ptr + 1
+            rax = 0xB8; *ptr = rax_u8; ptr = ptr + 1
+
+            rax = •size
+            *ptr = rax_u8; ptr = ptr + 1
+            rax = rax >> 8; *ptr = rax_u8; ptr = ptr + 1
+            rax = rax >> 8; *ptr = rax_u8; ptr = ptr + 1
+            rax = rax >> 8; *ptr = rax_u8; ptr = ptr + 1
+            rax = rax >> 8; *ptr = rax_u8; ptr = ptr + 1
+            rax = rax >> 8; *ptr = rax_u8; ptr = ptr + 1
+            rax = rax >> 8; *ptr = rax_u8; ptr = ptr + 1
+            rax = rax >> 8; *ptr = rax_u8; ptr = ptr + 1
+            return
+        }
+      }
+
+      °function •emit_cast_double_to_int() -> °void {
+        °unsafe {
+            rax = 0xF2; *ptr = rax_u8; ptr = ptr + 1
+            rax = 0x48; *ptr = rax_u8; ptr = ptr + 1
+            rax = 0x0F; *ptr = rax_u8; ptr = ptr + 1
+            rax = 0x2C; *ptr = rax_u8; ptr = ptr + 1
+            rax = 0xC0; *ptr = rax_u8; ptr = ptr + 1
+            return
+        }
+      }
+
+      °function •emit_cast_int_to_double() -> °void {
+        °unsafe {
+            rax = 0xF2; *ptr = rax_u8; ptr = ptr + 1
+            rax = 0x48; *ptr = rax_u8; ptr = ptr + 1
+            rax = 0x0F; *ptr = rax_u8; ptr = ptr + 1
+            rax = 0x2A; *ptr = rax_u8; ptr = ptr + 1
+            rax = 0xC0; *ptr = rax_u8; ptr = ptr + 1
+            return
+        }
+      }
+
+      °function •emit_op_if_z(•jmp_offset: °usize) -> °void {
+        °unsafe {
+            rax = 0x48; *ptr = rax_u8; ptr = ptr + 1
+            rax = 0x83; *ptr = rax_u8; ptr = ptr + 1
+            rax = 0xF8; *ptr = rax_u8; ptr = ptr + 1
+            rax = 0x00; *ptr = rax_u8; ptr = ptr + 1
+
+            rax = 0x0F; *ptr = rax_u8; ptr = ptr + 1
+            rax = 0x84; *ptr = rax_u8; ptr = ptr + 1
+
+            rax = •jmp_offset
+            *ptr = rax_u8; ptr = ptr + 1
+            rax = rax >> 8; *ptr = rax_u8; ptr = ptr + 1
+            rax = rax >> 8; *ptr = rax_u8; ptr = ptr + 1
+            rax = rax >> 8; *ptr = rax_u8; ptr = ptr + 1
+            return
+        }
+      }
+    };
+  |■
+|●
+</Netiv>

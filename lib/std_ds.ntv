@@ -1,0 +1,127 @@
+<Netiv="std_ds.ntv">
+○|
+  □|
+    <meta>{
+      "type": "module",
+      "name": "std",
+      "id": "std.ds",
+      "version": "1.0.0",
+      "error": "terminal",
+      "notes": "Optimized core data structures and serialization adapters. Section 1 defines encode_varint, and Section 2 contains decode_varint for variable-length integer byte packing."
+    };
+
+    <edges>{};
+
+    <book>{
+      °function •encode_varint(•buf: °pointer<°u8>, •bufsize: °usize, •value: °usize) -> °usize {
+        °unsafe {
+            °u8 •varint_0
+            °u8 •varint_1
+            °u8 •varint_2
+            °u8 •varint_3
+            °u8 •varint_4
+            °u8 •varint_5
+            °u8 •varint_6
+            °u8 •varint_7
+            °u8 •varint_8
+            °u8 •varint_9
+            °u8 •varint_10
+            °u8 •varint_11
+            °u8 •varint_12
+            °u8 •varint_13
+            °u8 •varint_14
+            °u8 •varint_15
+
+            °pointer<°u8> •varint_ptr
+            •varint_ptr = °addr •varint_0
+
+            °usize •pos
+            •pos = 15
+
+            °usize •val
+            •val = •value
+
+            *(°u8*)(•varint_ptr + •pos) = •val & 127
+
+            °label loop_start
+            •val = •val >> 7
+            °if (•val == 0) {
+                °goto loop_done
+            }
+            •pos = •pos - 1
+            •val = •val - 1
+            *(°u8*)(•varint_ptr + •pos) = 128 | (•val & 127)
+            °goto loop_start
+
+            °label loop_done
+            °usize •len
+            •len = 16 - •pos
+
+            °if (•buf != 0) {
+                °if (•bufsize < •len) {
+                    rax = 0
+                    return
+                }
+                
+                °usize •i
+                •i = 0
+                °label copy_loop
+                °if (•i >= •len) {
+                    °goto copy_done
+                }
+                *(°u8*)(•buf + •i) = *(°u8*)(•varint_ptr + •pos + •i)
+                •i = •i + 1
+                °goto copy_loop
+                
+                °label copy_done
+                rax = •len
+                return
+            }
+            rax = •len
+            return
+        }
+      }
+
+      °function •decode_varint(•bufp: °pointer<°const °u8>, •varint_len: °pointer<°usize>) -> °usize {
+        °unsafe {
+            °pointer<°u8> •buf
+            •buf = •bufp
+            
+            °u8 •c
+            •c = *•buf
+            •buf = •buf + 1
+            
+            °usize •val
+            •val = •c & 127
+            
+            °label loop_start
+            °usize •has_more
+            •has_more = •c & 128
+            °if (•has_more == 0) {
+                °goto loop_done
+            }
+            
+            •val = •val + 1
+            
+            °if (•val == 0) {
+                *•varint_len = 0
+                rax = 0
+                return
+            }
+            
+            •c = *•buf
+            •buf = •buf + 1
+            
+            •val = (•val << 7) + (•c & 127)
+            °goto loop_start
+            
+            °label loop_done
+            *•varint_len = •buf - •bufp
+            rax = •val
+            return
+        }
+      }
+    };
+  |■
+|●
+</Netiv>

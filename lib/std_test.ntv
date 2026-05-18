@@ -1,0 +1,48 @@
+<Netiv="std_test.ntv">
+○|
+  □|
+    <meta>{
+      "type": "module",
+      "name": "std",
+      "id": "std.test",
+      "version": "1.0.0",
+      "error": "terminal",
+      "notes": "Standard verification and assertion testing suite. Section 1 defines assert_true, and Section 2 defines integer-equality assert_eq_int with automated exit seals on failure."
+    };
+
+    <edges>{};
+
+    <book>{
+      °function •assert_true(•condition: °bool, •msg: °pointer<°const °u8>) -> °void {
+        °if (•condition == °false) {
+            °unsafe {
+                °call •println("FAIL: assertion failed!")
+                °call •println(•msg)
+                rax = syscall 6
+                return
+            }
+        }
+        °unsafe {
+            °call •println("PASS")
+            return
+        }
+      }
+
+      °function •assert_eq_int(•a: °usize, •b: °usize, •msg: °pointer<°const °u8>) -> °void {
+        °if (•a != •b) {
+            °unsafe {
+                °call •println("FAIL: integer equality mismatch!")
+                °call •println(•msg)
+                rax = syscall 6
+                return
+            }
+        }
+        °unsafe {
+            °call •println("PASS")
+            return
+        }
+      }
+    };
+  |■
+|●
+</Netiv>

@@ -1,0 +1,44 @@
+<Netiv="std_trace.ntv">
+○|
+  □|
+    <meta>{
+      "type": "module",
+      "name": "std",
+      "id": "std.trace",
+      "version": "1.0.0",
+      "error": "terminal",
+      "notes": "Diagnostic tracing and performance telemetry metric loggers. Section 1 defines trace_log for standard diagnostic outputs, and Section 2 contains trace_metric performance profile loggers."
+    };
+
+    <edges>{};
+
+    <book>{
+      °function •trace_log(•level: °usize, •msg: °pointer<°const °u8>) -> °void {
+        °unsafe {
+            °if (•level == 1) {
+                °call •print("[TRACE-INFO] ")
+            }
+            °if (•level == 2) {
+                °call •print("[TRACE-WARN] ")
+            }
+            °if (•level == 3) {
+                °call •print("[TRACE-ERR]  ")
+            }
+            °call •println(•msg)
+            return
+        }
+      }
+
+      °function •trace_metric(•name: °pointer<°const °u8>, •value: °scalar) -> °void {
+        °unsafe {
+            °call •print("[METRIC] ")
+            °call •print(•name)
+            °call •print(" -> ")
+            °call •println("Logged performance profile point.")
+            return
+        }
+      }
+    };
+  |■
+|●
+</Netiv>

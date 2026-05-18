@@ -1,0 +1,48 @@
+<Netiv="std_graph.ntv">
+○|
+  □|
+    <meta>{
+      "type": "module",
+      "name": "std",
+      "id": "std.graph",
+      "version": "1.0.0",
+      "error": "terminal",
+      "notes": "Semantic relation graph structures and mapping utilities. Section 1 defines Node and Edge schema layout, and Section 2 contains the node/edge initializer stubs."
+    };
+
+    <edges>{};
+
+    <book>{
+      °struct •Node {
+        •id: °pointer<°const °u8>,
+        •type_id: °usize,
+        •metadata: °pointer<°const °u8>
+      }
+
+      °struct •Edge {
+        •from: °pointer<°struct •Node>,
+        •to: °pointer<°struct •Node>,
+        •weight: °scalar
+      }
+
+      °function •node_init(•node: °pointer<°struct •Node>, •id: °pointer<°const °u8>, •type_id: °usize) -> °void {
+        °unsafe {
+            *(°pointer<°const °u8>*)(•node) = •id
+            *(°usize*)(•node + 8) = •type_id
+            *(°pointer<°const °u8>*)(•node + 16) = 0
+            return
+        }
+      }
+
+      °function •edge_init(•edge: °pointer<°struct •Edge>, •from: °pointer<°struct •Node>, •to: °pointer<°struct •Node>, •weight: °scalar) -> °void {
+        °unsafe {
+            *(°pointer<°struct •Node>*)(•edge) = •from
+            *(°pointer<°struct •Node>*)(•edge + 8) = •to
+            *(°scalar*)(•edge + 16) = •weight
+            return
+        }
+      }
+    };
+  |■
+|●
+</Netiv>

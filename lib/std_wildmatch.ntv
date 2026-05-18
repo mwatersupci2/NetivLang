@@ -1,0 +1,91 @@
+<Netiv="std_wildmatch.ntv">
+○|
+  □|
+    <meta>{
+      "type": "module",
+      "name": "std",
+      "id": "std.wildmatch",
+      "version": "1.0.0",
+      "error": "terminal",
+      "notes": "Standard shell wildcard character glob pattern matcher. Section 1 defines wildmatch supporting multi-character * and single-character ? matches recursively."
+    };
+
+    <edges>{};
+
+    <book>{
+      °function •wildmatch(•pattern: °pointer<°const °u8>, •text: °pointer<°const °u8>) -> °bool {
+        °unsafe {
+            °pointer<°u8> •pat
+            •pat = •pattern
+
+            °pointer<°u8> •txt
+            •txt = •text
+
+            °label check_loop
+            °u8 •pc
+            •pc = *•pat
+
+            °u8 •tc
+            •tc = *•txt
+
+            °if (•pc == 0) {
+                °if (•tc == 0) {
+                    rax = °true
+                    return
+                }
+                rax = °false
+                return
+            }
+
+            °if (•pc == 42) {
+                °pointer<°u8> •next_pat
+                •next_pat = •pat + 1
+
+                °label star_loop
+                °bool •sub_match
+                °call •wildmatch(•next_pat, •txt)
+                •sub_match = rax
+
+                °if (•sub_match == °true) {
+                    rax = °true
+                    return
+                }
+
+                °u8 •curr_tc
+                •curr_tc = *•txt
+                °if (•curr_tc == 0) {
+                    °goto star_fail
+                }
+
+                •txt = •txt + 1
+                °goto star_loop
+
+                °label star_fail
+                rax = °false
+                return
+            }
+
+            °if (•pc == 63) {
+                °if (•tc == 0) {
+                    rax = °false
+                    return
+                }
+                •pat = •pat + 1
+                •txt = •txt + 1
+                °goto check_loop
+            }
+
+            °if (•pc != •tc) {
+                rax = °false
+                return
+            }
+
+            •pat = •pat + 1
+            •txt = •txt + 1
+            °goto check_loop
+        }
+      }
+    };
+  |■
+|●
+</Netiv>

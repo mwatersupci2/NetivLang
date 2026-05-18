@@ -1,0 +1,91 @@
+<Netiv="std_mem.ntv">
+○|
+  □|
+    <meta>{
+      "type": "module",
+      "name": "std",
+      "id": "std.mem",
+      "version": "1.0.0",
+      "error": "terminal",
+      "notes": "Low-level memory management and copy/fill operations. Section 1 defines Arena allocator structure, and Section 2 contains arena initialization, alignment-based allocation, and raw copy/fill utilities."
+    };
+
+    <edges>{};
+
+    <book>{
+      °struct •Arena {
+        •base: °pointer<°void>,
+        •cursor: °pointer<°void>,
+        •capacity: °usize,
+        •used: °usize
+      }
+
+      °function •arena_init(•arena: °pointer<°struct •Arena>, •buffer: °pointer<°void>, •capacity: °usize) -> °void {
+        °unsafe {
+            *(°pointer<°void>*)(•arena) = •buffer
+            *(°pointer<°void>*)(•arena + 8) = •buffer
+            *(°usize*)(•arena + 16) = •capacity
+            *(°usize*)(•arena + 24) = 0
+            return
+        }
+      }
+
+      °function •arena_alloc(•arena: °pointer<°struct •Arena>, •size: °usize) -> °pointer<°void> {
+        °unsafe {
+            °usize •aligned_size
+            •aligned_size = (•size + 7) & 0xFFFFFFFFFFFFFFF8
+
+            °usize •capacity
+            •capacity = *(°usize*)(•arena + 16)
+            °usize •used
+            •used = *(°usize*)(•arena + 24)
+
+            °usize •new_used
+            •new_used = •used + •aligned_size
+            °if (•new_used > •capacity) {
+                rax = 0
+                return
+            }
+
+            °pointer<°void> •allocated_ptr
+            •allocated_ptr = *(°pointer<°void>*)(•arena + 8)
+
+            *(°pointer<°void>*)(•arena + 8) = •allocated_ptr + •aligned_size
+            *(°usize*)(•arena + 24) = •new_used
+
+            rax = •allocated_ptr
+            return
+        }
+      }
+
+      °function •copy(•dest: °pointer<°void>, •src: °pointer<°const °void>, •size: °usize) -> °void {
+        °unsafe {
+            °usize •i
+            •i = 0
+            °label copy_loop
+            °if (•i >= •size) {
+                return
+            }
+            *(°u8*)(•dest + •i) = *(°u8*)(•src + •i)
+            •i = •i + 1
+            °goto copy_loop
+        }
+      }
+
+      °function •fill(•dest: °pointer<°void>, •value: °u8, •size: °usize) -> °void {
+        °unsafe {
+            °usize •i
+            •i = 0
+            °label fill_loop
+            °if (•i >= •size) {
+                return
+            }
+            *(°u8*)(•dest + •i) = •value
+            •i = •i + 1
+            °goto fill_loop
+        }
+      }
+    };
+  |■
+|●
+</Netiv>

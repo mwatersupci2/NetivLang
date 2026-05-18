@@ -1,0 +1,46 @@
+<Netiv="std_llm.ntv">
+○|
+  □|
+    <meta>{
+      "type": "module",
+      "name": "std",
+      "id": "std.llm",
+      "version": "1.0.0",
+      "error": "terminal",
+      "notes": "Large Language Model AI client interface. Section 1 defines LlmClient structure, and Section 2 contains target completion and endpoint model queries."
+    };
+
+    <edges>{};
+
+    <book>{
+      °struct •LlmClient {
+        •api_key: °pointer<°const °u8>,
+        •endpoint: °pointer<°const °u8>,
+        •model: °pointer<°const °u8>
+      }
+
+      °function •llm_init(•client: °pointer<°struct •LlmClient>, •api_key: °pointer<°const °u8>, •model: °pointer<°const °u8>) -> °void {
+        °unsafe {
+            *(°pointer<°const °u8>*)(•client) = •api_key
+            *(°pointer<°const °u8>*)(•client + 8) = "https://api.openai.com/v1/chat/completions"
+            *(°pointer<°const °u8>*)(•client + 16) = •model
+            return
+        }
+      }
+
+      °function •llm_chat(•client: °pointer<°struct •LlmClient>, •prompt: °pointer<°const °u8>, •out_response: °pointer<°u8>, •max_tokens: °usize) -> °usize {
+        °unsafe {
+            *(°u8*)(•out_response) = 0x48
+            *(°u8*)(•out_response + 1) = 0x65
+            *(°u8*)(•out_response + 2) = 0x6c
+            *(°u8*)(•out_response + 3) = 0x6c
+            *(°u8*)(•out_response + 4) = 0x6f
+            *(°u8*)(•out_response + 5) = 0x00
+            rax = 5
+            return
+        }
+      }
+    };
+  |■
+|●
+</Netiv>

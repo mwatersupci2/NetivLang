@@ -1,0 +1,74 @@
+<Netiv="std_io.ntv">
+○|
+  □|
+    <meta>{
+      "type": "module",
+      "name": "std",
+      "id": "std.io",
+      "version": "1.0.0",
+      "error": "terminal",
+      "notes": "Standard input/output and system interaction library. Section 1 defines terminal printing and ticks, Section 2 defines binary file saving, Section 3 handles filesystem crawls, and Section 4 defines native file reading and process spawning via unmanaged syscalls."
+    };
+
+    <edges>{};
+
+    <book>{
+      °function •print(•text: °pointer<°const °u8>) -> °void {
+        °unsafe {
+            rax = syscall 1
+            return
+        }
+      }
+
+      °function •println(•text: °pointer<°const °u8>) -> °void {
+        °unsafe {
+            rax = syscall 1
+            return
+        }
+      }
+
+      °function •now() -> °usize {
+        °unsafe {
+            rax = syscall 2
+            return
+        }
+      }
+
+      °function •resolve(•name: °pointer<°const °u8>) -> °pointer<°const °u8> {
+        °unsafe {
+            rax = syscall 3
+            return
+        }
+      }
+
+      °function •save_binary(•name: °pointer<°const °u8>, •buffer: °pointer<°const °u8>, •size: °usize) -> °usize {
+        °unsafe {
+            rax = syscall 4
+            return
+        }
+      }
+
+      °function •get_files(•dir_path: °pointer<°const °u8>) -> °pointer<°pointer<°const °u8>> {
+        °unsafe {
+            rax = syscall 10
+            return
+        }
+      }
+
+      °function •read_file(•path: °pointer<°const °u8>, •buffer: °pointer<°u8>, •max_size: °usize) -> °usize {
+        °unsafe {
+            rax = syscall 11
+            return
+        }
+      }
+
+      °function •spawn_process(•cmd: °pointer<°const °u8>) -> °usize {
+        °unsafe {
+            rax = syscall 0
+            return
+        }
+      }
+    };
+  |■
+|●
+</Netiv>

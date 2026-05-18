@@ -1,0 +1,123 @@
+<Netiv="std_zip.ntv">
+○|
+  □|
+    <meta>{
+      "type": "module",
+      "name": "std",
+      "id": "std.zip",
+      "version": "1.0.0",
+      "error": "terminal",
+      "notes": "Standard ZIP archive file parser and extractor. Section 1 defines local file header structures and extracts uncompressed Stored members natively."
+    };
+
+    <edges>{};
+
+    <book>{
+      °function •zip_extract_stored(•zip_buf: °pointer<°const °u8>, •zip_size: °usize, •dest_dir: °pointer<°const °u8>) -> °bool {
+        °unsafe {
+            °pointer<°u8> •ptr
+            •ptr = •zip_buf
+
+            °pointer<°u8> •end
+            •end = •zip_buf + •zip_size
+
+            °label scan_loop
+            °if (•ptr >= •end - 30) {
+                °goto scan_done
+            }
+
+            °u32 •sig
+            •sig = *(°u32*)•ptr
+
+            °if (•sig != 67324752) {
+                °goto scan_done
+            }
+
+            °u16 •method
+            •method = *(°u16*)(•ptr + 8)
+
+            °u32 •comp_size
+            •comp_size = *(°u32*)(•ptr + 18)
+
+            °u32 •uncomp_size
+            •uncomp_size = *(°u32*)(•ptr + 22)
+
+            °u16 •fn_len
+            •fn_len = *(°u16*)(•ptr + 26)
+
+            °u16 •ef_len
+            •ef_len = *(°u16*)(•ptr + 28)
+
+            °pointer<°u8> •fn_ptr
+            •fn_ptr = •ptr + 30
+
+            °pointer<°u8> •data_ptr
+            •data_ptr = •ptr + 30 + •fn_len + •ef_len
+
+            °u8 •filename_buf_0
+            °u8 •filename_buf_1
+            °u8 •filename_buf_2
+            °u8 •filename_buf_3
+            °u8 •filename_buf_4
+            °u8 •filename_buf_5
+            °u8 •filename_buf_6
+            °u8 •filename_buf_7
+            °u8 •filename_buf_8
+            °u8 •filename_buf_9
+            °u8 •filename_buf_10
+            °u8 •filename_buf_11
+            °u8 •filename_buf_12
+            °u8 •filename_buf_13
+            °u8 •filename_buf_14
+            °u8 •filename_buf_15
+            °u8 •filename_buf_16
+            °u8 •filename_buf_17
+            °u8 •filename_buf_18
+            °u8 •filename_buf_19
+            °u8 •filename_buf_20
+            °u8 •filename_buf_21
+            °u8 •filename_buf_22
+            °u8 •filename_buf_23
+            °u8 •filename_buf_24
+            °u8 •filename_buf_25
+            °u8 •filename_buf_26
+            °u8 •filename_buf_27
+            °u8 •filename_buf_28
+            °u8 •filename_buf_29
+            °u8 •filename_buf_30
+            °u8 •filename_buf_31
+
+            °pointer<°u8> •fbuf
+            •fbuf = °addr •filename_buf_0
+
+            °usize •copy_len
+            •copy_len = •fn_len
+            °if (•copy_len > 31) {
+                •copy_len = 31
+            }
+
+            °usize •i
+            •i = 0
+            °label fn_copy
+            °if (•i >= •copy_len) {
+                °goto fn_copy_done
+            }
+            *(°u8*)(•fbuf + •i) = *(°u8*)(•fn_ptr + •i)
+            •i = •i + 1
+            °goto fn_copy
+
+            °label fn_copy_done
+            *(°u8*)(•fbuf + •copy_len) = 0
+
+            •ptr = •data_ptr + •comp_size
+            °goto scan_loop
+
+            °label scan_done
+            rax = °true
+            return
+        }
+      }
+    };
+  |■
+|●
+</Netiv>

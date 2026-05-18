@@ -1,0 +1,52 @@
+<Netiv="std_time.ntv">
+○|
+  □|
+    <meta>{
+      "type": "module",
+      "name": "std",
+      "id": "std.time",
+      "version": "1.0.0",
+      "error": "terminal",
+      "notes": "Standard high-precision time ticks and delay loops. Section 1 defines get_ticks using unmanaged system clock ticks, Section 2 contains relative delay millisecond spinlock wait-loops, and Section 3 exposes division-based second conversions."
+    };
+
+    <edges>{};
+
+    <book>{
+      °function •get_ticks() -> °usize {
+        °unsafe {
+            rax = syscall 2
+            return
+        }
+      }
+
+      °function •delay(•ms: °usize) -> °void {
+        °unsafe {
+            °usize •start
+            rax = syscall 2
+            •start = rax
+
+            °label wait_loop
+            °usize •current
+            rax = syscall 2
+            •current = rax
+
+            °usize •elapsed
+            •elapsed = •current - •start
+            °if (•elapsed < •ms) {
+                °goto wait_loop
+            }
+            return
+        }
+      }
+
+      °function •to_seconds(•ticks: °usize) -> °usize {
+        °unsafe {
+            rax = •ticks / 1000
+            return
+        }
+      }
+    };
+  |■
+|●
+</Netiv>
