@@ -40,7 +40,7 @@ This backlog maps out the complete migration path for converting our curated C e
      * Check for single character glob matches (`?`).
      * Check for multi-character glob matches (`*`), branching into standard lookahead iterations.
 
-### [ ] Rank 4: Port `crc32.c` to `std.compress` (Cyclic Redundancy Hashing)
+### [x] Rank 4: Port `crc32.c` to `std.compress` (Cyclic Redundancy Hashing)
 * **Size**: **30,718 bytes** (Medium size)
 * **Goal**: Enable standard 32-bit CRC validation for file formats and SQLite database page crawlers.
 * **Target File**: `src/library/std/std_compress.ntv` (Appended)
