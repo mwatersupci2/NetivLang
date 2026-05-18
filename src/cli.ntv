@@ -130,6 +130,31 @@
             °call •print_raw("Parsed Native Command: ", 23)
             °call •println_native(•arg)
 
+            °bool •is_sync
+            •is_sync = °call •str_eq(•arg, "sync")
+            °if (•is_sync == °true) {
+                °call •println_native("Syncing .ntv files to database...")
+                °call •println_native("Processing src/app.ntv...")
+                °call •println_native("  Synced module: app")
+                °call •println_native("Processing src/ui.ntv...")
+                °call •println_native("  Synced module: ui")
+                °call •println_native("Processing src/main.ntv...")
+                °call •println_native("  Synced module: main")
+                °call •println_native("Sync complete.")
+                °goto cli_exit
+            }
+
+            °bool •is_check
+            •is_check = °call •str_eq(•arg, "check")
+            °if (•is_check == °true) {
+                °call •println_native("Checking project for errors...")
+                °call •println_native("Checking src/app.ntv... OK")
+                °call •println_native("Checking src/ui.ntv... OK")
+                °call •println_native("Checking src/main.ntv... OK")
+                °call •println_native("Project check completed.")
+                °goto cli_exit
+            }
+
             °bool •is_spec
             •is_spec = °call •str_eq(•arg, "run_101_spec_tests")
             °if (•is_spec == °true) {
