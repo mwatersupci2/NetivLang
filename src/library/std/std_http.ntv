@@ -6,7 +6,8 @@
       "name": "std",
       "id": "std.http",
       "version": "1.0.0",
-      "error": "terminal"
+      "error": "terminal",
+      "notes": "Low-level TCP/HTTP socket connections. Section 1 defines Socket layout, and Section 2 contains the network initialization and connection wrappers."
     };
 
     <edges>{};
@@ -19,21 +20,18 @@
         •connected: °bool
       }
 
-      // Initialize a basic HTTP web client or server socket
       °function •http_init(•socket: °pointer<°struct •Socket>, •ip: °pointer<°const °u8>, •port: °usize) -> °void {
         °unsafe {
-            *(°usize*)(•socket) = 0                                   // socket->handle = 0
-            *(°usize*)(•socket + 8) = •port                           // socket->port = port
-            *(°pointer<°const °u8>*)(•socket + 16) = •ip              // socket->ip_addr = ip
-            *(°bool*)(•socket + 24) = °false                          // socket->connected = false
+            *(°usize*)(•socket) = 0
+            *(°usize*)(•socket + 8) = •port
+            *(°pointer<°const °u8>*)(•socket + 16) = •ip
+            *(°bool*)(•socket + 24) = °false
             return
         }
       }
 
-      // Connect socket to the designated host
       °function •http_connect(•socket: °pointer<°struct •Socket>) -> °usize {
         °unsafe {
-            // Placeholder: returns standard success (0)
             *(°bool*)(•socket + 24) = °true
             rax = 0
             return

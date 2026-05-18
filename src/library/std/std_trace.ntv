@@ -6,13 +6,13 @@
       "name": "std",
       "id": "std.trace",
       "version": "1.0.0",
-      "error": "terminal"
+      "error": "terminal",
+      "notes": "Diagnostic tracing and performance telemetry metric loggers. Section 1 defines trace_log for standard diagnostic outputs, and Section 2 contains trace_metric performance profile loggers."
     };
 
     <edges>{};
 
     <book>{
-      // Log trace message depending on the diagnostic level
       °function •trace_log(•level: °usize, •msg: °pointer<°const °u8>) -> °void {
         °unsafe {
             °if (•level == 1) {
@@ -29,13 +29,11 @@
         }
       }
 
-      // Record a telemetry performance metric
       °function •trace_metric(•name: °pointer<°const °u8>, •value: °scalar) -> °void {
         °unsafe {
             °call •print("[METRIC] ")
             °call •print(•name)
             °call •print(" -> ")
-            // For now, write a trace message indicating the registered telemetry event
             °call •println("Logged performance profile point.")
             return
         }

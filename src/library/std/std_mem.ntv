@@ -6,7 +6,8 @@
       "name": "std",
       "id": "std.mem",
       "version": "1.0.0",
-      "error": "terminal"
+      "error": "terminal",
+      "notes": "Low-level memory management and copy/fill operations. Section 1 defines Arena allocator structure, and Section 2 contains arena initialization, alignment-based allocation, and raw copy/fill utilities."
     };
 
     <edges>{};
@@ -19,22 +20,18 @@
         •used: °usize
       }
 
-      // Initialize the arena allocator with a pre-allocated segment
       °function •arena_init(•arena: °pointer<°struct •Arena>, •buffer: °pointer<°void>, •capacity: °usize) -> °void {
         °unsafe {
-            // Write base and cursor pointers
-            *(°pointer<°void>*)(•arena) = •buffer                  // arena->base = buffer
-            *(°pointer<°void>*)(•arena + 8) = •buffer              // arena->cursor = buffer
-            *(°usize*)(•arena + 16) = •capacity                    // arena->capacity = capacity
-            *(°usize*)(•arena + 24) = 0                            // arena->used = 0
+            *(°pointer<°void>*)(•arena) = •buffer
+            *(°pointer<°void>*)(•arena + 8) = •buffer
+            *(°usize*)(•arena + 16) = •capacity
+            *(°usize*)(•arena + 24) = 0
             return
         }
       }
 
-      // Allocate a block of memory from the arena
       °function •arena_alloc(•arena: °pointer<°struct •Arena>, •size: °usize) -> °pointer<°void> {
         °unsafe {
-            // Align allocation size to 8-byte boundary
             °usize •aligned_size
             •aligned_size = (•size + 7) & 0xFFFFFFFFFFFFFFF8
 
@@ -43,19 +40,16 @@
             °usize •used
             •used = *(°usize*)(•arena + 24)
 
-            // Check if allocation exceeds remaining capacity
             °usize •new_used
             •new_used = •used + •aligned_size
             °if (•new_used > •capacity) {
-                // Out of memory: return null pointer
                 rax = 0
                 return
             }
 
             °pointer<°void> •allocated_ptr
-            •allocated_ptr = *(°pointer<°void>*)(•arena + 8)      // allocated_ptr = arena->cursor
+            •allocated_ptr = *(°pointer<°void>*)(•arena + 8)
 
-            // Advance cursor and update used count
             *(°pointer<°void>*)(•arena + 8) = •allocated_ptr + •aligned_size
             *(°usize*)(•arena + 24) = •new_used
 
@@ -64,7 +58,6 @@
         }
       }
 
-      // Memory copy (memcpy equivalent)
       °function •copy(•dest: °pointer<°void>, •src: °pointer<°const °void>, •size: °usize) -> °void {
         °unsafe {
             °usize •i
@@ -79,7 +72,6 @@
         }
       }
 
-      // Memory fill (memset equivalent)
       °function •fill(•dest: °pointer<°void>, •value: °u8, •size: °usize) -> °void {
         °unsafe {
             °usize •i

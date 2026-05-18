@@ -6,13 +6,13 @@
       "name": "std",
       "id": "std.math",
       "version": "1.0.0",
-      "error": "terminal"
+      "error": "terminal",
+      "notes": "Standard high-precision scalar mathematics library. Section 1 defines float and integer abs; Section 2 defines min/max helpers; Section 3 defines pow operations; and Section 4 implements sqrt via Newton-Raphson approximation iterations."
     };
 
     <edges>{};
 
     <book>{
-      // Return absolute value of a scalar floating point number
       °function •abs(•val: °scalar) -> °scalar {
         °if (•val < 0.0) {
             rax = 0.0 - •val
@@ -22,13 +22,11 @@
         return
       }
 
-      // Return absolute value of an integer
       °function •abs_int(•val: °usize) -> °usize {
         °unsafe {
             rax = •val
             cmp_rax 0
             if_z_goto zero_val
-            // Check sign bit
             rax = rax >> 63
             cmp_rax 1
             if_z_goto negative_val
@@ -46,7 +44,6 @@
         }
       }
 
-      // Return the smaller of two scalar values
       °function •min(•a: °scalar, •b: °scalar) -> °scalar {
         °if (•a < •b) {
             rax = •a
@@ -56,7 +53,6 @@
         return
       }
 
-      // Return the larger of two scalar values
       °function •max(•a: °scalar, •b: °scalar) -> °scalar {
         °if (•a > •b) {
             rax = •a
@@ -66,7 +62,6 @@
         return
       }
 
-      // Raise a scalar base to an integer exponent
       °function •pow(•base: °scalar, •exp: °usize) -> °scalar {
         °if (•exp == 0) {
             rax = 1.0
@@ -86,7 +81,6 @@
         °goto pow_loop
       }
 
-      // Calculate square root of a scalar using Newton-Raphson approximation
       °function •sqrt(•val: °scalar) -> °scalar {
         °if (•val < 0.0) {
             rax = 0.0

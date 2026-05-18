@@ -6,19 +6,15 @@
       "name": "std",
       "id": "std.core",
       "version": "1.0.0",
-      "error": "terminal"
+      "error": "terminal",
+      "notes": "Core low-level x64 assembler emitter instructions. Section 1 defines get_primitive_size type mappings; Section 2 exposes pointer address-of and dereference emitters (QWORD, DWORD, BYTE); Section 3 handles index scale ModR/M and immediate sizeof loaders; and Section 4 defines SSE float/int conversion and relative jump conditional branch emitters."
     };
 
     <edges>{};
 
     <book>{
-      // Query primitive size allocations on x64 level
       °function •get_primitive_size(•type_id: °usize) -> °usize {
         °unsafe {
-            // Type ID mapping:
-            // 1: °bool (1 byte)
-            // 4: °f32 (4 bytes)
-            // 2: °usize / °scalar / °f64 / pointers (8 bytes)
             rax = •type_id
             cmp_rax 1
             if_z_goto bool_size
@@ -40,15 +36,12 @@
         }
       }
 
-      // Emitter for address-of operator (°addr) -> LEA rax, [rbp - offset]
       °function •emit_op_addr(•offset: °usize) -> °void {
         °unsafe {
-            // Write standard LEA bytes: 48 8D 85
             rax = 0x48; *ptr = rax_u8; ptr = ptr + 1
             rax = 0x8D; *ptr = rax_u8; ptr = ptr + 1
             rax = 0x85; *ptr = rax_u8; ptr = ptr + 1
 
-            // Compute and write 4-byte negative offset representation
             rax = 0
             rax = rax - •offset
             *ptr = rax_u8; ptr = ptr + 1
@@ -59,7 +52,6 @@
         }
       }
 
-      // Emitter for QWORD pointer dereferencing (°deref for 64-bit) -> mov rax, [rax]
       °function •emit_op_deref_qword() -> °void {
         °unsafe {
             rax = 0x48; *ptr = rax_u8; ptr = ptr + 1
@@ -69,7 +61,6 @@
         }
       }
 
-      // Emitter for DWORD pointer dereferencing (°deref for 32-bit) -> mov eax, [rax]
       °function •emit_op_deref_dword() -> °void {
         °unsafe {
             rax = 0x8B; *ptr = rax_u8; ptr = ptr + 1
@@ -78,7 +69,6 @@
         }
       }
 
-      // Emitter for BYTE pointer dereferencing (°deref for 8-bit) -> movzx eax, byte ptr [rax]
       °function •emit_op_deref_byte() -> °void {
         °unsafe {
             rax = 0x0F; *ptr = rax_u8; ptr = ptr + 1
@@ -88,18 +78,12 @@
         }
       }
 
-      // Emitter for array/vector indexing (°index) -> mov rax, [rbx + rcx * scale]
       °function •emit_op_index(•scale: °usize) -> °void {
         °unsafe {
-            // Write standard ModR/M and base instruction bytes
             rax = 0x48; *ptr = rax_u8; ptr = ptr + 1
             rax = 0x8B; *ptr = rax_u8; ptr = ptr + 1
             rax = 0x04; *ptr = rax_u8; ptr = ptr + 1
 
-            // Scale multiplier to SIB byte translation:
-            // 4: 0x8B (rcx * 4)
-            // 8: 0xCB (rcx * 8)
-            // default: 0x0B (rcx * 1)
             rax = •scale
             cmp_rax 4
             if_z_goto scale_four
@@ -121,14 +105,11 @@
         }
       }
 
-      // Emitter for size queries (°sizeof) -> mov rax, imm64
       °function •emit_op_sizeof(•size: °usize) -> °void {
         °unsafe {
-            // mov rax opcode: 48 B8
             rax = 0x48; *ptr = rax_u8; ptr = ptr + 1
             rax = 0xB8; *ptr = rax_u8; ptr = ptr + 1
 
-            // Write 8-byte immediate size value
             rax = •size
             *ptr = rax_u8; ptr = ptr + 1
             rax = rax >> 8; *ptr = rax_u8; ptr = ptr + 1
@@ -142,7 +123,6 @@
         }
       }
 
-      // Emitter for float-to-int cast conversion -> cvttsd2si rax, xmm0
       °function •emit_cast_double_to_int() -> °void {
         °unsafe {
             rax = 0xF2; *ptr = rax_u8; ptr = ptr + 1
@@ -154,7 +134,6 @@
         }
       }
 
-      // Emitter for int-to-float cast conversion -> cvtsi2sd xmm0, rax
       °function •emit_cast_int_to_double() -> °void {
         °unsafe {
             rax = 0xF2; *ptr = rax_u8; ptr = ptr + 1
@@ -166,20 +145,16 @@
         }
       }
 
-      // Emitter for conditional jump zero (°if) -> cmp rax, 0; jz offset
       °function •emit_op_if_z(•jmp_offset: °usize) -> °void {
         °unsafe {
-            // Write cmp rax, 0 bytes: 48 83 F8 00
             rax = 0x48; *ptr = rax_u8; ptr = ptr + 1
             rax = 0x83; *ptr = rax_u8; ptr = ptr + 1
             rax = 0xF8; *ptr = rax_u8; ptr = ptr + 1
             rax = 0x00; *ptr = rax_u8; ptr = ptr + 1
 
-            // Write jz opcode: 0F 84
             rax = 0x0F; *ptr = rax_u8; ptr = ptr + 1
             rax = 0x84; *ptr = rax_u8; ptr = ptr + 1
 
-            // Write 4-byte jump offset value
             rax = •jmp_offset
             *ptr = rax_u8; ptr = ptr + 1
             rax = rax >> 8; *ptr = rax_u8; ptr = ptr + 1

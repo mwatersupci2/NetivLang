@@ -6,7 +6,8 @@
       "name": "std",
       "id": "std.build",
       "version": "1.0.0",
-      "error": "terminal"
+      "error": "terminal",
+      "notes": "Standard package manifest and compiler build layout bindings. Section 1 defines Package structure, and Section 2 contains the package initialization stub."
     };
 
     <edges>{};
@@ -18,7 +19,6 @@
         •entry_page: °pointer<°const °u8>
       }
 
-      // Initialize a compiler build package manifest structure
       °function •package_init(•pkg: °pointer<°struct •Package>, •name: °pointer<°const °u8>, •version: °pointer<°const °u8>) -> °void {
         °unsafe {
             *(°pointer<°const °u8>*)(•pkg) = •name

@@ -6,7 +6,7 @@
       "name": "std",
       "id": "std.mcp",
       "version": "1.0.0",
-      "error": "terminal"
+      "notes": "Model Context Protocol interface and JSON-RPC stubs. Section 1 defines McpTool and McpContext layouts; Section 2 exposes protocol initialization; and Section 3 defines response emitters and tool metadata bindings."
     };
 
     <edges>{};
@@ -25,23 +25,20 @@
         •initialized: °bool
       }
 
-      // Initialize the MCP server context structure
       °function •mcp_init(•ctx: °pointer<°struct •McpContext>) -> °void {
         °unsafe {
-            *(°pointer<°const °u8>*)(•ctx) = "2024-11-05"             // ctx->protocol_version = "2024-11-05"
-            *(°pointer<°const °u8>*)(•ctx + 8) = "Netiv-MCP-Server"   // ctx->server_name = "Netiv-MCP-Server"
-            *(°pointer<°const °u8>*)(•ctx + 16) = "1.0.0"             // ctx->server_version = "1.0.0"
-            *(°bool*)(•ctx + 24) = °false                             // ctx->initialized = false
+            *(°pointer<°const °u8>*)(•ctx) = "2024-11-05"
+            *(°pointer<°const °u8>*)(•ctx + 8) = "Netiv-MCP-Server"
+            *(°pointer<°const °u8>*)(•ctx + 16) = "1.0.0"
+            *(°bool*)(•ctx + 24) = °false
             return
         }
       }
 
-      // Write a standard JSON-RPC response frame to stdout
       °function •mcp_write_response(•id: °usize, •result_json: °pointer<°const °u8>) -> °void {
         °unsafe {
             °call •print("{\"jsonrpc\":\"2.0\",\"id\":")
             
-            // Format ID (simplistic integer write)
             °if (•id == 1) {
                 °call •print("1")
             }
@@ -59,7 +56,6 @@
         }
       }
 
-      // Populate a registered tool details
       °function •mcp_tool_init(•tool: °pointer<°struct •McpTool>, •name: °pointer<°const °u8>, •desc: °pointer<°const °u8>) -> °void {
         °unsafe {
             *(°pointer<°const °u8>*)(•tool) = •name

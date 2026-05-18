@@ -6,13 +6,13 @@
       "name": "adj",
       "id": "adj.tui",
       "version": "1.0.0",
-      "error": "terminal"
+      "error": "terminal",
+      "notes": "Low-level ANSI TUI and screen formatting engine. Section 1 defines terminal clear, reset, and cursor visibility handlers; Section 2 maps HSL curated color palettes; and Section 3 handles absolute coordinate jumps and visual panel frame drawing."
     };
 
     <edges>{};
 
     <book>{
-      // Clear the console screen and home cursor (ANSI: Esc[2J Esc[H)
       °function •tui_clear() -> °void {
         °unsafe {
             °call •print("\x1b[2J\x1b[H")
@@ -20,7 +20,6 @@
         }
       }
 
-      // Hide or show the terminal text cursor (ANSI: Esc[?25l / Esc[?25h)
       °function •tui_show_cursor(•show: °bool) -> °void {
         °unsafe {
             °if (•show == °true) {
@@ -32,7 +31,6 @@
         }
       }
 
-      // Reset all terminal text colors and attributes to default (ANSI: Esc[0m)
       °function •tui_reset() -> °void {
         °unsafe {
             °call •print("\x1b[0m")
@@ -40,45 +38,37 @@
         }
       }
 
-      // Set text foreground and background colors using curated ANSI HSL palettes
       °function •tui_color(•fg: °usize, •bg: °usize) -> °void {
         °unsafe {
-            // ANSI 256-color escape: Esc[38;5;{fg}m Esc[48;5;{bg}m
             °call •print("\x1b[38;5;")
             
-            // For now, since string interpolation is not primitive, write a short number printer or standard codes
-            // We can write basic color profiles for key Sleek themes:
-            // Profile 1: Sleek Slate/Blue
             °if (•fg == 1) {
-                °call •print("117") // Light slate blue
+                °call •print("117")
             }
             °if (•fg == 2) {
-                °call •print("121") // Mint green
+                °call •print("121")
             }
             °if (•fg == 3) {
-                °call •print("203") // Coral red
+                °call •print("203")
             }
             °if (•fg == 0) {
-                °call •print("250") // Light gray
+                °call •print("250")
             }
             °call •print("m\x1b[48;5;")
             
             °if (•bg == 1) {
-                °call •print("235") // Sleek Dark Charcoal (3% lightness equivalent)
+                °call •print("235")
             }
             °if (•bg == 0) {
-                °call •print("0")   // Black
+                °call •print("0")
             }
             °call •print("m")
             return
         }
       }
 
-      // Move terminal cursor to absolute 1-indexed coordinates (ANSI: Esc[{y};{x}H)
       °function •tui_move(•x: °usize, •y: °usize) -> °void {
         °unsafe {
-            // For general move, we can write coordinate cursor jumps using hardcoded standard positions:
-            // In standalone TUI we jump to preset lines for visual panels:
             °if (•y == 1) {
                 °call •print("\x1b[1;")
             }
@@ -120,17 +110,15 @@
         }
       }
 
-      // Draw a visually stunning TUI header panel with double-borders
       °function •tui_draw_header(•title: °pointer<°const °u8>) -> °void {
         °unsafe {
             °call •tui_move(1, 1)
-            °call •tui_color(1, 1) // Slate Blue on Dark Charcoal
+            °call •tui_color(1, 1)
             °call •print("┌──────────────────────────────────────────────┐")
             
             °call •tui_move(1, 2)
             °call •print("│ ")
             °call •print(•title)
-            // Fill with trailing spacing
             °call •tui_move(48, 2)
             °call •print("│")
             

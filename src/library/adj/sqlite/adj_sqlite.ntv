@@ -6,7 +6,8 @@
       "name": "adj",
       "id": "adj.sqlite",
       "version": "1.0.0",
-      "error": "terminal"
+      "error": "terminal",
+      "notes": "SQLite interface stubs. Section 1 defines the SqliteDb state structure, and Section 2 contains the database initialization and command execution stubs."
     };
 
     <edges>{};
@@ -18,20 +19,17 @@
         •open: °bool
       }
 
-      // Initialize SQLite database instance
       °function •sqlite_init(•db: °pointer<°struct •SqliteDb>, •path: °pointer<°const °u8>) -> °void {
         °unsafe {
-            *(°usize*)(•db) = 0                                       // db->handle = 0
-            *(°pointer<°const °u8>*)(•db + 8) = •path                 // db->path = path
-            *(°bool*)(•db + 16) = °false                              // db->open = false
+            *(°usize*)(•db) = 0
+            *(°pointer<°const °u8>*)(•db + 8) = •path
+            *(°bool*)(•db + 16) = °false
             return
         }
       }
 
-      // Execute SQL command against database caching layer
       °function •sqlite_execute(•db: °pointer<°struct •SqliteDb>, •query: °pointer<°const °u8>) -> °usize {
         °unsafe {
-            // Placeholder: returns success 0
             rax = 0
             return
         }

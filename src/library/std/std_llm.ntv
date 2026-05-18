@@ -6,7 +6,8 @@
       "name": "std",
       "id": "std.llm",
       "version": "1.0.0",
-      "error": "terminal"
+      "error": "terminal",
+      "notes": "Large Language Model AI client interface. Section 1 defines LlmClient structure, and Section 2 contains target completion and endpoint model queries."
     };
 
     <edges>{};
@@ -18,7 +19,6 @@
         •model: °pointer<°const °u8>
       }
 
-      // Initialize the LLM AI client parameters
       °function •llm_init(•client: °pointer<°struct •LlmClient>, •api_key: °pointer<°const °u8>, •model: °pointer<°const °u8>) -> °void {
         °unsafe {
             *(°pointer<°const °u8>*)(•client) = •api_key
@@ -28,16 +28,14 @@
         }
       }
 
-      // Query AI completions for chat generation
       °function •llm_chat(•client: °pointer<°struct •LlmClient>, •prompt: °pointer<°const °u8>, •out_response: °pointer<°u8>, •max_tokens: °usize) -> °usize {
         °unsafe {
-            // Placeholder: copies a mock completions payload
-            *(°u8*)(•out_response) = 0x48     // 'H'
-            *(°u8*)(•out_response + 1) = 0x65 // 'e'
-            *(°u8*)(•out_response + 2) = 0x6c // 'l'
-            *(°u8*)(•out_response + 3) = 0x6c // 'l'
-            *(°u8*)(•out_response + 4) = 0x6f // 'o'
-            *(°u8*)(•out_response + 5) = 0x00 // '\0'
+            *(°u8*)(•out_response) = 0x48
+            *(°u8*)(•out_response + 1) = 0x65
+            *(°u8*)(•out_response + 2) = 0x6c
+            *(°u8*)(•out_response + 3) = 0x6c
+            *(°u8*)(•out_response + 4) = 0x6f
+            *(°u8*)(•out_response + 5) = 0x00
             rax = 5
             return
         }

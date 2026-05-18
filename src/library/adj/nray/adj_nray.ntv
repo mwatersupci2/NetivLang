@@ -6,7 +6,8 @@
       "name": "adj",
       "id": "adj.nray",
       "version": "1.0.0",
-      "error": "terminal"
+      "error": "terminal",
+      "notes": "Native Raylib graphics wrapper stubs. Section 1 defines Color and Vector3 layout models, and Section 2 exposes window and pixel rendering abstractions."
     };
 
     <edges>{};
@@ -25,15 +26,12 @@
         •z: °scalar
       }
 
-      // Initialize the graphics display window (Raylib equivalent)
       °function •nray_init_window(•width: °usize, •height: °usize, •title: °pointer<°const °u8>) -> °void {
         °unsafe {
-            // Placeholder: stub for native display initialization
             return
         }
       }
 
-      // Draw pixel on screen at target coordinates
       °function •nray_draw_pixel(•x: °usize, •y: °usize, •color: °pointer<°struct •Color>) -> °void {
         °unsafe {
             return

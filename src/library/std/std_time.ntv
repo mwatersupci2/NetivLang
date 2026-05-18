@@ -6,22 +6,20 @@
       "name": "std",
       "id": "std.time",
       "version": "1.0.0",
-      "error": "terminal"
+      "error": "terminal",
+      "notes": "Standard high-precision time ticks and delay loops. Section 1 defines get_ticks using unmanaged system clock ticks, Section 2 contains relative delay millisecond spinlock wait-loops, and Section 3 exposes division-based second conversions."
     };
 
     <edges>{};
 
     <book>{
-      // Return high-precision system millisecond ticks
       °function •get_ticks() -> °usize {
         °unsafe {
-            // Wraps high-precision timer syscall 2
             rax = syscall 2
             return
         }
       }
 
-      // Delay thread execution for a duration in milliseconds
       °function •delay(•ms: °usize) -> °void {
         °unsafe {
             °usize •start
@@ -42,7 +40,6 @@
         }
       }
 
-      // Convert millisecond ticks to a rounded second count
       °function •to_seconds(•ticks: °usize) -> °usize {
         °unsafe {
             rax = •ticks / 1000

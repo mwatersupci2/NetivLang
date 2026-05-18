@@ -6,7 +6,8 @@
       "name": "std",
       "id": "std.restful",
       "version": "1.0.0",
-      "error": "terminal"
+      "error": "terminal",
+      "notes": "Standard RESTful HTTP API client utilities. Section 1 defines RestRequest and RestResponse structures, and Section 2 contains REST client connection and JSON dispatch stubs."
     };
 
     <edges>{};
@@ -26,25 +27,22 @@
         •headers: °pointer<°const °u8>
       }
 
-      // Initialize a REST request structure
       °function •rest_init(•req: °pointer<°struct •RestRequest>, •method: °pointer<°const °u8>, •host: °pointer<°const °u8>, •path: °pointer<°const °u8>) -> °void {
         °unsafe {
             *(°pointer<°const °u8>*)(•req) = •method
             *(°pointer<°const °u8>*)(•req + 8) = •host
             *(°pointer<°const °u8>*)(•req + 16) = •path
-            *(°pointer<°const °u8>*)(•req + 24) = "" // body
-            *(°pointer<°const °u8>*)(•req + 32) = "" // headers
+            *(°pointer<°const °u8>*)(•req + 24) = ""
+            *(°pointer<°const °u8>*)(•req + 32) = ""
             return
         }
       }
 
-      // Send the REST request and populate the response parameters
       °function •rest_send(•req: °pointer<°struct •RestRequest>, •resp: °pointer<°struct •RestResponse>) -> °usize {
         °unsafe {
-            // Placeholder: stub for REST connection and transmission
-            *(°usize*)(•resp) = 200 // Status OK
-            *(°pointer<°const °u8>*)(•resp + 8) = "{\"status\":\"success\"}" // body
-            *(°pointer<°const °u8>*)(•resp + 16) = "Content-Type: application/json" // headers
+            *(°usize*)(•resp) = 200
+            *(°pointer<°const °u8>*)(•resp + 8) = "{\"status\":\"success\"}"
+            *(°pointer<°const °u8>*)(•resp + 16) = "Content-Type: application/json"
             rax = 200
             return
         }
