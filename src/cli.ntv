@@ -152,8 +152,9 @@
                 °call •println_native("  Copied standard libraries to lib/ folder.")
                 °call •println_native("Created folder: db/")
                 °call •println_native("  Spawned schema.sql and initialized blank netiv.db database.")
-                °call •println_native("Updating language guide at docs/language-guide.md...")
-                °call •println_native("SUCCESS: Workspace initialized, lib/ & db/ populated, and language guide updated!")
+                °call •println_native("Created folder: docs/")
+                °call •println_native("  Spawned language-guide.md and reserved_words.list reference guides.")
+                °call •println_native("SUCCESS: Workspace initialized, lib/, db/ & docs/ populated!")
                 °goto cli_exit
             }
 
