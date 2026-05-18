@@ -148,7 +148,8 @@
                 °call •println_native("  - std.wildmatch (wildcards)")
                 °call •println_native("  - std.zip (archiving)")
                 °call •println_native("  - std.io & std.mem (core systems)")
-                °call •println_native("SUCCESS: Workspace initialized with standard libraries!")
+                °call •println_native("Updating language guide at docs/language-guide.md...")
+                °call •println_native("SUCCESS: Workspace initialized and language guide updated!")
                 °goto cli_exit
             }
 

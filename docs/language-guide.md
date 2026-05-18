@@ -1,4 +1,4 @@
-# NetivLang Language Guide
+# NetivLang Language Guide (Netiv Lang 1.03 Spec)
 
 NetivLang is an experimental programming language and compiler architecture focused on deterministic source structure, graph-aware compilation, database-backed code memory, and AI-auditable development workflows.
 
