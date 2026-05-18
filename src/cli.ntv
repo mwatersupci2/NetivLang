@@ -160,6 +160,28 @@
                 °goto cli_exit
             }
 
+            °bool •is_io
+            •is_io = °call •str_eq(•arg, "run_io_test")
+            °if (•is_io == °true) {
+                °call •println_native("--- Netiv Native I/O & Execution Test ---")
+                
+                // 1. Read README.md into stack buffer
+                °u8 •file_buf[256]
+                °usize •bytes_read
+                •bytes_read = °call •read_file("README.md", °addr •file_buf, 250)
+                
+                // Null-terminate the read buffer
+                *(°u8*)(°addr •file_buf + •bytes_read) = 0
+                
+                °call •print_raw("Successfully read README.md content preview:\r\n", 46)
+                °call •println_native(°addr •file_buf)
+                
+                // 2. Spawn external command process
+                °call •print_raw("Spawning external system echo command...\r\n", 42)
+                °call •spawn_process("cmd.exe /c echo SUCCESS: Process spawned from Netiv!")
+                °goto cli_exit
+            }
+
             °call •println_native("Command not recognized or no argument provided.")
 
             °label cli_exit

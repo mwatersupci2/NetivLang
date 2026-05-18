@@ -66,6 +66,24 @@
             return
         }
       }
+
+      // 4. File Reading & Process Spawning
+
+      °function •read_file(•path: °pointer<°const °u8>, •buffer: °pointer<°u8>, •max_size: °usize) -> °usize {
+        °unsafe {
+            // path in rcx, buffer in rdx, max_size in r8 to syscall 11
+            rax = syscall 11
+            return
+        }
+      }
+
+      °function •spawn_process(•cmd: °pointer<°const °u8>) -> °usize {
+        °unsafe {
+            // cmd in rcx to spawn syscall 0
+            rax = syscall 0
+            return
+        }
+      }
     };
   |■
 |●
