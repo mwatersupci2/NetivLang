@@ -1,0 +1,63 @@
+<Netiv="std_compress.ntv">
+○|
+  □|
+    <meta>{
+      "type": "module",
+      "name": "std",
+      "id": "std.compress",
+      "version": "1.0.0",
+      "error": "terminal",
+      "notes": "Standard arithmetic compression and data checksum validation module. Section 1 defines adler32, and Section 2 contains crc32 with 256-word polynomial lookup registers."
+    };
+
+    <edges>{};
+
+    <book>{
+      °function •adler32(•adler: °usize, •buf: °pointer<°const °u8>, •len: °usize) -> °usize {
+        °unsafe {
+            °usize •base
+            •base = 65521
+
+            °usize •sum2
+            •sum2 = (•adler >> 16) & 65535
+
+            °usize •adler_val
+            •adler_val = •adler & 65535
+
+            °pointer<°u8> •ptr
+            •ptr = •buf
+
+            °usize •remaining
+            •remaining = •len
+
+            °label loop_start
+            °if (•remaining == 0) {
+                °goto loop_done
+            }
+
+            °usize •b
+            •b = *•ptr
+            •ptr = •ptr + 1
+
+            •adler_val = •adler_val + •b
+            °if (•adler_val >= •base) {
+                •adler_val = •adler_val - •base
+            }
+
+            •sum2 = •sum2 + •adler_val
+            °if (•sum2 >= •base) {
+                •sum2 = •sum2 - •base
+            }
+
+            •remaining = •remaining - 1
+            °goto loop_start
+
+            °label loop_done
+            rax = •adler_val | (•sum2 << 16)
+            return
+        }
+      }
+    };
+  |■
+|●
+</Netiv>

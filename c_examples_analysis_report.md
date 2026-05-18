@@ -6,7 +6,7 @@ This backlog maps out the complete migration path for converting our curated C e
 
 ## 💎 The Conversion TODO Backlog (Ranked by Size)
 
-### [ ] Rank 1: Port `varint.c` to `std.ds` (Variable Integers)
+### [x] Rank 1: Port `varint.c` to `std.ds` (Variable Integers)
 * **Size**: **1,101 bytes** (Easiest / Smallest)
 * **Goal**: Enable highly compressed, variable-length integer serialization for Netiv binary stream parsers.
 * **Target File**: `src/library/std/std_ds.ntv`
@@ -18,7 +18,7 @@ This backlog maps out the complete migration path for converting our curated C e
   4. Port standard overflow and bitwise shift checks (`<< 7`, `>> 7`, and MSB masks).
   5. Add test coverage in `src/library/std/std_test_spec_101.ntv` to ensure correct serialization and round-tripping of values up to 64 bits.
 
-### [ ] Rank 2: Port `adler32.c` to `std.compress` (Adler Checksum)
+### [x] Rank 2: Port `adler32.c` to `std.compress` (Adler Checksum)
 * **Size**: **5,128 bytes** (Second smallest)
 * **Goal**: Provide lightning-fast data block verification stubs for standard memory streams and file validation.
 * **Target File**: `src/library/std/std_compress.ntv`
@@ -28,7 +28,7 @@ This backlog maps out the complete migration path for converting our curated C e
   2. Translate Zlib's unrolled loop optimizations (`DO16`) into standard label-based branch iterations (`°label`, `°goto`).
   3. Implement `°function •adler32(•adler: °usize, •buf: °pointer<°const °u8>, •len: °usize) -> °usize`.
 
-### [ ] Rank 3: Port `wildmatch.c` to `std.wildmatch` (Wildcard Globbing)
+### [x] Rank 3: Port `wildmatch.c` to `std.wildmatch` (Wildcard Globbing)
 * **Size**: **9,769 bytes** (Third smallest)
 * **Goal**: Empower the compiler and CLI with powerful wildcard globbing patterns (`*`, `?`, `[]`) to handle recursive source file crawling natively.
 * **Target File**: `src/library/std/std_wildmatch.ntv`
