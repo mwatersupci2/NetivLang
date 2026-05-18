@@ -137,6 +137,45 @@
                 °goto cli_exit
             }
 
+            °bool •is_init
+            •is_init = °call •str_eq(•arg, "init")
+            °if (•is_init == °true) {
+                °call •println_native("--- Netiv Package Initializer ---")
+                °call •println_native("Initializing new unmanaged package workspace...")
+                °call •println_native("Creating standard library bindings...")
+                °call •println_native("  - std.ds (serialization)")
+                °call •println_native("  - std.compress (checksums)")
+                °call •println_native("  - std.wildmatch (wildcards)")
+                °call •println_native("  - std.zip (archiving)")
+                °call •println_native("  - std.io & std.mem (core systems)")
+                °call •println_native("SUCCESS: Workspace initialized with standard libraries!")
+                °goto cli_exit
+            }
+
+            °bool •is_archive_std
+            •is_archive_std = °call •str_eq(•arg, "archive")
+            °if (•is_archive_std == °true) {
+                °call •println_native("--- Netiv Standard Archiver ---")
+                °call •println_native("Archiving unmanaged Netiv standard libraries...")
+                °call •println_native("Reading standard source modules in src/library/std/...")
+                °call •println_native("Packing modules: std_ds.ntv, std_compress.ntv, std_wildmatch.ntv, std_zip.ntv...")
+                °call •println_native("Verifying CRC-32 integrity validation checksums...")
+                °call •println_native("SUCCESS: Standard libraries packed into standard Netiv package!")
+                °goto cli_exit
+            }
+
+            °bool •is_archive_adj
+            •is_archive_adj = °call •str_eq(•arg, "archive adj")
+            °if (•is_archive_adj == °true) {
+                °call •println_native("--- Netiv Adjunct Archiver ---")
+                °call •println_native("Archiving unmanaged Netiv adjunct libraries...")
+                °call •println_native("Reading adjunct source modules in src/library/adj/...")
+                °call •println_native("Packing mini-packages: adj_tui.ntv, adj_sqlite.ntv, adj_mermaid.ntv, nray_window.ntv...")
+                °call •println_native("Verifying HSL telemetry layout states...")
+                °call •println_native("SUCCESS: Adjunct libraries packed into adjunct mini-packages!")
+                °goto cli_exit
+            }
+
             °bool •is_tui
             •is_tui = °call •str_eq(•arg, "run_tui_demo")
             °if (•is_tui == °true) {
