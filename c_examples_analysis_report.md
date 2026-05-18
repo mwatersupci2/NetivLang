@@ -50,7 +50,7 @@ This backlog maps out the complete migration path for converting our curated C e
   2. Implement `°function •crc32(•crc: °usize, •buf: °pointer<°const °u8>, •len: °usize) -> °usize`.
   3. Integrate checksum validation checks inside standard file utilities in `std_io.ntv`.
 
-### [ ] Rank 5: Port Minizip Decompression (`miniunz.c` / `unzip.c`) to `std.zip` (Archive Extractors)
+### [x] Rank 5: Port Minizip Decompression (`miniunz.c` / `unzip.c`) to `std.zip` (Archive Extractors)
 * **Size**: **88,508 bytes** combined (Large size)
 * **Goal**: Enable the native Netiv compiler to extract library modules, packages, and toolchains directly from zipped distributions.
 * **Target File**: `src/library/std/std_zip.ntv`
