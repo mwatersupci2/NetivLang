@@ -156,6 +156,7 @@
                 °call •println_native("  Spawned language-guide.md and reserved_words.list reference guides.")
                 °call •println_native("Created project folders: src/, build/, bin/, logs/")
                 °call •println_native("  Spawned initial sample program: src/main.ntv")
+                °call •println_native("Spawned workspace assets: .gitignore, CONTRIBUTING.md, LICENSE, README.md")
                 °call •println_native("SUCCESS: Workspace initialized, project folders populated, ready to build!")
                 °goto cli_exit
             }
