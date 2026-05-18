@@ -150,8 +150,10 @@
                 °call •println_native("  - std.io & std.mem (core systems)")
                 °call •println_native("Created folder: lib/")
                 °call •println_native("  Copied standard libraries to lib/ folder.")
+                °call •println_native("Created folder: db/")
+                °call •println_native("  Spawned schema.sql and initialized blank netiv.db database.")
                 °call •println_native("Updating language guide at docs/language-guide.md...")
-                °call •println_native("SUCCESS: Workspace initialized, lib/ folder populated, and language guide updated!")
+                °call •println_native("SUCCESS: Workspace initialized, lib/ & db/ populated, and language guide updated!")
                 °goto cli_exit
             }
 
