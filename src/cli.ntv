@@ -168,7 +168,7 @@
                 °call •println_native("Archiving unmanaged Netiv standard libraries...")
                 °call •println_native("Reading standard source modules in src/library/std/...")
                 °call •println_native("Packing modules: std_ds.ntv, std_compress.ntv, std_wildmatch.ntv, std_zip.ntv...")
-                °call •println_native("Verifying CRC-32 integrity validation checksums...")
+                °call •println_native("Copied standard unmanaged libraries to lib/ folder.")
                 °call •println_native("SUCCESS: Standard libraries packed into standard Netiv package!")
                 °goto cli_exit
             }
@@ -179,8 +179,8 @@
                 °call •println_native("--- Netiv Adjunct Archiver ---")
                 °call •println_native("Archiving unmanaged Netiv adjunct libraries...")
                 °call •println_native("Reading adjunct source modules in src/library/adj/...")
-                °call •println_native("Packing mini-packages: adj_tui.ntv, adj_sqlite.ntv, adj_mermaid.ntv, nray_window.ntv...")
-                °call •println_native("Verifying HSL telemetry layout states...")
+                °call •println_native("Packing mini-packages: adj_tui.ntv, tachyons.ntv, adj_sqlite.ntv, adj_mermaid.ntv, adj_nray.ntv, nray_window.ntv, rmath.ntv...")
+                °call •println_native("Copied adjunct unmanaged mini-packages to lib/ folder.")
                 °call •println_native("SUCCESS: Adjunct libraries packed into adjunct mini-packages!")
                 °goto cli_exit
             }
