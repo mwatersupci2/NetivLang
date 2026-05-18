@@ -153,7 +153,7 @@
                 °call •println_native("Created folder: db/")
                 °call •println_native("  Spawned schema.sql and initialized blank netiv.db database.")
                 °call •println_native("Created folder: docs/")
-                °call •println_native("  Spawned language-guide.md and reserved_words.list reference guides.")
+                °call •println_native("  Spawned language guide, reserved words list, todo list, asbuilt, and project specs.")
                 °call •println_native("Created project folders: src/, build/, bin/, logs/")
                 °call •println_native("  Spawned initial sample program: src/main.ntv")
                 °call •println_native("Spawned workspace assets: .gitignore, CONTRIBUTING.md, LICENSE, README.md")
