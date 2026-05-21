@@ -1,0 +1,38 @@
+<Netiv="research/rocn/rocn-complex-map.ntv">
+○|
+  □|
+    <meta>{
+      name: "rocn.complex_map",
+      kind: "research-flatfile",
+      namespace: "research.rocn",
+      version: "0.1.0",
+      status: "research-stub",
+      source_model: "conceptual map",
+      upstream_project: "ROCm/HIP",
+      upstream_repo: "ROCm/hip",
+      upstream_file: "complex_math_api.rst",
+      upstream_ref: "develop",
+      copied_source: false,
+      book_rule: "Book contains method and function stubs only."
+    };</meta>
+
+    <edges>{
+      %% graph TD
+      %%   ROCNComplexMap --> ComplexScalar
+      %%   ROCNComplexMap --> ComplexVector
+      %%   ROCNComplexMap --> ComplexTransform
+    };</edges>
+
+    <book>
+      °method •DefineROCNComplexMap() -> °void {
+        °call •RecordROCNComplexSteps();
+        °return;
+      };
+
+      °function •RecordROCNComplexSteps() -> °void {
+        °return;
+      };
+    </book>
+  |■
+|●
+</Netiv>
