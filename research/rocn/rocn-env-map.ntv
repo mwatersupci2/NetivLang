@@ -1,0 +1,38 @@
+<Netiv="research/rocn/rocn-env-map.ntv">
+○|
+  □|
+    <meta>{
+      name: "rocn.env_map",
+      kind: "research-flatfile",
+      namespace: "research.rocn",
+      version: "0.1.0",
+      status: "research-stub",
+      source_model: "conceptual map",
+      upstream_project: "ROCm/HIP",
+      upstream_repo: "ROCm/hip",
+      upstream_file: "env_variables.rst",
+      upstream_ref: "develop",
+      copied_source: false,
+      book_rule: "Book contains method and function stubs only."
+    };</meta>
+
+    <edges>{
+      %% graph TD
+      %%   ROCNEnvMap --> EnvRead
+      %%   ROCNEnvMap --> EnvPolicy
+      %%   ROCNEnvMap --> EnvReport
+    };</edges>
+
+    <book>
+      °method •DefineROCNEnvMap() -> °void {
+        °call •RecordROCNEnvSteps();
+        °return;
+      };
+
+      °function •RecordROCNEnvSteps() -> °void {
+        °return;
+      };
+    </book>
+  |■
+|●
+</Netiv>
