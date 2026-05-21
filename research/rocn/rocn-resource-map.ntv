@@ -1,0 +1,38 @@
+<Netiv="research/rocn/rocn-resource-map.ntv">
+○|
+  □|
+    <meta>{
+      name: "rocn.resource_map",
+      kind: "research-flatfile",
+      namespace: "research.rocn",
+      version: "0.1.0",
+      status: "research-stub",
+      source_model: "conceptual map",
+      upstream_project: "ROCm/HIP",
+      upstream_repo: "ROCm/hip",
+      upstream_file: "external_resource_interop.rst",
+      upstream_ref: "develop",
+      copied_source: false,
+      book_rule: "Book contains method and function stubs only."
+    };</meta>
+
+    <edges>{
+      %% graph TD
+      %%   ROCNResourceMap --> SharedHandle
+      %%   ROCNResourceMap --> SharedResource
+      %%   ROCNResourceMap --> ResourceSync
+    };</edges>
+
+    <book>
+      °method •DefineROCNResourceMap() -> °void {
+        °call •RecordROCNResourceSteps();
+        °return;
+      };
+
+      °function •RecordROCNResourceSteps() -> °void {
+        °return;
+      };
+    </book>
+  |■
+|●
+</Netiv>
