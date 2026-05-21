@@ -5,18 +5,17 @@
       name: "rocn.driver_types_map",
       kind: "research-flatfile",
       namespace: "research.rocn",
-      version: "0.1.0",
-      status: "research-draft",
+      version: "0.1.1",
+      status: "research-stub-cleaned",
       source_model: "conceptual type map",
       upstream_project: "ROCm/HIP",
       upstream_repo: "ROCm/hip",
       upstream_files: "include/hip/driver_types.h; include/hip/library_types.h",
       upstream_ref: "develop",
-      upstream_license: "MIT License observed in ROCm/HIP LICENSE.md and SPDX-License-Identifier: MIT observed in upstream headers",
+      upstream_license: "MIT License observed in ROCm/HIP LICENSE.md",
       upstream_owner: "Advanced Micro Devices, Inc.",
-      attribution: "ROCm, HIP, AMD, and related project names, marks, code, documentation, and intellectual property belong to their respective owners. ROCN is independent Netiv research and is not an official AMD project.",
       copied_source: false,
-      notes: "This flatfile maps upstream driver and library type categories into ROCN research terms. It does not copy enum bodies or ABI declarations."
+      book_rule: "The book section contains executable-style method/function stubs only. Research notes stay in meta and edges."
     };</meta>
 
     <edges>{
@@ -28,169 +27,46 @@
       %%   ROCNDriverTypesMap --> TextureTypes
       %%   ROCNDriverTypesMap --> ResourceTypes
       %%   ROCNDriverTypesMap --> LibraryDataTypes
-      %%   DevicePointerTypes --> ROCNDevicePointer
-      %%   ChannelFormatTypes --> ChannelFormatKind
-      %%   ChannelFormatTypes --> ChannelFormatDescriptor
-      %%   ArrayTypes --> ArrayDescriptor2D
-      %%   ArrayTypes --> ArrayDescriptor3D
-      %%   ArrayTypes --> MipmappedArray
-      %%   CopyParameterTypes --> Memcpy2DPlan
-      %%   TextureTypes --> AddressMode
-      %%   TextureTypes --> FilterMode
-      %%   TextureTypes --> TextureDescriptor
-      %%   ResourceTypes --> ArrayResource
-      %%   ResourceTypes --> LinearResource
-      %%   ResourceTypes --> Pitch2DResource
-      %%   LibraryDataTypes --> FloatTypes
-      %%   LibraryDataTypes --> IntegerTypes
-      %%   LibraryDataTypes --> ComplexTypes
-      %%   LibraryDataTypes --> LowPrecisionTypes
-      %%   LibraryDataTypes --> LibraryVersionProperties
     };</edges>
 
     <book>
-      °page •ROCNDriverTypesMap {
-        °field •name = "ROCN Driver Types Map";
-        °field •status = "research draft";
-        °field •purpose = "Create a Netiv-facing vocabulary for ROCN pointer, resource, texture, array, copy, and library data types";
-        °field •upstream_driver_header = "include/hip/driver_types.h";
-        °field •upstream_library_header = "include/hip/library_types.h";
-        °field •boundary = "Category and concept map only; no ABI-compatible declaration fork yet";
-      };
-
-      °page •ROCNPointerTypes {
-        °field •device_pointer = "Opaque pointer-like handle to device memory";
-        °field •rocn_rule = "Do not treat device pointers as plain host pointers";
-        °field •netiv_future = "Possible future type: rocn.device.ptr";
-      };
-
-      °page •ROCNChannelFormatTypes {
-        °field •meaning = "Describe how memory channels are interpreted for array, texture, or surface-like resources";
-        °field •kinds = "signed, unsigned, float, none";
-        °field •descriptor_shape = "x, y, z, w component widths plus format kind";
-        °field •rocn_rule = "Channel descriptors should become structured metadata, not loose flags";
-      };
-
-      °page •ROCNArrayTypes {
-        °field •array_handle = "Opaque device array resource";
-        °field •array_descriptor = "Width, height, format, and channel count for 2D-like arrays";
-        °field •array3d_descriptor = "Width, height, depth, format, channel count, and flags for 3D-like arrays";
-        °field •mipmapped_array = "Array family with levels and layout metadata";
-        °field •rocn_rule = "Array resources need dimensional metadata before kernel or texture use";
-      };
-
-      °page •ROCNMemcpy2DPlan {
-        °field •meaning = "Structured description for two-dimensional copy movement";
-        °field •source_fields = "source x offset, source y offset, source memory type, source pointer/array/device handle, source pitch";
-        °field •destination_fields = "destination x offset, destination y offset, destination memory type, destination pointer/array/device handle, destination pitch";
-        °field •extent_fields = "width in bytes and height";
-        °field •rocn_rule = "Copies should be represented as typed plans before execution";
-      };
-
-      °page •ROCNResourceTypes {
-        °field •array = "Array-backed resource";
-        °field •mipmapped_array = "Mipmapped array-backed resource";
-        °field •linear = "Linear memory resource";
-        °field •pitch2d = "Pitch-aware two-dimensional memory resource";
-        °field •rocn_rule = "Texture/surface bindings require explicit resource shape";
-      };
-
-      °page •ROCNTextureTypes {
-        °field •address_modes = "wrap, clamp, mirror, border";
-        °field •filter_modes = "point or linear filtering";
-        °field •texture_descriptor = "Addressing, filtering, anisotropy, mipmap, level clamp, border color, and flags";
-        °field •resource_view_format = "Typed reinterpretation view of an underlying resource";
-        °field •rocn_rule = "Texture behavior is not just a pointer; it is pointer plus sampling contract";
-      };
-
-      °page •ROCNLibraryDataTypes {
-        °field •real_float = "Real floating point data types such as 32-bit, 64-bit, 16-bit, BF16, FP8, FP6, and FP4 variants";
-        °field •complex_float = "Complex floating point data types";
-        °field •integer = "Signed and unsigned integer data types across multiple widths";
-        °field •low_precision = "Low-precision numerical formats are important for future AI/tensor work";
-        °field •rocn_rule = "ROCN should model numeric format separately from memory location";
-      };
-
-      °page •ROCNLibraryProperties {
-        °field •major_version = "Major version property";
-        °field •minor_version = "Minor version property";
-        °field •patch_level = "Patch level property";
-        °field •rocn_rule = "Runtime and library version queries should be structured metadata";
-      };
-
-      °page •ROCNTypeSafetyRules {
-        °field •rule_0 = "Opaque device handles must not be confused with host pointers";
-        °field •rule_1 = "Texture and surface resources require shape, format, and access metadata";
-        °field •rule_2 = "Copy operations should name source and destination memory kinds";
-        °field •rule_3 = "Numeric data format should be explicit for low-precision and AI work";
-        °field •rule_4 = "Version and capability types should be queryable through Netiv metadata";
-      };
-
       °method •DefineROCNDriverTypes() -> °void {
-        °observe "ROCN maps driver types as conceptual categories first";
-        °observe "ROCN does not copy upstream enum values into ABI declarations yet";
-        °observe "ROCN type categories should support memory, launch, texture, surface, and library APIs";
-        °call •RecordROCNDriverTypeGroups();
-        °call •RecordROCNLibraryDataTypeGroups();
+        °call •RecordROCNPointerKinds();
+        °call •RecordROCNArrayKinds();
+        °call •RecordROCNTextureKinds();
+        °call •RecordROCNLibraryDataKinds();
+        °return;
       };
 
-      °method •PlanROCNTypeLowering() -> °void {
-        °observe "First define Netiv-facing semantic types";
-        °observe "Then map semantic types to backend ABI types only inside a backend adapter";
-        °observe "Keep type metadata visible for graph inspection and generated docs";
+      °method •PlanROCNTypeValidation() -> °void {
+        °call •RecordROCNPointerKinds();
+        °call •RecordROCNResourceKinds();
+        °return;
       };
 
       °method •PlanROCNLowPrecisionTypes() -> °void {
-        °observe "Low precision real formats are important for AI and tensor-oriented workloads";
-        °observe "ROCN should separate real, complex, integer, unsigned integer, and packed low-precision formats";
-        °observe "Do not assume every device supports every low-precision format";
+        °call •RecordROCNLibraryDataKinds();
+        °return;
       };
 
-      °function •RecordROCNDriverTypeGroups() -> °void {
-        °observe "device pointer handles";
-        °observe "channel format descriptors";
-        °observe "array descriptors";
-        °observe "mipmapped arrays";
-        °observe "2D copy parameter plans";
-        °observe "resource types";
-        °observe "texture descriptors";
-        °observe "resource view formats";
+      °function •RecordROCNPointerKinds() -> °void {
+        °return;
       };
 
-      °function •RecordROCNLibraryDataTypeGroups() -> °void {
-        °observe "real floating point";
-        °observe "complex floating point";
-        °observe "signed integer";
-        °observe "unsigned integer";
-        °observe "BF16";
-        °observe "FP16";
-        °observe "FP8";
-        °observe "FP6";
-        °observe "FP4";
-        °observe "library version properties";
+      °function •RecordROCNArrayKinds() -> °void {
+        °return;
+      };
+
+      °function •RecordROCNTextureKinds() -> °void {
+        °return;
       };
 
       °function •RecordROCNResourceKinds() -> °void {
-        °observe "array";
-        °observe "mipmapped array";
-        °observe "linear";
-        °observe "pitch2d";
+        °return;
       };
 
-      °function •RecordROCNTextureControls() -> °void {
-        °observe "address mode";
-        °observe "filter mode";
-        °observe "mipmap filter mode";
-        °observe "anisotropy";
-        °observe "level clamp";
-        °observe "border color";
-        °observe "resource view format";
-      };
-
-      °method •NextROCNForkTargets() -> °void {
-        °observe "Next kernel-language file: docs/how-to/hip_cpp_language_extensions.rst -> rocn-kernel-language.ntv";
-        °observe "Next runtime detail file: docs/reference/hip_runtime_api/modules/memory_management.rst -> rocn-memory-api-map.ntv";
-        °observe "Next stream/event files: stream_management and event_management references -> rocn-stream-event-map.ntv";
+      °function •RecordROCNLibraryDataKinds() -> °void {
+        °return;
       };
     </book>
   |■
