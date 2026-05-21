@@ -1,0 +1,79 @@
+# ROCm/HIP include/hip root-level inventory
+
+upstream_repo: ROCm/hip
+upstream_path: include/hip/
+source_view: GitHub mobile file browser screenshots supplied by project owner
+created_for: Netiv ROCN research library
+scope: include/hip/ first-level folders and files only
+status: manual staged inventory
+
+FORMAT:
+path | kind | apparent purpose
+
+================================================================================
+INCLUDE/HIP FIRST-LEVEL FOLDERS
+================================================================================
+include/hip/cooperative_groups/ | folder | Cooperative groups helper headers and related group-level operations.
+
+================================================================================
+INCLUDE/HIP ROOT HEADER FILES
+================================================================================
+include/hip/channel_descriptor.h | header | Channel descriptor types/helpers, likely for texture/surface/channel metadata.
+include/hip/device_functions.h | header | Device-side helper functions.
+include/hip/driver_types.h | header | Driver/runtime shared types.
+include/hip/hip_bf16.h | header | bfloat16 support header.
+include/hip/hip_bfloat16.h | header | bfloat16 type support header.
+include/hip/hip_common.h | header | Common HIP definitions and shared declarations.
+include/hip/hip_complex.h | header | Complex number support.
+include/hip/hip_cooperative_groups.h | header | Cooperative groups umbrella/header.
+include/hip/hip_deprecated.h | header | Deprecated HIP symbols and compatibility declarations.
+include/hip/hip_ext.h | header | HIP extension API declarations.
+include/hip/hip_ext_ocp.h | header | OCP-related HIP extension declarations; exact scope needs deeper scan.
+include/hip/hip_fp16.h | header | FP16 type/support header.
+include/hip/hip_fp4.h | header | FP4 type/support header.
+include/hip/hip_fp6.h | header | FP6 type/support header.
+include/hip/hip_fp8.h | header | FP8 type/support header.
+include/hip/hip_gl_interop.h | header | OpenGL interoperability declarations.
+include/hip/hip_hcc.h | header | HCC compatibility/history support header.
+include/hip/hip_math_constants.h | header | HIP math constants.
+include/hip/hip_profile.h | header | Profiling helpers/hooks.
+include/hip/hip_runtime.h | header | HIP runtime umbrella header; important for host/device boundary and kernel launch syntax.
+include/hip/hip_runtime_api.h | header | HIP runtime API header; core host-side API surface.
+include/hip/hip_texture_types.h | header | HIP texture type definitions.
+include/hip/hip_vector_types.h | header | HIP vector type definitions.
+include/hip/hiprtc.h | header | HIP runtime compilation interface.
+include/hip/library_types.h | header | Library/runtime type definitions.
+include/hip/linker_types.h | header | Linker type definitions.
+include/hip/math_functions.h | header | HIP math functions.
+include/hip/surface_types.h | header | Surface type definitions.
+include/hip/texture_types.h | header | Texture type definitions.
+
+================================================================================
+ROCN NOTES
+================================================================================
+This is the highest-value folder for actual ROCN design because it exposes the HIP API surface.
+
+Priority files for deeper ROCN mapping:
+
+1. include/hip/hip_runtime_api.h
+   Map to rocn.host runtime calls.
+
+2. include/hip/hip_runtime.h
+   Map to ROCN host/device bridge and future kernel launch syntax.
+
+3. include/hip/hiprtc.h
+   Map to future ROCN runtime compilation or staged kernel compilation.
+
+4. include/hip/driver_types.h and include/hip/library_types.h
+   Map HIP type vocabulary into Netiv-native type wrappers.
+
+5. include/hip/hip_fp16.h, hip_fp8.h, hip_bfloat16.h
+   Important for AI/tensor/low-precision work.
+
+6. include/hip/math_functions.h and hip_math_constants.h
+   Important for device math coverage.
+
+7. include/hip/cooperative_groups/ and hip_cooperative_groups.h
+   Important for group/thread/block collective behavior.
+
+Do not copy these headers into NetivLang yet. This is an upstream map for original ROCN design work.
