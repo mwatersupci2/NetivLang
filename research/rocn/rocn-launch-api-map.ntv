@@ -1,0 +1,195 @@
+<Netiv="research/rocn/rocn-launch-api-map.ntv">
+○|
+  □|
+    <meta>{
+      name: "rocn.launch_api_map",
+      kind: "research-flatfile",
+      namespace: "research.rocn",
+      version: "0.1.0",
+      status: "research-draft",
+      source_model: "conceptual API map",
+      upstream_project: "ROCm/HIP",
+      upstream_repo: "ROCm/hip",
+      upstream_files: "docs/reference/hip_runtime_api/modules/launch_api.rst; docs/reference/hip_runtime_api/modules/execution_control.rst; docs/how-to/hip_cpp_language_extensions.rst",
+      upstream_ref: "develop",
+      upstream_license: "MIT License observed in ROCm/HIP LICENSE.md",
+      upstream_owner: "Advanced Micro Devices, Inc.",
+      attribution: "ROCm, HIP, AMD, and related project names, marks, code, documentation, and intellectual property belong to their respective owners. ROCN is independent Netiv research and is not an official AMD project.",
+      copied_source: false,
+      notes: "This flatfile maps HIP launch and execution-control concepts into ROCN research terms. It does not copy function declarations, implement triple-chevron syntax, or define an ABI wrapper yet."
+    };</meta>
+
+    <edges>{
+      %% graph TD
+      %%   ROCNLaunchAPIMap --> KernelSymbol
+      %%   ROCNLaunchAPIMap --> LaunchGeometry
+      %%   ROCNLaunchAPIMap --> SharedMemoryRequest
+      %%   ROCNLaunchAPIMap --> StreamTarget
+      %%   ROCNLaunchAPIMap --> KernelArguments
+      %%   ROCNLaunchAPIMap --> LaunchValidation
+      %%   ROCNLaunchAPIMap --> ExecutionControl
+      %%   LaunchGeometry --> GridDim
+      %%   LaunchGeometry --> BlockDim
+      %%   GridDim --> GridX
+      %%   GridDim --> GridY
+      %%   GridDim --> GridZ
+      %%   BlockDim --> BlockX
+      %%   BlockDim --> BlockY
+      %%   BlockDim --> BlockZ
+      %%   SharedMemoryRequest --> DynamicSharedBytes
+      %%   StreamTarget --> DefaultStream
+      %%   StreamTarget --> ExplicitStream
+      %%   KernelArguments --> HostPreparedArgs
+      %%   KernelArguments --> DevicePointers
+      %%   KernelArguments --> ValueArgs
+      %%   LaunchValidation --> DeviceLimits
+      %%   LaunchValidation --> LaunchBounds
+      %%   LaunchValidation --> ResourceUsage
+      %%   LaunchValidation --> ArgumentLayoutSafety
+      %%   ExecutionControl --> LaunchKernel
+      %%   ExecutionControl --> Synchronize
+      %%   ExecutionControl --> ReportLaunchError
+      %%   ROCNLaunchAPIMap --> NetivLaunchFormFuture
+    };</edges>
+
+    <book>
+      °page •ROCNLaunchAPIMap {
+        °field •name = "ROCN Launch API Map";
+        °field •status = "research draft";
+        °field •purpose = "Define the Netiv-facing launch contract for future ROCN kernels";
+        °field •upstream = "HIP launch API and execution-control reference plus HIP C++ kernel launch guide";
+        °field •boundary = "Conceptual launch map only; no compiler lowering or ABI wrapper exists yet";
+      };
+
+      °page •ROCNLaunchContract {
+        °field •kernel_symbol = "The kernel entry point to execute on the device";
+        °field •grid_dim = "Three-dimensional count of blocks to launch";
+        °field •block_dim = "Three-dimensional count of threads per block";
+        °field •dynamic_shared = "Additional shared memory bytes requested per block at launch";
+        °field •stream = "Execution stream that receives the launch command";
+        °field •arguments = "Kernel argument payload prepared by host orchestration";
+        °field •rocn_rule = "All launch fields must be visible in metadata and graph edges";
+      };
+
+      °page •ROCNLaunchGeometry {
+        °field •grid_x = "Number of blocks in x dimension";
+        °field •grid_y = "Number of blocks in y dimension";
+        °field •grid_z = "Number of blocks in z dimension";
+        °field •block_x = "Number of threads per block in x dimension";
+        °field •block_y = "Number of threads per block in y dimension";
+        °field •block_z = "Number of threads per block in z dimension";
+        °field •default_dimension_rule = "Unspecified y/z dimensions should be explicit defaults, not invisible assumptions";
+      };
+
+      °page •ROCNLaunchValidation {
+        °field •device_limits = "Validate launch dimensions against selected device capabilities";
+        °field •kernel_bounds = "Validate launch request against kernel launch-bounds metadata when present";
+        °field •resource_limits = "Check shared memory, registers, occupancy, and block/thread resource pressure where available";
+        °field •argument_layout = "Reject or flag argument layouts that differ between host and device assumptions";
+        °field •stream_validity = "Ensure stream target belongs to the intended device/context";
+        °field •rocn_rule = "Launch validation should happen before backend call generation";
+      };
+
+      °page •ROCNKernelArgumentModel {
+        °field •device_pointer_args = "Arguments that reference device memory";
+        °field •host_value_args = "Plain values copied into launch parameter payload";
+        °field •shared_symbols = "References to device or constant symbols prepared before launch";
+        °field •layout_safe_structs = "Structured arguments whose host/device layout is known safe";
+        °field •forbidden_or_warn = "Variable arguments, unsafe references, and mismatched layout types should be rejected or flagged";
+      };
+
+      °page •ROCNStreamLaunchModel {
+        °field •default_stream = "Launch into default stream only when explicitly requested or defaulted in metadata";
+        °field •explicit_stream = "Launch into a named stream resource";
+        °field •ordering = "Launch is ordered relative to prior commands in the same stream";
+        °field •async_behavior = "Host enqueue may complete before device execution finishes";
+        °field •sync_requirement = "Host must synchronize or wait on an event before reading dependent results";
+      };
+
+      °page •ROCNLaunchErrorModel {
+        °field •invalid_value = "Bad launch dimensions, null kernel symbol, invalid stream, or invalid argument metadata";
+        °field •not_initialized = "Runtime/device context is not ready";
+        °field •out_of_resources = "Launch exceeds available threads, registers, shared memory, occupancy, or other device constraints";
+        °field •argument_layout_error = "Kernel argument layout is not safe across host/device boundary";
+        °field •rocn_rule = "Launch errors should preserve launch geometry, device id, stream id, and kernel symbol metadata";
+      };
+
+      °page •ROCNNetivLaunchSyntaxFuture {
+        °field •possible_form = "Future Netiv launch form should be explicit and graph-friendly";
+        °field •required_fields = "kernel, grid, block, shared, stream, args";
+        °field •method_rule = "Only host orchestration methods should launch kernels until a future device-side launch model exists";
+        °field •function_rule = "Device/kernel functions should not launch kernels unless ROCN explicitly adds a supported model";
+        °field •audit_rule = "netiv graph should expose host method -> stream -> launch -> kernel edges";
+      };
+
+      °method •DefineROCNLaunchAPIMap() -> °void {
+        °observe "ROCN launch API requires kernel symbol, grid dimension, block dimension, dynamic shared memory, stream, and arguments";
+        °observe "ROCN launch configuration is not a normal function call";
+        °observe "ROCN launch validation must be explicit and metadata-rich";
+        °call •RecordROCNLaunchFields();
+        °call •RecordROCNLaunchValidationRules();
+        °call •RecordROCNLaunchErrorKinds();
+      };
+
+      °method •PlanROCNLaunchLowering() -> °void {
+        °observe "Resolve kernel symbol";
+        °observe "Validate selected device";
+        °observe "Validate grid and block dimensions";
+        °observe "Validate dynamic shared memory request";
+        °observe "Validate stream target";
+        °observe "Validate argument layout and memory-kind metadata";
+        °observe "Emit backend launch call only after validation passes";
+      };
+
+      °method •PlanROCNLaunchGraphEdges() -> °void {
+        °observe "Host method enqueues launch into stream";
+        °observe "Stream launch targets kernel symbol";
+        °observe "Launch consumes device buffers and value arguments";
+        °observe "Launch may produce device buffer mutations";
+        °observe "Event or synchronization edges record completion dependencies";
+      };
+
+      °function •RecordROCNLaunchFields() -> °void {
+        °observe "kernel symbol";
+        °observe "grid x";
+        °observe "grid y";
+        °observe "grid z";
+        °observe "block x";
+        °observe "block y";
+        °observe "block z";
+        °observe "dynamic shared memory bytes";
+        °observe "stream target";
+        °observe "kernel arguments";
+      };
+
+      °function •RecordROCNLaunchValidationRules() -> °void {
+        °observe "runtime initialized";
+        °observe "device selected";
+        °observe "kernel symbol resolved";
+        °observe "grid dimensions valid";
+        °observe "block dimensions valid";
+        °observe "dynamic shared memory within limit";
+        °observe "stream belongs to device/context";
+        °observe "arguments are host/device layout safe";
+        °observe "memory arguments have valid location metadata";
+      };
+
+      °function •RecordROCNLaunchErrorKinds() -> °void {
+        °observe "invalid value";
+        °observe "not initialized";
+        °observe "launch out of resources";
+        °observe "invalid stream";
+        °observe "invalid kernel symbol";
+        °observe "argument layout mismatch";
+        °observe "unsupported device feature";
+      };
+
+      °method •NextROCNForkTargets() -> °void {
+        °observe "Next graph detail file: docs/reference/hip_runtime_api/modules/graph_management.rst -> rocn-graph-api-map.ntv";
+        °observe "Next device-management file: docs/reference/hip_runtime_api/modules/device_management.rst -> rocn-device-api-map.ntv";
+        °observe "Next error-handling file: docs/reference/hip_runtime_api/modules/error_handling.rst -> rocn-error-api-map.ntv";
+      };
+    </book>
+  |■
+|●
+</Netiv>
