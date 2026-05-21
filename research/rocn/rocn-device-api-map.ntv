@@ -5,18 +5,17 @@
       name: "rocn.device_api_map",
       kind: "research-flatfile",
       namespace: "research.rocn",
-      version: "0.1.0",
-      status: "research-draft",
+      version: "0.1.1",
+      status: "research-stub-cleaned",
       source_model: "conceptual API map",
       upstream_project: "ROCm/HIP",
       upstream_repo: "ROCm/hip",
-      upstream_files: "docs/reference/hip_runtime_api/modules/device_management.rst; docs/reference/hardware_features.rst; include/hip/hip_runtime_api.h",
+      upstream_files: "device_management.rst; hardware_features.rst; hip_runtime_api.h",
       upstream_ref: "develop",
-      upstream_license: "MIT License observed in ROCm/HIP LICENSE.md and SPDX-License-Identifier: MIT observed in hip_runtime_api.h",
+      upstream_license: "MIT License observed in ROCm/HIP LICENSE.md",
       upstream_owner: "Advanced Micro Devices, Inc.",
-      attribution: "ROCm, HIP, AMD, and related project names, marks, code, documentation, and intellectual property belong to their respective owners. ROCN is independent Netiv research and is not an official AMD project.",
       copied_source: false,
-      notes: "This flatfile maps HIP device-management and hardware-capability concepts into ROCN research terms. It does not copy function declarations or create ABI wrappers."
+      book_rule: "Book contains method and function stubs only."
     };</meta>
 
     <edges>{
@@ -24,186 +23,38 @@
       %%   ROCNDeviceAPIMap --> DeviceDiscovery
       %%   ROCNDeviceAPIMap --> DeviceSelection
       %%   ROCNDeviceAPIMap --> DeviceProperties
-      %%   ROCNDeviceAPIMap --> DeviceAttributes
       %%   ROCNDeviceAPIMap --> ArchitectureFeatures
       %%   ROCNDeviceAPIMap --> LaunchLimits
       %%   ROCNDeviceAPIMap --> MemoryCapabilities
-      %%   ROCNDeviceAPIMap --> StreamCapabilities
-      %%   ROCNDeviceAPIMap --> InteropCapabilities
-      %%   DeviceDiscovery --> DeviceCount
-      %%   DeviceSelection --> ActiveDevice
-      %%   DeviceProperties --> DeviceIdentity
-      %%   DeviceProperties --> DeviceMemoryLimits
-      %%   DeviceProperties --> DeviceThreadLimits
-      %%   ArchitectureFeatures --> AtomicSupport
-      %%   ArchitectureFeatures --> WavefrontSize
-      %%   ArchitectureFeatures --> MatrixCoreSupport
-      %%   ArchitectureFeatures --> LowPrecisionSupport
-      %%   LaunchLimits --> GridLimits
-      %%   LaunchLimits --> BlockLimits
-      %%   LaunchLimits --> ResidentThreads
-      %%   MemoryCapabilities --> ManagedMemorySupport
-      %%   MemoryCapabilities --> UnifiedAddressingSupport
-      %%   MemoryCapabilities --> MemoryPoolsSupport
-      %%   ROCNDeviceAPIMap --> LaunchValidation
-      %%   ROCNDeviceAPIMap --> RuntimePlanning
     };</edges>
 
     <book>
-      °page •ROCNDeviceAPIMap {
-        °field •name = "ROCN Device API Map";
-        °field •status = "research draft";
-        °field •purpose = "Map device discovery, selection, property query, and hardware capability concepts for ROCN";
-        °field •upstream = "HIP device management reference, hardware features page, and device property structures";
-        °field •boundary = "Conceptual API map only; no runtime wrapper exists yet";
-      };
-
-      °page •ROCNDeviceDiscovery {
-        °field •device_count = "Query how many compatible devices are visible";
-        °field •device_list = "Enumerate device identifiers and basic metadata";
-        °field •availability = "Record whether a target device can be used by the current runtime/backend";
-        °field •rocn_rule = "Device discovery should produce structured Netiv pages for audit and launch planning";
-      };
-
-      °page •ROCNDeviceSelection {
-        °field •active_device = "The selected target device for subsequent runtime operations";
-        °field •device_context = "Runtime association between host orchestration and selected GPU device";
-        °field •multi_device = "Multiple devices require explicit target selection and dependency control";
-        °field •rocn_rule = "ROCN should never silently choose a device when multiple valid devices exist unless policy metadata says so";
-      };
-
-      °page •ROCNDeviceIdentity {
-        °field •name = "Human-readable device name";
-        °field •uuid = "Stable device identifier where available";
-        °field •architecture_name = "Backend architecture string such as a GCN/gfx family name";
-        °field •pci_identity = "Bus, device, and domain style topology identity";
-        °field •integrated_or_discrete = "Whether the device is integrated with CPU memory or discrete";
-        °field •rocn_rule = "Device identity must be stored for reproducible build/run logs";
-      };
-
-      °page •ROCNDeviceMemoryCapabilities {
-        °field •global_memory = "Total device global memory";
-        °field •constant_memory = "Available constant memory";
-        °field •shared_memory_per_block = "Shared/LDS memory available per block";
-        °field •shared_memory_per_compute_unit = "Shared memory available per compute unit";
-        °field •l2_cache = "L2 cache size when reported";
-        °field •managed_memory = "Whether managed memory is supported in the current system";
-        °field •unified_addressing = "Whether host/device addressing can participate in a unified address-space model";
-        °field •memory_pools = "Whether async memory pool APIs are supported";
-      };
-
-      °page •ROCNDeviceLaunchCapabilities {
-        °field •warp_or_wavefront_size = "Threads per warp/wavefront for target device";
-        °field •max_threads_per_block = "Maximum valid threads per block";
-        °field •max_block_dimensions = "Maximum x/y/z dimensions for a block";
-        °field •max_grid_dimensions = "Maximum x/y/z dimensions for a grid";
-        °field •resident_threads = "Maximum resident threads per compute unit or multiprocessor";
-        °field •resident_blocks = "Maximum resident blocks per compute unit where available";
-        °field •cooperative_launch = "Whether cooperative launch is supported";
-        °field •cluster_launch = "Whether cluster-style launch features are supported";
-      };
-
-      °page •ROCNArchitectureFeatureFlags {
-        °field •integer_atomics = "32-bit and 64-bit atomic support in global/shared memory";
-        °field •float_atomics = "Floating-point atomic support where available";
-        °field •double_precision = "Double precision capability";
-        °field •warp_vote_ballot_shuffle = "Cross-lane vote, ballot, and shuffle features";
-        °field •memory_fence = "Thread fence and synchronization feature support";
-        °field •surface_support = "Surface operation capability";
-        °field •matrix_cores = "Matrix-core/MFMA class capability when present";
-        °field •low_precision = "FP16, BF16, FP8, FP6, FP4 or other low-precision support";
-      };
-
-      °page •ROCNDevicePlanningUses {
-        °field •launch_validation = "Reject invalid grid/block dimensions before backend launch";
-        °field •memory_validation = "Reject memory modes unsupported by the selected device";
-        °field •kernel_specialization = "Specialize kernels based on wavefront size or low-precision support";
-        °field •stream_strategy = "Use async engine and concurrent-kernel capability to plan streams";
-        °field •graph_strategy = "Use graph and memory-pool support for repeated workloads";
-        °field •profiling_context = "Attach device capability facts to performance traces";
-      };
-
-      °page •ROCNDeviceSafetyRules {
-        °field •rule_0 = "Every launch must reference a selected device";
-        °field •rule_1 = "Every launch geometry must be checked against device limits";
-        °field •rule_2 = "Every low-precision kernel must check device support";
-        °field •rule_3 = "Every unified/managed-memory path must check system and device support";
-        °field •rule_4 = "Every multi-device path must explicitly record peer or interop capability assumptions";
-        °field •rule_5 = "Every device query should be captured in deterministic metadata for audit";
-      };
-
       °method •DefineROCNDeviceAPIMap() -> °void {
-        °observe "ROCN device API maps discovery, selection, property query, and capability validation";
-        °observe "ROCN device facts are required by launch, memory, stream, graph, and low-precision planning";
-        °observe "ROCN should store device properties as structured metadata";
         °call •RecordROCNDeviceQueryGroups();
         °call •RecordROCNArchitectureFeatures();
-        °call •RecordROCNDeviceSafetyRules();
+        °return;
       };
 
       °method •PlanROCNDeviceSelectionFlow() -> °void {
-        °observe "discover visible devices";
-        °observe "query basic identity";
-        °observe "query launch and memory limits";
-        °observe "select device by explicit id or policy";
-        °observe "record selected device in run metadata";
+        °call •RecordROCNDeviceQueryGroups();
+        °return;
       };
 
       °method •PlanROCNLaunchCapabilityCheck() -> °void {
-        °observe "check max threads per block";
-        °observe "check x/y/z block limits";
-        °observe "check x/y/z grid limits";
-        °observe "check dynamic shared memory request";
-        °observe "check cooperative or cluster launch support when requested";
-        °observe "check wavefront-size assumptions";
-      };
-
-      °method •PlanROCNMemoryCapabilityCheck() -> °void {
-        °observe "check total global memory";
-        °observe "check managed memory support";
-        °observe "check unified addressing support";
-        °observe "check memory pool support";
-        °observe "check host registration support";
-        °observe "check texture/surface support when requested";
+        °call •RecordROCNArchitectureFeatures();
+        °return;
       };
 
       °function •RecordROCNDeviceQueryGroups() -> °void {
-        °observe "device count";
-        °observe "device identity";
-        °observe "device properties";
-        °observe "device attributes";
-        °observe "architecture features";
-        °observe "memory limits";
-        °observe "launch limits";
-        °observe "interop capabilities";
+        °return;
       };
 
       °function •RecordROCNArchitectureFeatures() -> °void {
-        °observe "atomic support";
-        °observe "double precision";
-        °observe "cross-lane operations";
-        °observe "thread fences";
-        °observe "surface functions";
-        °observe "FP16";
-        °observe "BF16";
-        °observe "FP8";
-        °observe "matrix cores";
-        °observe "wavefront size";
+        °return;
       };
 
       °function •RecordROCNDeviceSafetyRules() -> °void {
-        °observe "explicit selected device";
-        °observe "validated launch dimensions";
-        °observe "validated memory mode";
-        °observe "validated low-precision support";
-        °observe "validated stream/event capability";
-        °observe "metadata-recorded device facts";
-      };
-
-      °method •NextROCNForkTargets() -> °void {
-        °observe "Next error-handling file: docs/reference/hip_runtime_api/modules/error_handling.rst -> rocn-error-api-map.ntv";
-        °observe "Next runtime-compilation file: docs/reference/hip_runtime_api/modules/runtime_compilation.rst -> rocn-runtime-compilation-map.ntv";
-        °observe "Next occupancy file: docs/reference/hip_runtime_api/modules/occupancy.rst -> rocn-occupancy-api-map.ntv";
+        °return;
       };
     </book>
   |■
