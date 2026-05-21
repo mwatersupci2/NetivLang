@@ -1,48 +1,49 @@
-<Netiv="rocn.ntv">
+<Netiv="research/rocn/rocn.ntv">
 ○|
-□|
-<meta>
-{
-  type: "library",
-  name: "rocn",
-  id: "research.rocn.root",
-  ordinal: 0,
-  status: "research-scaffold",
-  purpose: "ROCm-oriented Netiv research fork library",
-  compiler_integrated: false
-}
-</meta>
+  □|
+    <meta>{
+      type: "library",
+      name: "rocn",
+      id: "research.rocn.root",
+      ordinal: 0,
+      status: "research-scaffold-cleaned",
+      purpose: "ROCm-oriented Netiv research fork library",
+      compiler_integrated: false,
+      book_rule: "Book contains executable-style method/function stubs only. Research notes stay in meta and edges."
+    };</meta>
 
-<edges>
-graph TD
-  rocn["research.rocn"] --> host["host orchestration"]
-  rocn --> device["device intent"]
-  rocn --> kernels["kernel description"]
-  rocn --> memory["gpu memory regions"]
-  rocn --> future["future ROCm/HIP bridge"]
+    <edges>{
+      %% graph TD
+      %%   rocn["research.rocn"] --> host["host orchestration"]
+      %%   rocn --> device["device intent"]
+      %%   rocn --> kernels["kernel description"]
+      %%   rocn --> memory["gpu memory regions"]
+      %%   rocn --> future["future ROCm/HIP bridge"]
+      %%   host --> methods["methods orchestrate"]
+      %%   device --> functions["functions describe device behavior"]
+      %%   memory --> explicit["explicit movement"]
+    };</edges>
 
-  host --> note1["Netiv method layer should orchestrate work"]
-  device --> note2["Netiv function/kernel layer should describe device behavior"]
-  memory --> note3["Memory movement must remain explicit"]
-</edges>
+    <book>
+      °method •ROCNResearchRoot() -> °void {
+        °call •ROCNHostPlan();
+        °call •ROCNKernelIntent();
+        °return;
+      };
 
-<book>
-°page •ROCNOverview {
-    °field •name = "ROCN";
-    °field •meaning = "ROCm for Netiv";
-    °field •status = "research only";
-    °field •target = "future AMD ROCm/HIP compute bridge";
-};
+      °method •ROCNHostPlan() -> °void {
+        °call •ROCNMemoryPlan();
+        °return;
+      };
 
-°method •ROCNHostPlan() -> °void {
-    °observe "ROCN host orchestration placeholder";
-    °observe "Do not treat this as active compiler integration yet";
-};
+      °method •ROCNMemoryPlan() -> °void {
+        °return;
+      };
 
-°function •ROCNKernelIntent() -> °void {
-    °observe "ROCN device/kernel intent placeholder";
-    °observe "Future work should map Netiv structure to ROCm/HIP-style execution concepts";
-};
-|□
-|○
+      °function •ROCNKernelIntent() -> °void {
+        °return;
+      };
+    </book>
+  |■
+|●
 </Netiv>
