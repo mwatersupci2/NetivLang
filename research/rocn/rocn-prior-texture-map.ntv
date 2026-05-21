@@ -1,0 +1,38 @@
+<Netiv="research/rocn/rocn-prior-texture-map.ntv">
+○|
+  □|
+    <meta>{
+      name: "rocn.prior_texture_map",
+      kind: "research-flatfile",
+      namespace: "research.rocn",
+      version: "0.1.0",
+      status: "research-stub",
+      source_model: "conceptual map",
+      upstream_project: "ROCm/HIP",
+      upstream_repo: "ROCm/hip",
+      upstream_file: "texture_reference_prior.rst",
+      upstream_ref: "develop",
+      copied_source: false,
+      book_rule: "Book contains method and function stubs only."
+    };</meta>
+
+    <edges>{
+      %% graph TD
+      %%   ROCNPriorTextureMap --> PriorTexture
+      %%   ROCNPriorTextureMap --> PriorSampler
+      %%   ROCNPriorTextureMap --> PriorSurface
+    };</edges>
+
+    <book>
+      °method •DefineROCNPriorTextureMap() -> °void {
+        °call •RecordROCNPriorTextureSteps();
+        °return;
+      };
+
+      °function •RecordROCNPriorTextureSteps() -> °void {
+        °return;
+      };
+    </book>
+  |■
+|●
+</Netiv>
