@@ -1,0 +1,38 @@
+<Netiv="research/rocn/rocn-prior-memory-map.ntv">
+○|
+  □|
+    <meta>{
+      name: "rocn.prior_memory_map",
+      kind: "research-flatfile",
+      namespace: "research.rocn",
+      version: "0.1.0",
+      status: "research-stub",
+      source_model: "conceptual map",
+      upstream_project: "ROCm/HIP",
+      upstream_repo: "ROCm/hip",
+      upstream_file: "memory_management_deprecated.rst",
+      upstream_ref: "develop",
+      copied_source: false,
+      book_rule: "Book contains method and function stubs only."
+    };</meta>
+
+    <edges>{
+      %% graph TD
+      %%   ROCNPriorMemoryMap --> PriorAlloc
+      %%   ROCNPriorMemoryMap --> PriorCopy
+      %%   ROCNPriorMemoryMap --> PriorRelease
+    };</edges>
+
+    <book>
+      °method •DefineROCNPriorMemoryMap() -> °void {
+        °call •RecordROCNPriorMemorySteps();
+        °return;
+      };
+
+      °function •RecordROCNPriorMemorySteps() -> °void {
+        °return;
+      };
+    </book>
+  |■
+|●
+</Netiv>
