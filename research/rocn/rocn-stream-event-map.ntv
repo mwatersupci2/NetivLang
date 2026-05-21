@@ -1,0 +1,193 @@
+<Netiv="research/rocn/rocn-stream-event-map.ntv">
+○|
+  □|
+    <meta>{
+      name: "rocn.stream_event_map",
+      kind: "research-flatfile",
+      namespace: "research.rocn",
+      version: "0.1.0",
+      status: "research-draft",
+      source_model: "conceptual API map",
+      upstream_project: "ROCm/HIP",
+      upstream_repo: "ROCm/hip",
+      upstream_files: "docs/reference/hip_runtime_api/modules/stream_management.rst; docs/reference/hip_runtime_api/modules/event_management.rst; docs/reference/hip_runtime_api/modules/stream_memory_operations.rst; docs/how-to/hip_runtime_api/asynchronous.rst",
+      upstream_ref: "develop",
+      upstream_license: "MIT License observed in ROCm/HIP LICENSE.md",
+      upstream_owner: "Advanced Micro Devices, Inc.",
+      attribution: "ROCm, HIP, AMD, and related project names, marks, code, documentation, and intellectual property belong to their respective owners. ROCN is independent Netiv research and is not an official AMD project.",
+      copied_source: false,
+      notes: "This flatfile maps stream, event, and asynchronous execution concepts into ROCN research terms. It does not copy function declarations or define ABI wrappers yet."
+    };</meta>
+
+    <edges>{
+      %% graph TD
+      %%   ROCNStreamEventMap --> StreamManagement
+      %%   ROCNStreamEventMap --> EventManagement
+      %%   ROCNStreamEventMap --> StreamMemoryOperations
+      %%   ROCNStreamEventMap --> AsyncExecution
+      %%   StreamManagement --> StreamCreate
+      %%   StreamManagement --> StreamFlags
+      %%   StreamManagement --> StreamPriority
+      %%   StreamManagement --> StreamSynchronize
+      %%   EventManagement --> EventCreate
+      %%   EventManagement --> EventRecord
+      %%   EventManagement --> EventSynchronize
+      %%   EventManagement --> EventWait
+      %%   StreamMemoryOperations --> AsyncMemcpy
+      %%   StreamMemoryOperations --> PeerAsyncMemcpy
+      %%   StreamMemoryOperations --> StreamOrderedAlloc
+      %%   AsyncExecution --> HostDeviceOverlap
+      %%   AsyncExecution --> ConcurrentKernelExecution
+      %%   AsyncExecution --> TransferKernelOverlap
+      %%   AsyncExecution --> CrossStreamDependency
+      %%   CrossStreamDependency --> StreamWaitEvent
+      %%   ROCNStreamEventMap --> NetivGraphVisibility
+      %%   NetivGraphVisibility --> StreamEdges
+      %%   NetivGraphVisibility --> EventEdges
+      %%   NetivGraphVisibility --> SynchronizationEdges
+    };</edges>
+
+    <book>
+      °page •ROCNStreamEventMap {
+        °field •name = "ROCN Stream/Event Map";
+        °field •status = "research draft";
+        °field •purpose = "Map HIP stream, event, async execution, and stream-memory behavior into ROCN graph-visible concepts";
+        °field •upstream = "HIP stream, event, stream memory, and asynchronous execution docs";
+        °field •boundary = "Conceptual API map only; no ABI wrapper declarations yet";
+      };
+
+      °page •ROCNStreamModel {
+        °field •meaning = "A stream is an ordered command queue for work targeting a device";
+        °field •ordering = "Commands inside one stream execute in submitted order";
+        °field •host_behavior = "Enqueue operations may return before device work is complete";
+        °field •multi_stream = "Different streams may overlap or execute concurrently, but ordering between them is not automatic";
+        °field •rocn_rule = "Every async ROCN operation must name its stream or explicitly select the default stream";
+      };
+
+      °page •ROCNStreamKinds {
+        °field •default_stream = "Default stream behavior should be explicit in ROCN metadata";
+        °field •nonblocking_stream = "Stream intended to allow independent concurrent execution";
+        °field •priority_stream = "Stream with priority metadata for scheduling preference";
+        °field •rocn_rule = "Stream flags and priority should become structured fields, not hidden backend options";
+      };
+
+      °page •ROCNEventModel {
+        °field •meaning = "An event records a point in stream/device progress";
+        °field •record = "Event can be recorded into a stream";
+        °field •synchronize = "Host can wait until an event is complete";
+        °field •wait = "Another stream can wait on an event before continuing";
+        °field •dependency = "Events express cross-stream dependency edges";
+        °field •rocn_rule = "Events should become explicit graph nodes or edges in Netiv exports";
+      };
+
+      °page •ROCNAsyncExecution {
+        °field •host_device_overlap = "Host can continue while device work is executing";
+        °field •kernel_overlap = "Multiple kernels may overlap when resources allow";
+        °field •copy_overlap = "Data transfers may overlap with kernel execution when hardware and memory conditions allow";
+        °field •pipelining = "Streams enable producer/consumer and staged transfer/compute workflows";
+        °field •warning = "Concurrency is a possibility, not a correctness assumption";
+      };
+
+      °page •ROCNStreamMemoryOperations {
+        °field •async_copy = "Nonblocking memory transfer associated with a stream";
+        °field •peer_copy = "Asynchronous transfer between device memories when supported";
+        °field •stream_alloc = "Memory allocation ordered relative to a stream";
+        °field •stream_free = "Memory release ordered relative to a stream";
+        °field •rocn_rule = "Stream memory operations combine memory ownership and execution order";
+      };
+
+      °page •ROCNSynchronizationModel {
+        °field •stream_sync = "Host waits for all prior work in a stream to complete";
+        °field •event_sync = "Host waits for a specific event completion";
+        °field •device_sync = "Host waits for broader device completion when explicitly requested";
+        °field •stream_wait_event = "A stream waits for another stream's recorded event";
+        °field •rocn_rule = "Synchronization must be explicit because it changes both correctness and performance";
+      };
+
+      °page •ROCNConcurrencyHazards {
+        °field •hazard_0 = "Assuming streams execute in order across different streams";
+        °field •hazard_1 = "Reading host results before async device work is complete";
+        °field •hazard_2 = "Overlapping kernels that contend for registers, shared memory, or compute units";
+        °field •hazard_3 = "Assuming async copies overlap without checking device capability";
+        °field •hazard_4 = "Using pageable host memory where pinned memory is needed for transfer performance";
+        °field •hazard_5 = "Freeing stream-ordered memory before dependent work completes";
+      };
+
+      °page •ROCNNetivGraphMapping {
+        °field •stream_node = "Represent stream as an execution resource node";
+        °field •event_node = "Represent event as a progress/dependency marker";
+        °field •enqueue_edge = "Host method enqueues work onto stream";
+        °field •wait_edge = "Stream waits for event before continuing";
+        °field •sync_edge = "Host waits for stream/event/device completion";
+        °field •memory_edge = "Async copy connects memory region movement to stream order";
+      };
+
+      °method •DefineROCNStreamEventMap() -> °void {
+        °observe "ROCN streams are ordered device command queues";
+        °observe "ROCN events are dependency and progress markers";
+        °observe "ROCN async operations must expose stream ownership";
+        °observe "ROCN synchronization must be explicit and graph-visible";
+        °call •RecordROCNStreamOperations();
+        °call •RecordROCNEventOperations();
+        °call •RecordROCNAsyncHazards();
+      };
+
+      °method •PlanROCNAsyncGraph() -> °void {
+        °observe "Create graph nodes for host method, stream, event, kernel launch, and memory copy";
+        °observe "Create ordered edges for commands submitted to the same stream";
+        °observe "Create dependency edges when a stream waits on an event";
+        °observe "Create sync edges when host waits for stream, event, or device completion";
+      };
+
+      °method •PlanROCNStreamMemorySafety() -> °void {
+        °observe "Async memory copies must name source memory kind, destination memory kind, byte extent, and stream";
+        °observe "Stream-ordered allocation/free must be tied to stream order";
+        °observe "Host reads of device results require an explicit completion point";
+      };
+
+      °function •RecordROCNStreamOperations() -> °void {
+        °observe "create stream";
+        °observe "create stream with flags";
+        °observe "create stream with priority";
+        °observe "synchronize stream";
+        °observe "query stream";
+        °observe "destroy stream";
+        °observe "wait on event";
+      };
+
+      °function •RecordROCNEventOperations() -> °void {
+        °observe "create event";
+        °observe "record event";
+        °observe "synchronize event";
+        °observe "query event";
+        °observe "destroy event";
+        °observe "measure elapsed time where supported";
+      };
+
+      °function •RecordROCNStreamMemoryOperations() -> °void {
+        °observe "async host to device copy";
+        °observe "async device to host copy";
+        °observe "async device to device copy";
+        °observe "async peer device copy";
+        °observe "stream ordered allocation";
+        °observe "stream ordered free";
+      };
+
+      °function •RecordROCNAsyncHazards() -> °void {
+        °observe "missing synchronization";
+        °observe "wrong stream dependency";
+        °observe "resource contention";
+        °observe "unsupported overlap assumption";
+        °observe "pageable memory transfer bottleneck";
+        °observe "premature free";
+      };
+
+      °method •NextROCNForkTargets() -> °void {
+        °observe "Next launch detail file: docs/reference/hip_runtime_api/modules/launch_api.rst -> rocn-launch-api-map.ntv";
+        °observe "Next graph detail file: docs/reference/hip_runtime_api/modules/graph_management.rst -> rocn-graph-api-map.ntv";
+        °observe "Next execution control file: docs/reference/hip_runtime_api/modules/execution_control.rst -> rocn-execution-control-map.ntv";
+      };
+    </book>
+  |■
+|●
+</Netiv>
