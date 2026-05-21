@@ -1,0 +1,210 @@
+<Netiv="research/rocn/rocn-memory-model.ntv">
+○|
+  □|
+    <meta>{
+      name: "rocn.memory_model",
+      kind: "research-flatfile",
+      namespace: "research.rocn",
+      version: "0.1.0",
+      status: "research-draft",
+      source_model: "conceptual fork",
+      upstream_project: "ROCm/HIP",
+      upstream_repo: "ROCm/hip",
+      upstream_files: "docs/how-to/hip_runtime_api/memory_management.rst; docs/how-to/hip_runtime_api/memory_management/host_memory.rst; docs/how-to/hip_runtime_api/memory_management/device_memory.rst; docs/how-to/hip_runtime_api/memory_management/unified_memory.rst",
+      upstream_ref: "develop",
+      upstream_license: "MIT License observed in ROCm/HIP LICENSE.md",
+      upstream_owner: "Advanced Micro Devices, Inc.",
+      attribution: "ROCm, HIP, AMD, and related project names, marks, code, documentation, and intellectual property belong to their respective owners. ROCN is independent Netiv research and is not an official AMD project.",
+      copied_source: false,
+      notes: "This flatfile defines ROCN memory concepts in original Netiv terms. It does not vendor ROCm/HIP source. Memory movement must remain explicit until ROCN has a proven compiler/runtime path."
+    };</meta>
+
+    <edges>{
+      %% graph TD
+      %%   ROCNMemoryModel --> HostMemory
+      %%   ROCNMemoryModel --> DeviceMemory
+      %%   ROCNMemoryModel --> UnifiedMemory
+      %%   ROCNMemoryModel --> TransferModel
+      %%   ROCNMemoryModel --> AllocationModel
+      %%   HostMemory --> PageableHostMemory
+      %%   HostMemory --> PinnedHostMemory
+      %%   PinnedHostMemory --> MappedPinnedMemory
+      %%   DeviceMemory --> DeviceGlobalMemory
+      %%   DeviceMemory --> ConstantMemory
+      %%   DeviceMemory --> TextureMemory
+      %%   DeviceMemory --> SurfaceMemory
+      %%   DeviceMemory --> SharedMemoryLDS
+      %%   UnifiedMemory --> ManagedMemory
+      %%   UnifiedMemory --> PageMigration
+      %%   TransferModel --> HostToDevice
+      %%   TransferModel --> DeviceToHost
+      %%   TransferModel --> AsyncCopies
+      %%   AllocationModel --> AllocateHost
+      %%   AllocationModel --> AllocateDevice
+      %%   AllocationModel --> FreeHost
+      %%   AllocationModel --> FreeDevice
+      %%   ROCNMemoryModel --> NetivMemoryRules
+      %%   NetivMemoryRules --> ExplicitMovement
+      %%   NetivMemoryRules --> VisibleLocality
+      %%   NetivMemoryRules --> NoHiddenCopies
+    };</edges>
+
+    <book>
+      °page •ROCNMemoryModel {
+        °field •name = "ROCN Memory Model";
+        °field •status = "research draft";
+        °field •purpose = "Define host, device, unified, and transfer memory concepts for ROCN before API-level mapping";
+        °field •upstream = "ROCm/HIP memory management documentation";
+        °field •boundary = "Conceptual mapping only; no active allocator or compiler support claimed";
+      };
+
+      °page •ROCNMemoryPrinciple {
+        °field •core_rule = "ROCN must treat memory location as part of program meaning";
+        °field •host_device_rule = "Host memory and device memory are distinct unless an explicit unified-memory mode is selected";
+        °field •movement_rule = "Host/device movement must be visible in the source graph";
+        °field •performance_rule = "Allocation and copy decisions are performance-critical and must not be hidden by default";
+        °field •audit_rule = "Every future ROCN memory operation should be visible to graph/meta inspection";
+      };
+
+      °page •ROCNHostMemory {
+        °field •meaning = "Memory resident on the CPU side of the application";
+        °field •pageable = "Normal host memory that may move between system pages and is generally easiest to allocate";
+        °field •pinned = "Page-locked host memory that improves transfer behavior but consumes constrained host RAM resources";
+        °field •mapped_pinned = "Pinned host memory that may be addressable by device-side access patterns under specific rules";
+        °field •write_combined = "Host memory variant that may favor host-to-device transfer patterns over CPU read efficiency";
+        °field •numa_note = "Host allocation locality can matter when CPU and GPU distance differs across NUMA topology";
+      };
+
+      °page •ROCNDeviceMemory {
+        °field •meaning = "Memory physically or logically associated with the GPU device";
+        °field •global = "Device-wide read/write storage for large buffers and kernel inputs/outputs";
+        °field •constant = "Read-only device-visible storage for small shared values";
+        °field •texture = "Read-only memory path optimized for spatial access and texture-style lookup behavior";
+        °field •surface = "Read-write texture-like memory path with special visibility considerations";
+        °field •shared = "Per-block local data share style memory for fast cooperation among threads in one block";
+        °field •warning = "Device memory access from host or other devices may cross slower interconnects";
+      };
+
+      °page •ROCNUnifiedMemory {
+        °field •meaning = "A memory model where CPU and GPU can operate through a shared address-space concept";
+        °field •managed = "A unified-memory strategy where runtime/driver behavior may migrate pages between processors";
+        °field •benefit = "Simplifies programming by reducing explicit copy management";
+        °field •risk = "Can hide page migration, first-touch cost, degraded behavior, and hardware support differences";
+        °field •rocn_position = "ROCN may support unified memory later, but explicit memory should remain the default research model";
+      };
+
+      °page •ROCNMemoryOperations {
+        °field •allocate_host = "reserve CPU-side memory";
+        °field •allocate_device = "reserve GPU-side memory";
+        °field •copy_host_to_device = "move input from CPU memory to GPU memory";
+        °field •copy_device_to_host = "move result from GPU memory to CPU memory";
+        °field •copy_device_to_device = "move memory between device regions or devices when supported";
+        °field •free_host = "release CPU-side memory";
+        °field •free_device = "release GPU-side memory";
+        °field •async_variant = "stream-aware operations may return before device-side work is complete";
+      };
+
+      °page •ROCNMemoryPerformanceRules {
+        °field •rule_0 = "Avoid unnecessary host/device transfers";
+        °field •rule_1 = "Prefer coalesced global memory access when threads read adjacent data";
+        °field •rule_2 = "Use shared/LDS memory when block-local reuse or cooperation is valuable";
+        °field •rule_3 = "Avoid shared-memory bank conflicts where possible";
+        °field •rule_4 = "Use pinned memory deliberately, not casually";
+        °field •rule_5 = "Treat unified memory as convenient but potentially non-obvious";
+        °field •rule_6 = "Make stream-associated memory operations explicit";
+      };
+
+      °page •ROCNNetivMemoryMapping {
+        °field •host_type = "future rocn.host.ptr or rocn.host.buffer";
+        °field •device_type = "future rocn.device.ptr or rocn.device.buffer";
+        °field •shared_type = "future rocn.shared.region for per-block memory";
+        °field •constant_type = "future rocn.constant.region for read-only kernel-visible data";
+        °field •texture_type = "future rocn.texture.region for sampled/spatial memory";
+        °field •surface_type = "future rocn.surface.region for read-write texture-like memory";
+        °field •managed_type = "future rocn.managed.buffer only after runtime support is explicit";
+      };
+
+      °method •DefineROCNMemoryModel() -> °void {
+        °observe "ROCN separates host memory, device memory, shared memory, constant memory, texture memory, surface memory, and unified memory";
+        °observe "ROCN memory operations must preserve locality and movement in graph-visible form";
+        °observe "ROCN should prefer explicit memory control before convenience abstractions";
+        °call •RecordROCNHostMemoryKinds();
+        °call •RecordROCNDeviceMemoryKinds();
+        °call •RecordROCNTransferKinds();
+      };
+
+      °method •PlanROCNExplicitMemoryFlow() -> °void {
+        °observe "allocate host input";
+        °observe "allocate device input/output";
+        °observe "copy input host to device";
+        °observe "launch kernel using device buffers";
+        °observe "copy output device to host";
+        °observe "free device buffers";
+        °observe "free or release host buffers";
+      };
+
+      °method •PlanROCNUnifiedMemoryFlow() -> °void {
+        °observe "mark unified/managed memory as a deliberate mode";
+        °observe "record possible migration behavior";
+        °observe "record architecture or runtime assumptions";
+        °observe "do not hide page migration risk from graph/meta inspection";
+      };
+
+      °method •PlanROCNStreamMemoryFlow() -> °void {
+        °observe "async allocation, copy, and free operations must name their stream";
+        °observe "stream order must be visible";
+        °observe "events or synchronization points must be explicit when host reads results";
+      };
+
+      °function •RecordROCNHostMemoryKinds() -> °void {
+        °observe "pageable host memory";
+        °observe "pinned host memory";
+        °observe "mapped pinned host memory";
+        °observe "write-combined host memory";
+        °observe "NUMA-aware host memory";
+      };
+
+      °function •RecordROCNDeviceMemoryKinds() -> °void {
+        °observe "device global memory";
+        °observe "constant memory";
+        °observe "texture memory";
+        °observe "surface memory";
+        °observe "shared memory / LDS";
+        °observe "per-thread private/register storage";
+      };
+
+      °function •RecordROCNTransferKinds() -> °void {
+        °observe "host to device";
+        °observe "device to host";
+        °observe "device to device";
+        °observe "synchronous copy";
+        °observe "asynchronous stream copy";
+        °observe "managed or unified migration";
+      };
+
+      °function •RecordROCNAllocationRules() -> °void {
+        °observe "memory allocated by host runtime should be freed by host runtime";
+        °observe "memory allocated inside a kernel should not be assumed freeable by host API";
+        °observe "shared memory is per-block and launch/compile-time shaped";
+        °observe "constant memory is read-only to kernels and must be prepared before use";
+      };
+
+      °function •RecordROCNMemoryHazards() -> °void {
+        °observe "hidden copy cost";
+        °observe "PCIe or interconnect bottleneck";
+        °observe "page migration surprise";
+        °observe "bank conflict serialization";
+        °observe "uncoalesced global memory access";
+        °observe "overuse of pinned host memory";
+        °observe "occupancy reduction from excessive shared/register usage";
+      };
+
+      °method •NextROCNForkTargets() -> °void {
+        °observe "Next API file: include/hip/hip_runtime_api.h -> rocn-runtime-api-map.ntv";
+        °observe "Next kernel-language file: docs/how-to/hip_cpp_language_extensions.rst -> rocn-kernel-language.ntv";
+        °observe "Next type file: include/hip/driver_types.h -> rocn-driver-types-map.ntv";
+      };
+    </book>
+  |■
+|●
+</Netiv>
