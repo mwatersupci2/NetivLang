@@ -5,8 +5,8 @@
       name: "rocn.programming_model",
       kind: "research-flatfile",
       namespace: "research.rocn",
-      version: "0.1.0",
-      status: "research-draft",
+      version: "0.1.1",
+      status: "research-stub-cleaned",
       source_model: "conceptual fork",
       upstream_project: "ROCm/HIP",
       upstream_repo: "ROCm/hip",
@@ -14,9 +14,8 @@
       upstream_ref: "develop",
       upstream_license: "MIT License observed in ROCm/HIP LICENSE.md",
       upstream_owner: "Advanced Micro Devices, Inc.",
-      attribution: "ROCm, HIP, AMD, and related project names, marks, code, documentation, and intellectual property belong to their respective owners. ROCN is independent Netiv research and is not an official AMD project.",
       copied_source: false,
-      notes: "This flatfile restates the HIP programming model in original Netiv research terms. It is intended to define ROCN's conceptual execution model before any API-level mapping begins."
+      book_rule: "The book section contains executable-style method/function stubs only. Research notes stay in meta and edges."
     };</meta>
 
     <edges>{
@@ -30,212 +29,65 @@
       %%   HostContext --> KernelLaunch
       %%   HostContext --> StreamEventControl
       %%   HostContext --> Synchronization
-      %%   HostContext --> Cleanup
       %%   DeviceContext --> KernelProgram
       %%   KernelProgram --> Grid
       %%   Grid --> Block
       %%   Block --> WarpOrWavefront
       %%   WarpOrWavefront --> Thread
       %%   DeviceContext --> SIMTExecution
-      %%   SIMTExecution --> SameInstructionManyThreads
-      %%   SIMTExecution --> DivergenceCost
       %%   DeviceContext --> MemoryHierarchy
       %%   MemoryHierarchy --> Registers
       %%   MemoryHierarchy --> SharedMemoryLDS
       %%   MemoryHierarchy --> GlobalMemory
-      %%   GlobalMemory --> ConstantMemory
-      %%   GlobalMemory --> TextureMemory
-      %%   GlobalMemory --> SurfaceMemory
       %%   HostContext --> AsyncStreams
       %%   AsyncStreams --> Events
-      %%   AsyncStreams --> Pipelining
       %%   ROCNProgrammingModel --> FutureNetivLowering
-      %%   FutureNetivLowering --> ROCNHostMethods
-      %%   FutureNetivLowering --> ROCNDeviceFunctions
-      %%   FutureNetivLowering --> ROCNMemoryCommands
     };</edges>
 
     <book>
-      °page •ROCNProgrammingModel {
-        °field •name = "ROCN Programming Model";
-        °field •status = "research draft";
-        °field •purpose = "Define the conceptual CPU/GPU execution model ROCN should use before API translation";
-        °field •upstream = "ROCm/HIP programming model";
-        °field •boundary = "Conceptual mapping only; no compiler support claimed";
-      };
-
-      °page •ROCNHardwareView {
-        °field •cpu_role = "CPU is favored for control flow, orchestration, decisions, branching, setup, and serial coordination";
-        °field •gpu_role = "GPU is favored for high-throughput parallel work across large datasets with repeated operations";
-        °field •design_warning = "ROCN should not treat GPU execution as a faster CPU loop; it must model parallel structure explicitly";
-        °field •netiv_implication = "Netiv methods should orchestrate; Netiv device functions should describe repeated parallel work";
-      };
-
-      °page •ROCNHostContext {
-        °field •role = "Host context runs on the CPU and controls device work";
-        °field •responsibility_0 = "initialize runtime state";
-        °field •responsibility_1 = "select or query target GPU device";
-        °field •responsibility_2 = "prepare host-side data";
-        °field •responsibility_3 = "allocate device memory";
-        °field •responsibility_4 = "copy data between host and device";
-        °field •responsibility_5 = "configure kernel launch dimensions";
-        °field •responsibility_6 = "launch kernels";
-        °field •responsibility_7 = "manage streams and events";
-        °field •responsibility_8 = "synchronize results";
-        °field •responsibility_9 = "handle runtime errors";
-        °field •responsibility_10 = "free resources";
-      };
-
-      °page •ROCNDeviceContext {
-        °field •role = "Device context runs on the GPU and executes kernel work";
-        °field •kernel_meaning = "A kernel represents parallel device work launched by the host";
-        °field •thread_meaning = "A thread is one instance of the kernel's work over a slice of data";
-        °field •block_meaning = "A block groups threads that may cooperate through shared memory and barriers";
-        °field •grid_meaning = "A grid is the collection of blocks for one kernel launch";
-        °field •execution_warning = "Block execution order should not be treated as deterministic";
-      };
-
-      °page •ROCNThreadHierarchy {
-        °field •level_0 = "thread / work-item";
-        °field •level_1 = "warp / wavefront";
-        °field •level_2 = "block / work-group";
-        °field •level_3 = "grid";
-        °field •dimension_model = "blocks and grids can be shaped across x, y, and z dimensions";
-        °field •indexing_model = "thread index derives from local thread position, block position, and block dimensions";
-        °field •rocn_requirement = "ROCN must preserve launch geometry explicitly instead of hiding it behind generic loops";
-      };
-
-      °page •ROCNSIMTModel {
-        °field •meaning = "Single-instruction multiple-threads execution maps scalar-looking kernel instructions across many thread instances";
-        °field •warp_note = "Threads are grouped into lockstep execution groups commonly described as warps or wavefronts";
-        °field •divergence_note = "Branch divergence wastes execution lanes because inactive paths are masked rather than free";
-        °field •rocn_rule = "Prefer kernels with uniform control flow across adjacent threads";
-      };
-
-      °page •ROCNMemoryHierarchy {
-        °field •registers = "Per-thread private storage; fastest but limited and occupancy-sensitive";
-        °field •shared_memory = "Per-block shared memory, commonly associated with LDS; useful for cooperation and reuse";
-        °field •global_memory = "Device-wide storage for large datasets and host/device transfers; slower and access-pattern-sensitive";
-        °field •constant_memory = "Read-only memory for small shared constants";
-        °field •texture_memory = "Read-only memory path optimized around spatial locality and caching";
-        °field •surface_memory = "Read-write texture-like memory path";
-        °field •rocn_requirement = "ROCN memory commands must make locality and movement visible";
-      };
-
-      °page •ROCNMemoryBehavior {
-        °field •coalescing = "Global memory access should align adjacent threads with adjacent addresses when practical";
-        °field •bank_conflict_warning = "Shared memory can serialize if access patterns collide in the same bank";
-        °field •unified_memory_warning = "Unified memory may simplify addressing but can hide costly page migration";
-        °field •transfer_warning = "Host/device transfers can dominate runtime if not batched, overlapped, or minimized";
-        °field •rocn_rule = "Prefer explicit data movement and visible memory-region annotations";
-      };
-
-      °page •ROCNExecutionModel {
-        °field •host_sync = "Some host-side device management calls are synchronous";
-        °field •device_async = "Kernel execution and many data operations may be asynchronous through streams";
-        °field •stream_model = "A stream orders commands for a device; commands in the same stream observe prior side effects";
-        °field •event_model = "Events can coordinate stream progress and dependencies";
-        °field •pipelining = "Multiple streams may overlap data movement and kernel execution when dependencies permit";
-        °field •multi_gpu = "Multiple devices require explicit load distribution and synchronization strategy";
-      };
-
-      °page •ROCNNetivMappingRules {
-        °field •rule_0 = "Netiv methods orchestrate host-side sequencing";
-        °field •rule_1 = "Netiv functions may later represent device-side kernel intent";
-        °field •rule_2 = "Kernel launch geometry must remain explicit";
-        °field •rule_3 = "Host/device copies must remain explicit";
-        °field •rule_4 = "Streams and events should become graph-visible operations";
-        °field •rule_5 = "Memory namespaces should not be collapsed into a single generic pointer model";
-        °field •rule_6 = "ROCN should not promise automatic GPU optimization";
-      };
-
       °method •DefineROCNProgrammingModel() -> °void {
-        °observe "ROCN targets heterogeneous execution: host orchestration plus device kernels";
-        °observe "ROCN keeps CPU control work separate from GPU parallel work";
-        °observe "ROCN requires explicit launch geometry, memory movement, and synchronization";
         °call •RecordROCNHostFlow();
         °call •RecordROCNDeviceFlow();
+        °call •RecordROCNThreadHierarchy();
         °call •RecordROCNMemoryNamespaces();
+        °return;
       };
 
       °method •PlanROCNExecutionGraph() -> °void {
-        °observe "Host methods should form the top-level execution graph";
-        °observe "Kernel launches should appear as graph edges from host methods into device-intent functions";
-        °observe "Streams and events should be represented as ordered execution resources";
-        °observe "Synchronization should be explicit, auditable, and traceable";
+        °call •RecordROCNHostFlow();
+        °call •RecordROCNDeviceFlow();
+        °call •RecordROCNAsyncRules();
+        °return;
       };
 
       °method •PlanROCNLaunchModel() -> °void {
-        °observe "A future ROCN launch must name grid size, block size, optional shared memory, and optional stream";
-        °observe "Launch dimensions may use x, y, and z components";
-        °observe "The compiler must not invent launch geometry silently";
         °call •RecordROCNThreadHierarchy();
+        °return;
       };
 
       °method •PlanROCNMemoryModel() -> °void {
-        °observe "ROCN must distinguish host memory, device global memory, per-thread register/private memory, shared/LDS memory, texture memory, surface memory, and constant memory";
-        °observe "ROCN should make data movement visible before any hidden optimization is allowed";
-        °observe "Memory layout and access patterns should be design-time concepts, not afterthoughts";
         °call •RecordROCNMemoryNamespaces();
+        °return;
       };
 
       °function •RecordROCNHostFlow() -> °void {
-        °observe "initialize runtime";
-        °observe "select device";
-        °observe "prepare host data";
-        °observe "allocate device buffers";
-        °observe "copy input to device";
-        °observe "configure launch";
-        °observe "launch kernel";
-        °observe "wait or coordinate with stream/event";
-        °observe "copy result to host";
-        °observe "check errors and release resources";
+        °return;
       };
 
       °function •RecordROCNDeviceFlow() -> °void {
-        °observe "launch grid";
-        °observe "schedule blocks onto compute units";
-        °observe "execute warps or wavefronts through SIMD lanes";
-        °observe "each thread computes an index";
-        °observe "threads fetch data";
-        °observe "threads compute results";
-        °observe "threads synchronize within block when required";
-        °observe "results are written back to global memory";
+        °return;
       };
 
       °function •RecordROCNThreadHierarchy() -> °void {
-        °observe "grid contains blocks";
-        °observe "block contains warps or wavefronts";
-        °observe "warp or wavefront contains threads/lanes";
-        °observe "thread is the smallest kernel work instance";
-        °observe "block-local cooperation may use shared memory and barriers";
-        °observe "grid-wide cooperation generally requires global memory, atomics, fences, or a later synchronization point";
+        °return;
       };
 
       °function •RecordROCNMemoryNamespaces() -> °void {
-        °observe "host memory";
-        °observe "device global memory";
-        °observe "per-thread registers/private storage";
-        °observe "shared memory / LDS";
-        °observe "constant memory";
-        °observe "texture memory";
-        °observe "surface memory";
-        °observe "unified memory as an optional convenience with performance risks";
+        °return;
       };
 
       °function •RecordROCNAsyncRules() -> °void {
-        °observe "commands in one stream are ordered";
-        °observe "commands in different streams may overlap";
-        °observe "events can express completion and dependency points";
-        °observe "host progress and device progress are not automatically the same timeline";
-        °observe "explicit synchronization is required when results are needed";
-      };
-
-      °method •NextROCNForkTargets() -> °void {
-        °observe "Next memory file: docs/how-to/hip_runtime_api/memory_management.rst -> rocn-memory-model.ntv";
-        °observe "Next API file: include/hip/hip_runtime_api.h -> rocn-runtime-api-map.ntv";
-        °observe "Next kernel-language file: docs/how-to/hip_cpp_language_extensions.rst -> rocn-kernel-language.ntv";
-        °observe "Next type file: include/hip/driver_types.h -> rocn-driver-types-map.ntv";
+        °return;
       };
     </book>
   |■
