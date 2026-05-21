@@ -1,0 +1,38 @@
+<Netiv="research/rocn/rocn-interop-map.ntv">
+○|
+  □|
+    <meta>{
+      name: "rocn.interop_map",
+      kind: "research-flatfile",
+      namespace: "research.rocn",
+      version: "0.1.0",
+      status: "research-stub",
+      source_model: "conceptual map",
+      upstream_project: "ROCm/HIP",
+      upstream_repo: "ROCm/hip",
+      upstream_file: "graphics_interop.rst",
+      upstream_ref: "develop",
+      copied_source: false,
+      book_rule: "Book contains method and function stubs only."
+    };</meta>
+
+    <edges>{
+      %% graph TD
+      %%   ROCNInteropMap --> SharedHandle
+      %%   ROCNInteropMap --> SharedBuffer
+      %%   ROCNInteropMap --> SharedImage
+    };</edges>
+
+    <book>
+      °method •DefineROCNInteropMap() -> °void {
+        °call •RecordROCNInteropSteps();
+        °return;
+      };
+
+      °function •RecordROCNInteropSteps() -> °void {
+        °return;
+      };
+    </book>
+  |■
+|●
+</Netiv>
