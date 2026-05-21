@@ -1,0 +1,38 @@
+<Netiv="research/rocn/rocn-compare-map.ntv">
+○|
+  □|
+    <meta>{
+      name: "rocn.compare_map",
+      kind: "research-flatfile",
+      namespace: "research.rocn",
+      version: "0.1.0",
+      status: "research-stub",
+      source_model: "conceptual map",
+      upstream_project: "ROCm/HIP",
+      upstream_repo: "ROCm/hip",
+      upstream_file: "api_syntax_comparison.rst",
+      upstream_ref: "develop",
+      copied_source: false,
+      book_rule: "Book contains method and function stubs only."
+    };</meta>
+
+    <edges>{
+      %% graph TD
+      %%   ROCNCompareMap --> SyntaxShape
+      %%   ROCNCompareMap --> CallShape
+      %%   ROCNCompareMap --> LaunchShape
+    };</edges>
+
+    <book>
+      °method •DefineROCNCompareMap() -> °void {
+        °call •RecordROCNCompareSteps();
+        °return;
+      };
+
+      °function •RecordROCNCompareSteps() -> °void {
+        °return;
+      };
+    </book>
+  |■
+|●
+</Netiv>
