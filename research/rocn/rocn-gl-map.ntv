@@ -1,0 +1,38 @@
+<Netiv="research/rocn/rocn-gl-map.ntv">
+○|
+  □|
+    <meta>{
+      name: "rocn.gl_map",
+      kind: "research-flatfile",
+      namespace: "research.rocn",
+      version: "0.1.0",
+      status: "research-stub",
+      source_model: "conceptual map",
+      upstream_project: "ROCm/HIP",
+      upstream_repo: "ROCm/hip",
+      upstream_file: "opengl_interoperability.rst",
+      upstream_ref: "develop",
+      copied_source: false,
+      book_rule: "Book contains method and function stubs only."
+    };</meta>
+
+    <edges>{
+      %% graph TD
+      %%   ROCNGLMap --> SharedTexture
+      %%   ROCNGLMap --> SharedBuffer
+      %%   ROCNGLMap --> SharedSurface
+    };</edges>
+
+    <book>
+      °method •DefineROCNGLMap() -> °void {
+        °call •RecordROCNGLSteps();
+        °return;
+      };
+
+      °function •RecordROCNGLSteps() -> °void {
+        °return;
+      };
+    </book>
+  |■
+|●
+</Netiv>
