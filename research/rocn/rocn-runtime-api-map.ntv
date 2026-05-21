@@ -1,0 +1,231 @@
+<Netiv="research/rocn/rocn-runtime-api-map.ntv">
+○|
+  □|
+    <meta>{
+      name: "rocn.runtime_api_map",
+      kind: "research-flatfile",
+      namespace: "research.rocn",
+      version: "0.1.0",
+      status: "research-draft",
+      source_model: "conceptual API map",
+      upstream_project: "ROCm/HIP",
+      upstream_repo: "ROCm/hip",
+      upstream_files: "include/hip/hip_runtime_api.h; docs/reference/hip_runtime_api/modules.rst",
+      upstream_ref: "develop",
+      upstream_license: "MIT License observed in ROCm/HIP LICENSE.md and SPDX-License-Identifier: MIT observed in hip_runtime_api.h",
+      upstream_owner: "Advanced Micro Devices, Inc.",
+      attribution: "ROCm, HIP, AMD, and related project names, marks, code, documentation, and intellectual property belong to their respective owners. ROCN is independent Netiv research and is not an official AMD project.",
+      copied_source: false,
+      notes: "This flatfile maps the HIP runtime API categories into ROCN research namespaces. It does not copy the upstream header or define ABI-compatible declarations yet."
+    };</meta>
+
+    <edges>{
+      %% graph TD
+      %%   ROCNRuntimeAPIMap --> HIPRuntimeAPIHeader
+      %%   ROCNRuntimeAPIMap --> RuntimeModules
+      %%   RuntimeModules --> InitializationVersion
+      %%   RuntimeModules --> DeviceManagement
+      %%   RuntimeModules --> ExecutionControl
+      %%   RuntimeModules --> ErrorHandling
+      %%   RuntimeModules --> StreamManagement
+      %%   RuntimeModules --> StreamMemoryOperations
+      %%   RuntimeModules --> EventManagement
+      %%   RuntimeModules --> MemoryManagement
+      %%   MemoryManagement --> UnifiedMemory
+      %%   MemoryManagement --> VirtualMemory
+      %%   MemoryManagement --> TextureManagement
+      %%   MemoryManagement --> SurfaceObject
+      %%   MemoryManagement --> StreamOrderedAllocator
+      %%   RuntimeModules --> PeerToPeer
+      %%   RuntimeModules --> ContextManagement
+      %%   RuntimeModules --> ModuleManagement
+      %%   RuntimeModules --> Occupancy
+      %%   RuntimeModules --> ProfilerControl
+      %%   RuntimeModules --> LaunchAPI
+      %%   RuntimeModules --> RuntimeCompilation
+      %%   RuntimeModules --> GraphManagement
+      %%   RuntimeModules --> Interop
+      %%   RuntimeModules --> CooperativeGroups
+      %%   ROCNRuntimeAPIMap --> ROCNHostNamespace
+      %%   ROCNRuntimeAPIMap --> ROCNDeviceNamespace
+      %%   ROCNRuntimeAPIMap --> ROCNMemoryNamespace
+      %%   ROCNRuntimeAPIMap --> ROCNStreamNamespace
+      %%   ROCNRuntimeAPIMap --> ROCNLaunchNamespace
+      %%   ROCNRuntimeAPIMap --> ROCNErrorNamespace
+    };</edges>
+
+    <book>
+      °page •ROCNRuntimeAPIMap {
+        °field •name = "ROCN Runtime API Map";
+        °field •status = "research draft";
+        °field •purpose = "Create the first Netiv-facing map of HIP runtime API categories before translating individual functions";
+        °field •upstream_header = "include/hip/hip_runtime_api.h";
+        °field •upstream_reference = "docs/reference/hip_runtime_api/modules.rst";
+        °field •boundary = "Category-level API map only; no ABI promise and no full header fork yet";
+      };
+
+      °page •ROCNRuntimeHeaderFacts {
+        °field •header_role = "Defines HIP runtime API signatures";
+        °field •compiler_note = "Upstream states the header can compile with a standard compiler";
+        °field •early_types = "Device architecture flags, UUID, device properties, and memory type classifications appear near the top of the header";
+        °field •legal_note = "Upstream header carries AMD copyright and MIT SPDX marker";
+        °field •rocn_rule = "ROCN must map concepts before attempting declaration-level compatibility";
+      };
+
+      °page •ROCNRuntimeModules {
+        °field •module_0 = "initialization and version";
+        °field •module_1 = "device management";
+        °field •module_2 = "execution control";
+        °field •module_3 = "error handling";
+        °field •module_4 = "stream management";
+        °field •module_5 = "stream memory operations";
+        °field •module_6 = "event management";
+        °field •module_7 = "memory management";
+        °field •module_8 = "peer-to-peer device memory access";
+        °field •module_9 = "context management";
+        °field •module_10 = "module management";
+        °field •module_11 = "occupancy";
+        °field •module_12 = "profiler control";
+        °field •module_13 = "launch API";
+        °field •module_14 = "runtime compilation";
+        °field •module_15 = "callback/activity APIs";
+        °field •module_16 = "graph management";
+        °field •module_17 = "OpenGL and graphics interoperability";
+        °field •module_18 = "cooperative groups";
+      };
+
+      °page •ROCNNamespacePlan {
+        °field •rocn.runtime = "initialization, version, context, module loading, global runtime behavior";
+        °field •rocn.device = "device query, selection, properties, architecture capability flags";
+        °field •rocn.memory = "allocation, copies, unified memory, virtual memory, pools, texture/surface memory";
+        °field •rocn.stream = "streams, events, ordering, async coordination";
+        °field •rocn.launch = "kernel launch configuration and execution control";
+        °field •rocn.error = "error codes, error strings, last-error style inspection";
+        °field •rocn.graph = "graph capture, graph execution, task dependency DAGs";
+        °field •rocn.interop = "OpenGL, graphics, external resources, and future platform bridge concepts";
+        °field •rocn.profile = "profiler control and future observability hooks";
+      };
+
+      °page •ROCNDevicePropertyMap {
+        °field •identity = "name, uuid, architecture name, PCI identity, board grouping";
+        °field •memory_limits = "global memory, constant memory, shared memory, L2 cache, memory bus width";
+        °field •thread_limits = "warp size, max threads per block, max grid dimensions, resident thread/block limits";
+        °field •execution_features = "concurrent kernels, cooperative launch, cluster launch, unified function pointers";
+        °field •memory_features = "managed memory, unified addressing, pageable access, memory pools, host registration";
+        °field •interop_features = "IPC, external semaphore/resource support, RDMA, graphics/texture/surface support";
+        °field •rocn_rule = "Device property data should become structured query output, not raw untyped metadata";
+      };
+
+      °page •ROCNMemoryTypeMap {
+        °field •unregistered = "pointer/memory not registered with runtime";
+        °field •host = "memory physically located on host";
+        °field •device = "memory physically located on a device";
+        °field •managed = "memory managed by unified-memory system";
+        °field •array = "device-backed array memory";
+        °field •unified = "unified address-space memory";
+        °field •rocn_rule = "Every future ROCN pointer/buffer should carry memory-location metadata";
+      };
+
+      °page •ROCNRuntimeSafetyRules {
+        °field •rule_0 = "Do not collapse host and device memory into a generic pointer";
+        °field •rule_1 = "Do not hide synchronization behind friendly method names";
+        °field •rule_2 = "Every async operation must expose stream or event ownership";
+        °field •rule_3 = "Every kernel launch must expose grid, block, shared memory, and stream assumptions";
+        °field •rule_4 = "Every device query should be auditable through meta/graph tooling";
+        °field •rule_5 = "ROCN errors should be represented as terminal or recoverable according to Netiv error policy";
+      };
+
+      °method •DefineROCNRuntimeAPIMap() -> °void {
+        °observe "ROCN runtime API mapping begins at module/category level";
+        °observe "ROCN should avoid copying the full HIP header until Netiv API boundaries are stable";
+        °observe "ROCN must first define namespaces for runtime, device, memory, stream, launch, error, graph, interop, and profiling";
+        °call •RecordROCNRuntimeModules();
+        °call •RecordROCNNamespacePlan();
+      };
+
+      °method •PlanROCNDeviceQueries() -> °void {
+        °observe "Device discovery should return structured device capability pages";
+        °observe "Device properties should inform launch validation, memory limits, and feature checks";
+        °observe "Architecture feature flags should be available to compiler and runtime planning";
+        °call •RecordROCNDevicePropertyGroups();
+      };
+
+      °method •PlanROCNRuntimeErrors() -> °void {
+        °observe "Runtime errors should map into Netiv error categories";
+        °observe "Initialization errors should usually be terminal";
+        °observe "Invalid input errors may be recoverable during planning but terminal during execution";
+        °observe "Launch resource errors should preserve enough context to debug grid/block/resource assumptions";
+      };
+
+      °method •PlanROCNAPIForkSequence() -> °void {
+        °observe "First fork module map";
+        °observe "Second fork error codes and result type";
+        °observe "Third fork device query/property types";
+        °observe "Fourth fork memory allocation/copy APIs";
+        °observe "Fifth fork stream/event APIs";
+        °observe "Sixth fork kernel launch APIs";
+      };
+
+      °function •RecordROCNRuntimeModules() -> °void {
+        °observe "initialization and version";
+        °observe "device management";
+        °observe "execution control";
+        °observe "error handling";
+        °observe "stream management";
+        °observe "stream memory operations";
+        °observe "event management";
+        °observe "memory management";
+        °observe "peer-to-peer access";
+        °observe "context management";
+        °observe "module management";
+        °observe "occupancy";
+        °observe "profiler control";
+        °observe "launch API";
+        °observe "runtime compilation";
+        °observe "graph management";
+        °observe "interop";
+        °observe "cooperative groups";
+      };
+
+      °function •RecordROCNNamespacePlan() -> °void {
+        °observe "rocn.runtime";
+        °observe "rocn.device";
+        °observe "rocn.memory";
+        °observe "rocn.stream";
+        °observe "rocn.event";
+        °observe "rocn.launch";
+        °observe "rocn.error";
+        °observe "rocn.graph";
+        °observe "rocn.interop";
+        °observe "rocn.profile";
+      };
+
+      °function •RecordROCNDevicePropertyGroups() -> °void {
+        °observe "device identity";
+        °observe "architecture capability flags";
+        °observe "memory limits";
+        °observe "thread and grid limits";
+        °observe "stream/event capability";
+        °observe "managed/unified memory support";
+        °observe "cooperative launch support";
+        °observe "interop and IPC support";
+      };
+
+      °function •RecordROCNMemoryTypeKinds() -> °void {
+        °observe "unregistered";
+        °observe "host";
+        °observe "device";
+        °observe "managed";
+        °observe "array";
+        °observe "unified";
+      };
+
+      °method •NextROCNForkTargets() -> °void {
+        °observe "Next type file: include/hip/driver_types.h -> rocn-driver-types-map.ntv";
+        °observe "Next kernel-language file: docs/how-to/hip_cpp_language_extensions.rst -> rocn-kernel-language.ntv";
+        °observe "Next runtime detail file: docs/reference/hip_runtime_api/modules/memory_management.rst -> rocn-memory-api-map.ntv";
+      };
+    </book>
+  |■
+|●
+</Netiv>
