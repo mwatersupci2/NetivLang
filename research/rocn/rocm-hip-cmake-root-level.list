@@ -1,0 +1,43 @@
+# ROCm/HIP cmake root-level inventory
+
+upstream_repo: ROCm/hip
+upstream_path: cmake/
+source_view: GitHub mobile file browser screenshots supplied by project owner
+created_for: Netiv ROCN research library
+scope: cmake/ first-level folders and files only, plus observed cmake/FindHIP first-level files
+status: manual staged inventory
+
+FORMAT:
+path | kind | apparent purpose
+
+================================================================================
+CMAKE FIRST-LEVEL ENTRIES
+================================================================================
+cmake/FindHIP/ | folder | CMake helper folder for finding/configuring HIP in external CMake projects.
+cmake/FindHIP.cmake | CMake module | Main CMake module for locating HIP and exposing HIP build configuration to CMake consumers.
+
+================================================================================
+CMAKE/FINDHIP FIRST-LEVEL FILES
+================================================================================
+cmake/FindHIP/run_hipcc.cmake | CMake helper | Helper script for running HIP compiler-driver behavior through CMake.
+cmake/FindHIP/run_make2cmake.cmake | CMake helper | Helper script for translating or bridging make-style HIP build behavior into CMake flow.
+
+================================================================================
+ROCN NOTES
+================================================================================
+This folder matters later, not first.
+
+For ROCN, cmake/ should be studied after docs/ and include/hip/ because it is mostly build-system integration rather than the core API surface.
+
+Likely ROCN mapping:
+
+1. cmake/FindHIP.cmake
+   Map to future Netiv build backend discovery behavior.
+
+2. cmake/FindHIP/run_hipcc.cmake
+   Study how HIP compiler-driver calls are staged from a build system.
+
+3. cmake/FindHIP/run_make2cmake.cmake
+   Study how HIP build assumptions are translated into CMake-compatible form.
+
+Do not copy this build system yet. Use it as a model for a future ROCN build adapter only after ROCN has a stable host/kernel/memory design.
