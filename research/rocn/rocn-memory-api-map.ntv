@@ -1,0 +1,200 @@
+<Netiv="research/rocn/rocn-memory-api-map.ntv">
+○|
+  □|
+    <meta>{
+      name: "rocn.memory_api_map",
+      kind: "research-flatfile",
+      namespace: "research.rocn",
+      version: "0.1.0",
+      status: "research-draft",
+      source_model: "conceptual API map",
+      upstream_project: "ROCm/HIP",
+      upstream_repo: "ROCm/hip",
+      upstream_files: "docs/reference/hip_runtime_api/modules/memory_management.rst; docs/reference/hip_runtime_api/modules/memory_management/stream_ordered_memory_allocator.rst; docs/reference/hip_runtime_api/modules/memory_management/unified_memory_reference.rst; docs/reference/hip_runtime_api/modules/memory_management/virtual_memory_reference.rst; docs/reference/hip_runtime_api/modules/memory_management/texture_management.rst; docs/reference/hip_runtime_api/modules/memory_management/surface_object.rst",
+      upstream_ref: "develop",
+      upstream_license: "MIT License observed in ROCm/HIP LICENSE.md",
+      upstream_owner: "Advanced Micro Devices, Inc.",
+      attribution: "ROCm, HIP, AMD, and related project names, marks, code, documentation, and intellectual property belong to their respective owners. ROCN is independent Netiv research and is not an official AMD project.",
+      copied_source: false,
+      notes: "This flatfile maps HIP memory API reference modules into ROCN research namespaces. It does not copy function declarations or define ABI-compatible wrappers yet."
+    };</meta>
+
+    <edges>{
+      %% graph TD
+      %%   ROCNMemoryAPIMap --> CoreMemoryAPI
+      %%   ROCNMemoryAPIMap --> StreamOrderedAllocator
+      %%   ROCNMemoryAPIMap --> ManagedMemoryAPI
+      %%   ROCNMemoryAPIMap --> VirtualMemoryAPI
+      %%   ROCNMemoryAPIMap --> TextureManagementAPI
+      %%   ROCNMemoryAPIMap --> SurfaceObjectAPI
+      %%   CoreMemoryAPI --> Allocate
+      %%   CoreMemoryAPI --> Free
+      %%   CoreMemoryAPI --> Copy
+      %%   CoreMemoryAPI --> Set
+      %%   CoreMemoryAPI --> PointerAttributes
+      %%   StreamOrderedAllocator --> StreamAlloc
+      %%   StreamOrderedAllocator --> StreamFree
+      %%   StreamOrderedAllocator --> MemoryPools
+      %%   ManagedMemoryAPI --> UnifiedAddressing
+      %%   ManagedMemoryAPI --> PageMigration
+      %%   ManagedMemoryAPI --> PrefetchAdvice
+      %%   VirtualMemoryAPI --> ReserveAddress
+      %%   VirtualMemoryAPI --> MapMemory
+      %%   VirtualMemoryAPI --> SetAccess
+      %%   TextureManagementAPI --> TextureObject
+      %%   TextureManagementAPI --> TextureResource
+      %%   TextureManagementAPI --> TextureDescriptor
+      %%   SurfaceObjectAPI --> SurfaceObject
+      %%   SurfaceObjectAPI --> SurfaceReadWrite
+      %%   ROCNMemoryAPIMap --> NetivMemoryBackendFuture
+    };</edges>
+
+    <book>
+      °page •ROCNMemoryAPIMap {
+        °field •name = "ROCN Memory API Map";
+        °field •status = "research draft";
+        °field •purpose = "Map HIP memory API reference groups into ROCN memory namespaces before function-level wrappers are written";
+        °field •upstream = "HIP runtime API memory reference modules";
+        °field •boundary = "Category-level API map only; no ABI or wrapper declarations yet";
+      };
+
+      °page •ROCNCoreMemoryAPI {
+        °field •meaning = "Basic memory allocation, freeing, copying, setting, and pointer inspection";
+        °field •allocation = "Reserve memory in host, device, managed, or array-like regions";
+        °field •freeing = "Release memory using the matching ownership path";
+        °field •copying = "Move bytes or structured regions between host/device/device-array memory kinds";
+        °field •setting = "Initialize or fill memory regions";
+        °field •attributes = "Inspect pointer location, device ownership, registration, and managed/unified behavior";
+      };
+
+      °page •ROCNStreamOrderedAllocator {
+        °field •meaning = "Allocation and free behavior ordered by stream execution";
+        °field •stream_alloc = "Allocate memory as a command associated with stream order";
+        °field •stream_free = "Free memory as a command associated with stream order";
+        °field •memory_pool = "Pool-backed allocation strategy for reuse and async workflows";
+        °field •rocn_rule = "Stream-ordered memory must name stream ownership explicitly";
+      };
+
+      °page •ROCNManagedMemoryAPI {
+        °field •meaning = "Managed/unified memory operations and policy controls";
+        °field •allocation = "Allocate memory that may be visible across host and device contexts";
+        °field •migration = "Runtime or driver may migrate pages based on access";
+        °field •prefetch = "Move memory toward an expected device or processor before access";
+        °field •advice = "Hint intended use or preferred location";
+        °field •rocn_rule = "Managed memory convenience must preserve migration and support assumptions in metadata";
+      };
+
+      °page •ROCNVirtualMemoryAPI {
+        °field •meaning = "Lower-level virtual address reservation, memory mapping, and access control";
+        °field •reserve = "Reserve a virtual address range";
+        °field •map = "Map physical or allocation-backed memory into a virtual range";
+        °field •unmap = "Remove a mapping";
+        °field •access = "Set or query access permissions";
+        °field •rocn_rule = "Virtual memory APIs belong behind an unsafe or expert ROCN layer until stable";
+      };
+
+      °page •ROCNTextureManagementAPI {
+        °field •meaning = "Create and manage texture objects and their backing resources";
+        °field •resource = "Array, mipmapped array, linear, or pitch2d backing source";
+        °field •descriptor = "Sampling, addressing, filtering, mipmap, and view metadata";
+        °field •object = "Runtime handle that binds resource and descriptor";
+        °field •rocn_rule = "Texture operations require explicit shape and descriptor metadata";
+      };
+
+      °page •ROCNSurfaceObjectAPI {
+        °field •meaning = "Create and manage read-write surface objects";
+        °field •resource = "Surface object backed by array-like resources";
+        °field •read_write = "Surface memory supports read/write behavior distinct from read-only texture sampling";
+        °field •visibility_warning = "Writes through surface-like paths may require kernel boundaries or synchronization to observe correctly";
+        °field •rocn_rule = "Surface operations should be separated from ordinary global memory operations";
+      };
+
+      °page •ROCNMemoryAPINamespaces {
+        °field •rocn.memory.core = "allocation, free, copy, set, pointer attributes";
+        °field •rocn.memory.stream = "stream-ordered allocation/free and memory-pool behavior";
+        °field •rocn.memory.managed = "unified/managed allocation, prefetch, advice, migration policy";
+        °field •rocn.memory.virtual = "reserve, map, unmap, set access, query access";
+        °field •rocn.memory.texture = "texture object/resource/descriptor operations";
+        °field •rocn.memory.surface = "surface object creation/destruction/read-write path";
+      };
+
+      °page •ROCNMemoryAPIRestrictions {
+        °field •rule_0 = "Allocation and free must use matching ownership semantics";
+        °field •rule_1 = "Async memory operations must expose stream order";
+        °field •rule_2 = "Copies must name source and destination memory kinds";
+        °field •rule_3 = "Managed memory must expose migration assumptions";
+        °field •rule_4 = "Virtual memory belongs behind expert/unsafe gates";
+        °field •rule_5 = "Texture/surface APIs require descriptor validation before backend lowering";
+      };
+
+      °method •DefineROCNMemoryAPIMap() -> °void {
+        °observe "ROCN memory API is split into core, stream, managed, virtual, texture, and surface categories";
+        °observe "ROCN memory API mapping should follow the conceptual memory model already defined";
+        °observe "ROCN should not create raw wrappers until ownership and metadata rules are stable";
+        °call •RecordROCNMemoryAPICategories();
+        °call •RecordROCNMemoryAPIRestrictions();
+      };
+
+      °method •PlanROCNMemoryCoreWrappers() -> °void {
+        °observe "Map allocation wrappers only after rocn.host.buffer and rocn.device.buffer concepts are stable";
+        °observe "Map copy wrappers only after source/destination memory-kind typing is stable";
+        °observe "Map pointer attributes as structured metadata pages";
+      };
+
+      °method •PlanROCNStreamAllocatorWrappers() -> °void {
+        °observe "Stream-ordered allocation should require a stream parameter";
+        °observe "Pool ownership should be visible in metadata";
+        °observe "Free should be ordered by stream when allocated by stream allocator";
+      };
+
+      °method •PlanROCNTextureSurfaceWrappers() -> °void {
+        °observe "Texture objects require resource shape plus texture descriptor";
+        °observe "Surface objects require writable resource contract";
+        °observe "Texture and surface handles should not be generic pointers";
+      };
+
+      °function •RecordROCNMemoryAPICategories() -> °void {
+        °observe "core memory";
+        °observe "stream ordered allocator";
+        °observe "managed memory";
+        °observe "virtual memory";
+        °observe "texture management";
+        °observe "surface object";
+      };
+
+      °function •RecordROCNMemoryAPIRestrictions() -> °void {
+        °observe "typed ownership";
+        °observe "typed source and destination";
+        °observe "stream visibility";
+        °observe "migration visibility";
+        °observe "descriptor validation";
+        °observe "unsafe gate for virtual memory";
+      };
+
+      °function •RecordROCNMemoryCoreOperations() -> °void {
+        °observe "allocate";
+        °observe "free";
+        °observe "copy";
+        °observe "set";
+        °observe "query pointer attributes";
+        °observe "register host memory";
+        °observe "unregister host memory";
+      };
+
+      °function •RecordROCNManagedMemoryOperations() -> °void {
+        °observe "allocate managed memory";
+        °observe "prefetch memory";
+        °observe "set memory advice";
+        °observe "query memory range attributes";
+        °observe "record migration assumptions";
+      };
+
+      °method •NextROCNForkTargets() -> °void {
+        °observe "Next stream/event files: stream_management and event_management references -> rocn-stream-event-map.ntv";
+        °observe "Next launch detail file: docs/reference/hip_runtime_api/modules/launch_api.rst -> rocn-launch-api-map.ntv";
+        °observe "Next graph detail file: docs/reference/hip_runtime_api/modules/graph_management.rst -> rocn-graph-api-map.ntv";
+      };
+    </book>
+  |■
+|●
+</Netiv>
