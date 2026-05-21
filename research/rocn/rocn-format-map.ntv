@@ -1,0 +1,38 @@
+<Netiv="research/rocn/rocn-format-map.ntv">
+○|
+  □|
+    <meta>{
+      name: "rocn.format_map",
+      kind: "research-flatfile",
+      namespace: "research.rocn",
+      version: "0.1.0",
+      status: "research-stub",
+      source_model: "conceptual map",
+      upstream_project: "ROCm/HIP",
+      upstream_repo: "ROCm/hip",
+      upstream_file: "data_format_reference.rst",
+      upstream_ref: "develop",
+      copied_source: false,
+      book_rule: "Book contains method and function stubs only."
+    };</meta>
+
+    <edges>{
+      %% graph TD
+      %%   ROCNFormatMap --> IntegerForms
+      %%   ROCNFormatMap --> FloatForms
+      %%   ROCNFormatMap --> CompactForms
+    };</edges>
+
+    <book>
+      °method •DefineROCNFormatMap() -> °void {
+        °call •RecordROCNFormatSteps();
+        °return;
+      };
+
+      °function •RecordROCNFormatSteps() -> °void {
+        °return;
+      };
+    </book>
+  |■
+|●
+</Netiv>
