@@ -2,197 +2,46 @@
 ○|
   □|
     <meta>{
-      name: "rocn.error_api_map",
+      name: "rocn.status_map",
       kind: "research-flatfile",
       namespace: "research.rocn",
-      version: "0.1.0",
-      status: "research-draft",
-      source_model: "conceptual API map",
+      version: "0.1.1",
+      status: "research-stub-cleaned",
+      source_model: "conceptual map",
       upstream_project: "ROCm/HIP",
       upstream_repo: "ROCm/hip",
-      upstream_files: "docs/reference/hip_runtime_api/modules/error_handling.rst; docs/reference/error_codes.rst; include/hip/hip_runtime_api.h",
+      upstream_files: "status reference files",
       upstream_ref: "develop",
-      upstream_license: "MIT License observed in ROCm/HIP LICENSE.md and SPDX-License-Identifier: MIT observed in hip_runtime_api.h",
-      upstream_owner: "Advanced Micro Devices, Inc.",
-      attribution: "ROCm, HIP, AMD, and related project names, marks, code, documentation, and intellectual property belong to their respective owners. ROCN is independent Netiv research and is not an official AMD project.",
       copied_source: false,
-      notes: "This flatfile maps HIP runtime error categories into ROCN research terms. It does not copy the full upstream error-code table or define ABI-compatible constants yet."
+      book_rule: "Book contains method and function stubs only."
     };</meta>
 
     <edges>{
       %% graph TD
-      %%   ROCNErrorAPIMap --> SuccessState
-      %%   ROCNErrorAPIMap --> BasicRuntimeErrors
-      %%   ROCNErrorAPIMap --> MemoryErrors
-      %%   ROCNErrorAPIMap --> DeviceContextErrors
-      %%   ROCNErrorAPIMap --> KernelLaunchErrors
-      %%   ROCNErrorAPIMap --> UnsupportedFeatureErrors
-      %%   ROCNErrorAPIMap --> AsyncProgressStates
-      %%   BasicRuntimeErrors --> UnknownError
-      %%   BasicRuntimeErrors --> IllegalState
-      %%   BasicRuntimeErrors --> NotSupported
-      %%   MemoryErrors --> OutOfMemory
-      %%   MemoryErrors --> InvalidDevicePointer
-      %%   MemoryErrors --> InvalidMemcpyDirection
-      %%   MemoryErrors --> IllegalAddress
-      %%   DeviceContextErrors --> NoDevice
-      %%   DeviceContextErrors --> InvalidDevice
-      %%   DeviceContextErrors --> InvalidContext
-      %%   DeviceContextErrors --> NotInitialized
-      %%   DeviceContextErrors --> InsufficientDriver
-      %%   KernelLaunchErrors --> InvalidConfiguration
-      %%   KernelLaunchErrors --> InvalidSymbol
-      %%   KernelLaunchErrors --> NoBinaryForGpu
-      %%   KernelLaunchErrors --> LaunchFailure
-      %%   KernelLaunchErrors --> LaunchOutOfResources
-      %%   ROCNErrorAPIMap --> NetivErrorPolicy
-      %%   NetivErrorPolicy --> TerminalErrors
-      %%   NetivErrorPolicy --> RecoverableErrors
-      %%   NetivErrorPolicy --> RetryableStates
-      %%   NetivErrorPolicy --> DiagnosticMetadata
+      %%   ROCNStatusMap --> RuntimeStatus
+      %%   ROCNStatusMap --> MemoryStatus
+      %%   ROCNStatusMap --> DeviceStatus
+      %%   ROCNStatusMap --> LaunchStatus
     };</edges>
 
     <book>
-      °page •ROCNErrorAPIMap {
-        °field •name = "ROCN Error API Map";
-        °field •status = "research draft";
-        °field •purpose = "Map HIP runtime error categories into Netiv ROCN error policy";
-        °field •upstream = "HIP error handling reference and error codes reference";
-        °field •boundary = "Conceptual error map only; no ABI-compatible error constants yet";
+      °method •DefineROCNStatusMap() -> °void {
+        °call •RecordROCNStatusGroups();
+        °call •RecordROCNStatusFields();
+        °return;
       };
 
-      °page •ROCNErrorPrinciple {
-        °field •success = "A completed operation with no error";
-        °field •not_ready = "An async operation or device task has not completed yet";
-        °field •invalid_input = "Caller provided invalid values, dimensions, pointers, stream handles, symbols, or configuration";
-        °field •runtime_state = "Runtime or context is not initialized, already destroyed, deinitialized, or in an illegal state";
-        °field •unsupported = "Requested feature is not supported by current hardware, driver, backend, or runtime version";
-        °field •unknown = "Unexpected backend failure where no narrower category is known";
-        °field •rocn_rule = "ROCN errors must preserve operation context, not just a numeric code";
+      °method •PlanROCNStatusFlow() -> °void {
+        °call •RecordROCNStatusGroups();
+        °return;
       };
 
-      °page •ROCNMemoryErrors {
-        °field •out_of_memory = "Allocation cannot be satisfied";
-        °field •invalid_device_pointer = "Pointer is not a valid device pointer for the requested operation";
-        °field •host_registration = "Host memory is already registered or not registered when required";
-        °field •invalid_copy_direction = "Copy direction does not match source/destination memory kinds";
-        °field •illegal_address = "Device code accessed invalid, freed, out-of-bounds, misaligned, or read-only memory";
-        °field •texture_descriptor = "Texture or channel descriptor is missing, null, or invalid";
+      °function •RecordROCNStatusGroups() -> °void {
+        °return;
       };
 
-      °page •ROCNDeviceContextErrors {
-        °field •no_device = "No compatible device is detected";
-        °field •invalid_device = "Selected device id is invalid";
-        °field •invalid_context = "Context is invalid, destroyed, corrupted, or not current where required";
-        °field •not_initialized = "Runtime or driver initialization has not succeeded";
-        °field •deinitialized = "Driver or runtime is shutting down or has been reset";
-        °field •insufficient_driver = "Driver/runtime stack versions are incompatible";
-        °field •invalid_handle = "Resource handle is invalid or already destroyed";
-      };
-
-      °page •ROCNLaunchErrors {
-        °field •invalid_configuration = "Grid, block, shared memory, stream, or launch parameter configuration is invalid";
-        °field •missing_configuration = "Kernel launch was attempted without required execution configuration";
-        °field •invalid_symbol = "Device symbol or kernel symbol cannot be found or used";
-        °field •invalid_device_function = "Device function is unavailable for selected device or architecture";
-        °field •no_binary_for_gpu = "No compatible kernel image exists for selected GPU";
-        °field •invalid_image = "Kernel image is invalid or unsupported";
-        °field •launch_failure = "Kernel launch failed during execution";
-        °field •launch_timeout = "Kernel exceeded watchdog or runtime timeout";
-        °field •launch_out_of_resources = "Requested launch exceeds device resource limits";
-        °field •prior_launch_failure = "Previous launch failed and contaminated current context";
-      };
-
-      °page •ROCNNetivErrorPolicy {
-        °field •terminal = "Errors that should stop current execution path immediately";
-        °field •recoverable = "Errors that may allow caller to choose a different device, smaller launch, or different memory path";
-        °field •retryable = "States such as not-ready where polling, waiting, or event synchronization may resolve the condition";
-        °field •diagnostic = "Every error should capture operation, device, stream, graph, memory region, launch geometry, and backend code where relevant";
-        °field •rocn_rule = "ROCN should convert backend error codes into structured Netiv errors before returning to user code";
-      };
-
-      °page •ROCNErrorMetadata {
-        °field •operation = "Which ROCN operation failed";
-        °field •backend_code = "Original backend error identifier or numeric code when available";
-        °field •device = "Selected device id and architecture facts";
-        °field •stream = "Stream target when operation is stream-associated";
-        °field •event = "Event marker when operation is event-associated";
-        °field •memory = "Source/destination memory kind, pointer handle, size, and ownership when relevant";
-        °field •launch = "Kernel symbol, grid, block, dynamic shared memory, and argument metadata when relevant";
-        °field •graph = "Graph id, node id, and dependency edge when relevant";
-      };
-
-      °page •ROCNErrorRecoveryHints {
-        °field •no_device = "Check installed hardware, driver, permissions, and ROCm compatibility";
-        °field •invalid_device = "Re-query visible devices and select a valid device id";
-        °field •out_of_memory = "Reduce allocation size, free memory, use pools, or select a device with more memory";
-        °field •invalid_configuration = "Recompute grid/block/shared-memory configuration from device properties";
-        °field •launch_out_of_resources = "Reduce block size, shared memory, register pressure, or occupancy requirements";
-        °field •no_binary_for_gpu = "Rebuild kernel for target device architecture";
-        °field •not_ready = "Wait, synchronize, or poll again later";
-      };
-
-      °method •DefineROCNErrorAPIMap() -> °void {
-        °observe "ROCN error API maps backend error codes into structured Netiv error categories";
-        °observe "ROCN errors must carry metadata for device, memory, stream, launch, and graph context";
-        °observe "ROCN distinguishes terminal, recoverable, and retryable conditions";
-        °call •RecordROCNErrorGroups();
-        °call •RecordROCNErrorMetadataFields();
-        °call •RecordROCNRecoveryClasses();
-      };
-
-      °method •PlanROCNErrorLowering() -> °void {
-        °observe "Receive backend error code";
-        °observe "Classify into ROCN error group";
-        °observe "Attach operation context";
-        °observe "Attach device and stream context when available";
-        °observe "Attach memory or launch metadata when relevant";
-        °observe "Return Netiv-compatible terminal, recoverable, or retryable error";
-      };
-
-      °method •PlanROCNLaunchErrorDiagnostics() -> °void {
-        °observe "Capture kernel symbol";
-        °observe "Capture grid and block dimensions";
-        °observe "Capture dynamic shared memory request";
-        °observe "Capture selected device limits";
-        °observe "Capture launch bounds metadata when present";
-        °observe "Capture argument layout validation result";
-      };
-
-      °function •RecordROCNErrorGroups() -> °void {
-        °observe "success";
-        °observe "basic runtime";
-        °observe "memory management";
-        °observe "device and context";
-        °observe "kernel and launch";
-        °observe "unsupported feature";
-        °observe "async not-ready state";
-        °observe "unknown backend error";
-      };
-
-      °function •RecordROCNErrorMetadataFields() -> °void {
-        °observe "operation";
-        °observe "backend code";
-        °observe "device id";
-        °observe "stream id";
-        °observe "event id";
-        °observe "memory source and destination";
-        °observe "kernel symbol";
-        °observe "launch geometry";
-        °observe "graph node";
-      };
-
-      °function •RecordROCNRecoveryClasses() -> °void {
-        °observe "terminal";
-        °observe "recoverable";
-        °observe "retryable";
-        °observe "diagnostic-only";
-      };
-
-      °method •NextROCNForkTargets() -> °void {
-        °observe "Next runtime-compilation file: docs/reference/hip_runtime_api/modules/runtime_compilation.rst -> rocn-runtime-compilation-map.ntv";
-        °observe "Next occupancy file: docs/reference/hip_runtime_api/modules/occupancy.rst -> rocn-occupancy-api-map.ntv";
-        °observe "Next profiler file: docs/reference/hip_runtime_api/modules/profiler_control.rst -> rocn-profiler-api-map.ntv";
+      °function •RecordROCNStatusFields() -> °void {
+        °return;
       };
     </book>
   |■
