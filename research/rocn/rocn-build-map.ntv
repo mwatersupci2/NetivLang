@@ -1,0 +1,38 @@
+<Netiv="research/rocn/rocn-build-map.ntv">
+○|
+  □|
+    <meta>{
+      name: "rocn.build_map",
+      kind: "research-flatfile",
+      namespace: "research.rocn",
+      version: "0.1.0",
+      status: "research-stub",
+      source_model: "conceptual map",
+      upstream_project: "ROCm/HIP",
+      upstream_repo: "ROCm/hip",
+      upstream_file: "build_install.rst",
+      upstream_ref: "develop",
+      copied_source: false,
+      book_rule: "Book contains method and function stubs only."
+    };</meta>
+
+    <edges>{
+      %% graph TD
+      %%   ROCNBuildMap --> BuildStage
+      %%   ROCNBuildMap --> InstallStage
+      %%   ROCNBuildMap --> PackageStage
+    };</edges>
+
+    <book>
+      °method •DefineROCNBuildMap() -> °void {
+        °call •RecordROCNBuildSteps();
+        °return;
+      };
+
+      °function •RecordROCNBuildSteps() -> °void {
+        °return;
+      };
+    </book>
+  |■
+|●
+</Netiv>
