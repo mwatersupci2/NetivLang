@@ -5,18 +5,17 @@
       name: "rocn.graph_api_map",
       kind: "research-flatfile",
       namespace: "research.rocn",
-      version: "0.1.0",
-      status: "research-draft",
+      version: "0.1.1",
+      status: "research-stub-cleaned",
       source_model: "conceptual API map",
       upstream_project: "ROCm/HIP",
       upstream_repo: "ROCm/hip",
-      upstream_files: "docs/reference/hip_runtime_api/modules/graph_management.rst; docs/how-to/hip_runtime_api/hipgraph.rst",
+      upstream_files: "graph_management.rst; hipgraph.rst",
       upstream_ref: "develop",
       upstream_license: "MIT License observed in ROCm/HIP LICENSE.md",
       upstream_owner: "Advanced Micro Devices, Inc.",
-      attribution: "ROCm, HIP, AMD, and related project names, marks, code, documentation, and intellectual property belong to their respective owners. ROCN is independent Netiv research and is not an official AMD project.",
       copied_source: false,
-      notes: "This flatfile maps HIP graph concepts into ROCN/Netiv research terms. It does not copy function declarations or implement graph execution."
+      book_rule: "Book contains method and function stubs only."
     };</meta>
 
     <edges>{
@@ -27,168 +26,36 @@
       %%   ROCNGraphAPIMap --> GraphNodes
       %%   ROCNGraphAPIMap --> GraphEdges
       %%   ROCNGraphAPIMap --> GraphCapture
-      %%   ROCNGraphAPIMap --> ExplicitGraphCreation
-      %%   GraphNodes --> EmptyNode
-      %%   GraphNodes --> NestedGraphNode
-      %%   GraphNodes --> KernelNode
-      %%   GraphNodes --> HostNode
-      %%   GraphNodes --> MemoryCopyNode
-      %%   GraphNodes --> MemorySetNode
-      %%   GraphNodes --> EventNode
-      %%   GraphNodes --> SemaphoreNode
-      %%   GraphEdges --> Dependencies
-      %%   GraphCapture --> StreamBeginCapture
-      %%   GraphCapture --> StreamEndCapture
-      %%   ExplicitGraphCreation --> AddNode
-      %%   ExplicitGraphCreation --> AddDependencies
-      %%   GraphTemplate --> Instantiate
-      %%   ExecutableGraph --> LaunchToStream
-      %%   ROCNGraphAPIMap --> NetivEdgesNativeFit
-      %%   NetivEdgesNativeFit --> MetaInspectableDAG
     };</edges>
 
     <book>
-      °page •ROCNGraphAPIMap {
-        °field •name = "ROCN Graph API Map";
-        °field •status = "research draft";
-        °field •purpose = "Map HIP graph concepts into ROCN and Netiv's native graph-edge model";
-        °field •upstream = "HIP graph management reference and HIP graph how-to";
-        °field •boundary = "Conceptual graph API map only; no graph runtime execution exists yet";
-      };
-
-      °page •ROCNGraphConcept {
-        °field •meaning = "A graph is a reusable execution DAG containing operation nodes and dependency edges";
-        °field •node_role = "Nodes represent operations";
-        °field •edge_role = "Edges represent dependencies between operations";
-        °field •benefit = "Predefined graph dependencies may reduce repeated launch overhead and expose optimization opportunities";
-        °field •netiv_fit = "Netiv already stores graph edges, making ROCN graph mapping naturally aligned with the language structure";
-      };
-
-      °page •ROCNGraphLifecycle {
-        °field •step_0 = "define graph template";
-        °field •step_1 = "instantiate executable graph";
-        °field •step_2 = "launch executable graph to a stream";
-        °field •step_3 = "synchronize or wait for completion where required";
-        °field •step_4 = "destroy or release graph resources";
-        °field •rocn_rule = "Graph setup cost should be justified by repeated or dependency-heavy workloads";
-      };
-
-      °page •ROCNGraphNodeTypes {
-        °field •empty = "Placeholder or dependency-only node";
-        °field •nested_graph = "Node that embeds another graph";
-        °field •kernel = "Kernel launch node";
-        °field •host = "Host-side function node";
-        °field •memory_copy = "Memory copy node";
-        °field •memory_set = "Memory set/fill node";
-        °field •event = "Event record/wait node";
-        °field •external_semaphore = "Signal or wait on external semaphore";
-      };
-
-      °page •ROCNGraphCreationModes {
-        °field •stream_capture = "Capture stream-submitted operations into a graph template";
-        °field •explicit_creation = "Create graph nodes and dependency edges manually";
-        °field •capture_strength = "Convenient for existing stream-based code";
-        °field •explicit_strength = "Better control over nodes, parameters, and dependencies";
-        °field •rocn_rule = "ROCN should support explicit graph construction first because it aligns with Netiv edges";
-      };
-
-      °page •ROCNGraphMemoryModel {
-        °field •preallocated = "Memory is allocated outside the graph and reused by graph nodes";
-        °field •graph_managed = "Graph nodes allocate/free memory within graph execution";
-        °field •ordering_rule = "Nodes that use graph-allocated memory must run after allocation and before free";
-        °field •pooling_note = "Graph memory behavior may retain pools for reuse instead of immediately returning memory";
-        °field •rocn_rule = "Graph memory lifetime must be explicit in graph metadata";
-      };
-
-      °page •ROCNGraphStreamRelationship {
-        °field •launch_stream = "Executable graph launches to a stream";
-        °field •capture_stream = "Stream capture records operations submitted to a stream";
-        °field •capture_warning = "Synchronous default-stream operations may not be safe to capture";
-        °field •async_requirement = "Captured memory operations should use async stream-aware forms";
-        °field •rocn_rule = "Graph execution still needs stream ownership and completion semantics";
-      };
-
-      °page •ROCNNetivGraphMapping {
-        °field •meta = "Graph identity, source, backend, validation status, and lifecycle state belong in meta";
-        °field •edges = "Graph dependencies map directly to Netiv edges";
-        °field •book = "Executable graph construction or launch intent belongs in book";
-        °field •node_hashing = "Future graph nodes should be hashable for deterministic rebuilds";
-        °field •audit_rule = "Graph operations should be exportable through netiv graph without reverse engineering runtime state";
-      };
-
-      °page •ROCNGraphHazards {
-        °field •hazard_0 = "Graph setup overhead may not pay off for one-off work";
-        °field •hazard_1 = "Captured stream operations may hide dependencies if synchronous calls are mixed incorrectly";
-        °field •hazard_2 = "Graph-managed memory lifetime can become unclear without explicit allocation/free nodes";
-        °field •hazard_3 = "Graph execution still requires stream synchronization before host reads dependent results";
-        °field •hazard_4 = "Updating graph parameters after instantiation needs strict validation";
-      };
-
       °method •DefineROCNGraphAPIMap() -> °void {
-        °observe "ROCN graphs are operation DAGs with nodes and dependency edges";
-        °observe "ROCN graph templates must be instantiated before launch";
-        °observe "ROCN graph launches still execute through streams";
-        °observe "ROCN graph metadata should be native to Netiv's graph inspection model";
         °call •RecordROCNGraphNodeTypes();
         °call •RecordROCNGraphLifecycle();
-        °call •RecordROCNGraphHazards();
+        °return;
       };
 
       °method •PlanROCNExplicitGraphBuilder() -> °void {
-        °observe "Create graph template";
-        °observe "Add kernel, memory, host, event, or empty nodes";
-        °observe "Add dependency edges";
-        °observe "Validate graph topology";
-        °observe "Instantiate executable graph";
-        °observe "Launch executable graph into stream";
+        °call •RecordROCNGraphNodeTypes();
+        °call •RecordROCNGraphLifecycle();
+        °return;
       };
 
       °method •PlanROCNStreamCaptureGraphBuilder() -> °void {
-        °observe "Create capture stream";
-        °observe "Begin capture";
-        °observe "Submit async stream-compatible operations";
-        °observe "End capture and receive graph template";
-        °observe "Instantiate and launch graph";
-      };
-
-      °method •PlanROCNGraphMemorySafety() -> °void {
-        °observe "Graph allocation nodes must precede use nodes";
-        °observe "Graph free nodes must follow all use nodes";
-        °observe "Graph memory pool behavior must be recorded in metadata";
-        °observe "Cross-graph memory reuse must identify ownership and lifetime";
+        °call •RecordROCNGraphLifecycle();
+        °return;
       };
 
       °function •RecordROCNGraphNodeTypes() -> °void {
-        °observe "empty";
-        °observe "nested graph";
-        °observe "kernel launch";
-        °observe "host function";
-        °observe "memory copy";
-        °observe "memory set";
-        °observe "event";
-        °observe "external semaphore";
+        °return;
       };
 
       °function •RecordROCNGraphLifecycle() -> °void {
-        °observe "define graph template";
-        °observe "instantiate executable graph";
-        °observe "launch executable graph";
-        °observe "synchronize completion";
-        °observe "destroy graph resources";
+        °return;
       };
 
       °function •RecordROCNGraphHazards() -> °void {
-        °observe "setup overhead";
-        °observe "hidden stream capture dependency";
-        °observe "unsafe synchronous call during capture";
-        °observe "unclear graph memory lifetime";
-        °observe "missing stream synchronization after launch";
-      };
-
-      °method •NextROCNForkTargets() -> °void {
-        °observe "Next device-management file: docs/reference/hip_runtime_api/modules/device_management.rst -> rocn-device-api-map.ntv";
-        °observe "Next error-handling file: docs/reference/hip_runtime_api/modules/error_handling.rst -> rocn-error-api-map.ntv";
-        °observe "Next runtime-compilation file: docs/reference/hip_runtime_api/modules/runtime_compilation.rst -> rocn-runtime-compilation-map.ntv";
+        °return;
       };
     </book>
   |■
