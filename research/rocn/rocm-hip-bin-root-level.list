@@ -1,0 +1,37 @@
+# ROCm/HIP bin root-level inventory
+
+upstream_repo: ROCm/hip
+upstream_path: bin/
+source_view: GitHub mobile file browser screenshot supplied by project owner
+created_for: Netiv ROCN research library
+scope: bin/ first-level files only
+status: manual staged inventory
+
+FORMAT:
+path | kind | apparent purpose
+
+================================================================================
+BIN FIRST-LEVEL FILES
+================================================================================
+bin/hipcc_cmake_linker_helper | executable/helper | CMake linker helper associated with hipcc build/link flow.
+bin/hipdemangleatp | executable/helper | HIP demangle/ATP-related helper; exact behavior needs deeper file inspection before mapping.
+
+================================================================================
+ROCN NOTES
+================================================================================
+This folder matters for future ROCN tooling and CLI design.
+
+For ROCN, bin/ should be studied after the API and programming model are mapped.
+It likely helps answer questions like:
+
+1. How does HIP wrap compiler-driver behavior?
+2. What helper programs/scripts are needed around compilation and linking?
+3. What environment/toolchain assumptions does HIP expose at the command layer?
+
+Potential ROCN mapping:
+
+- Netiv command layer: future `netiv rocn build` or `rocn build` driver.
+- Compiler bridge: host compiler + device compiler orchestration.
+- Link stage: GPU object/code linking support.
+
+Do not copy these helpers into NetivLang yet. Treat them as upstream build/tooling references.
