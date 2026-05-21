@@ -1,0 +1,43 @@
+<Netiv="research/rocn/rocn-exec-map.ntv">
+○|
+  □|
+    <meta>{
+      name: "rocn.exec_map",
+      kind: "research-flatfile",
+      namespace: "research.rocn",
+      version: "0.1.0",
+      status: "research-stub",
+      source_model: "conceptual map",
+      upstream_project: "ROCm/HIP",
+      upstream_repo: "ROCm/hip",
+      upstream_file: "execution_control.rst",
+      upstream_ref: "develop",
+      copied_source: false,
+      book_rule: "Book contains method and function stubs only."
+    };</meta>
+
+    <edges>{
+      %% graph TD
+      %%   ROCNExecMap --> WorkSubmit
+      %%   ROCNExecMap --> WorkSync
+      %%   ROCNExecMap --> WorkQuery
+    };</edges>
+
+    <book>
+      °method •DefineROCNExecMap() -> °void {
+        °call •RecordROCNExecSteps();
+        °call •RecordROCNSyncSteps();
+        °return;
+      };
+
+      °function •RecordROCNExecSteps() -> °void {
+        °return;
+      };
+
+      °function •RecordROCNSyncSteps() -> °void {
+        °return;
+      };
+    </book>
+  |■
+|●
+</Netiv>
