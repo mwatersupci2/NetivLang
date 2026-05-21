@@ -1,0 +1,177 @@
+# ROCm/HIP Research Library Inventory
+
+upstream_repo: ROCm/hip
+upstream_url: https://github.com/ROCm/hip
+created_for: Netiv ROCN research library
+branch: research/rocn-rocm-netiv-fork
+status: staged research inventory
+scope: root-level, docs root-level, include/hip root-level, cmake root-level, cmake/FindHIP root-level, bin root-level
+
+This file is a research inventory for ROCN planning.
+It is not a vendored copy of ROCm/HIP source.
+It is not yet a full recursive manifest of the entire upstream repository.
+
+FORMAT:
+path | folder | kind | apparent purpose | ROCN relevance
+
+================================================================================
+ROOT FOLDERS
+================================================================================
+.azuredevops/ | / | folder | Azure DevOps CI configuration. | Low priority for ROCN; CI only.
+.github/ | / | folder | GitHub repository metadata and workflow automation. | Low priority for ROCN; automation only.
+.jenkins/ | / | folder | Jenkins CI support files. | Low priority for ROCN; CI only.
+bin/ | / | folder | HIP command/tool helper scripts. | Medium priority; useful for future ROCN compiler-driver/tooling design.
+cmake/ | / | folder | CMake integration and FindHIP/build support. | Medium priority; useful for future ROCN build adapter.
+docker/ | / | folder | Docker/container build or test support. | Later priority; useful for reproducible ROCN test environments.
+docs/ | / | folder | HIP documentation source. | High priority; best source for ROCN conceptual model.
+include/ | / | folder | Public HIP include headers. | Highest priority; API surface to map into ROCN.
+
+================================================================================
+ROOT FILES
+================================================================================
+.clang-format | / | config | Clang-format source formatting rules. | Low; style reference only.
+.gitattributes | / | config | Git attributes for repository file handling. | Low; repo metadata only.
+.gitignore | / | config | Git ignore rules. | Low; repo housekeeping.
+.markdownlint-cli2.yaml | / | config | Markdown linting configuration. | Low; docs linting only.
+.readthedocs.yaml | / | config | ReadTheDocs documentation build configuration. | Low to medium; useful if ROCN docs later use ReadTheDocs.
+.spellcheck.local.yaml | / | config | Local spellcheck configuration. | Low; documentation tooling only.
+.wordlist.txt | / | text/config | Custom accepted word list for documentation/spellcheck. | Low; documentation support.
+CODEOWNERS | / | repo metadata | GitHub code owner routing/review metadata. | Low; upstream governance only.
+CONTRIBUTING.md | / | documentation | Contribution rules and process notes. | Low; useful for understanding upstream contribution standards.
+Jenkinsfile | / | CI config | Root Jenkins pipeline entry. | Low; CI only.
+LICENSE.md | / | legal | HIP repository license file. | High legal relevance; preserve attribution if any upstream source is copied.
+README-doc.md | / | documentation | Detailed HIP project documentation README. | High; contains HIP overview, directory tour, and major conceptual notes.
+README.md | / | documentation | Short HIP repository overview. | Medium; quick upstream summary.
+VERSION | / | metadata | Version marker file. | Medium; useful for upstream version tracking.
+configure | / | script | Configure helper script. | Medium later; build setup reference.
+hip-lang-config.cmake.in | / | build config | CMake HIP language configuration template. | Medium; future ROCN build adapter reference.
+install.sh | / | script | Install helper script. | Medium later; install behavior reference.
+
+================================================================================
+DOCS FOLDERS
+================================================================================
+docs/data/ | docs | folder | Documentation data assets and generated/input data fragments. | Medium; may expose diagrams and generated doc inputs.
+docs/doxygen/ | docs | folder | Doxygen documentation generation configuration/output support. | Medium; API doc generation reference.
+docs/doxygen-input/ | docs | folder | Doxygen input configuration and source fragments. | Medium; API doc input reference.
+docs/extension/ | docs | folder | Sphinx/custom documentation extensions. | Low to medium; docs tooling only.
+docs/how-to/ | docs | folder | Practical HIP usage guides and how-to documentation. | High; explains runtime behavior and usage patterns.
+docs/install/ | docs | folder | HIP installation and source-build documentation. | Medium; build/install research.
+docs/reference/ | docs | folder | HIP API/reference documentation. | High; API mapping source.
+docs/sphinx/ | docs | folder | Sphinx documentation build configuration and table-of-contents support. | Medium; docs structure source.
+docs/tools/ | docs | folder | Documentation support tools and example-code assets. | Medium; examples useful for Netiv translations.
+docs/tutorial/ | docs | folder | HIP tutorials and guided examples. | High; useful for ROCN example translations.
+docs/understand/ | docs | folder | Conceptual explanation of HIP architecture, programming model, compiler model, and hardware behavior. | Highest docs priority; start here for ROCN vocabulary.
+
+================================================================================
+DOCS ROOT FILES
+================================================================================
+docs/.gitignore | docs | config | Ignore rules specific to documentation build/generated files. | Low.
+docs/conf.py | docs | build config | Sphinx documentation configuration. | Medium for future ROCN docs pipeline.
+docs/device_md_gen.py | docs | script | Python helper for generating device markdown/documentation metadata. | Medium; device metadata generation may inspire ROCN hardware docs.
+docs/environment.yml | docs | environment config | Conda/environment configuration for documentation tooling. | Low to medium; reproducible docs build reference.
+docs/faq.rst | docs | docs page | HIP frequently asked questions. | Medium; helps identify common upstream assumptions.
+docs/gen_clang_option_doc.sh | docs | script | Shell helper for generating Clang option documentation. | Medium later; compiler option documentation reference.
+docs/hip-7-changes.rst | docs | docs page | HIP 7.x/API change notes. | Medium; useful for compatibility tracking.
+docs/index.md | docs | docs page | Main HIP documentation landing page. | High; entry point into HIP docs structure.
+docs/license.md | docs | legal/docs page | Documentation/license information. | High legal relevance for attribution.
+docs/what_is_hip.rst | docs | docs page | Introductory explanation of what HIP is. | High; good ROCN summary source.
+
+================================================================================
+INCLUDE/HIP FOLDER
+================================================================================
+include/hip/cooperative_groups/ | include/hip | folder | Cooperative groups helper headers and related group-level operations. | High later; important for block/thread/group behavior.
+
+================================================================================
+INCLUDE/HIP ROOT HEADER FILES
+================================================================================
+include/hip/channel_descriptor.h | include/hip | header | Channel descriptor types/helpers, likely for texture/surface/channel metadata. | Medium; graphics/texture memory support.
+include/hip/device_functions.h | include/hip | header | Device-side helper functions. | High; maps toward ROCN device function model.
+include/hip/driver_types.h | include/hip | header | Driver/runtime shared types. | High; maps HIP type vocabulary into ROCN.
+include/hip/hip_bf16.h | include/hip | header | bfloat16 support header. | High for AI/tensor low-precision work.
+include/hip/hip_bfloat16.h | include/hip | header | bfloat16 type support header. | High for AI/tensor low-precision work.
+include/hip/hip_common.h | include/hip | header | Common HIP definitions and shared declarations. | High; likely common macro/type base.
+include/hip/hip_complex.h | include/hip | header | Complex number support. | Medium; math library mapping.
+include/hip/hip_cooperative_groups.h | include/hip | header | Cooperative groups umbrella/header. | High later; group/thread collective behavior.
+include/hip/hip_deprecated.h | include/hip | header | Deprecated HIP symbols and compatibility declarations. | Low; compatibility/deprecation tracking.
+include/hip/hip_ext.h | include/hip | header | HIP extension API declarations. | Medium; extension surface.
+include/hip/hip_ext_ocp.h | include/hip | header | OCP-related HIP extension declarations; exact scope needs deeper scan. | Low to medium until inspected.
+include/hip/hip_fp16.h | include/hip | header | FP16 type/support header. | High for AI/tensor low-precision work.
+include/hip/hip_fp4.h | include/hip | header | FP4 type/support header. | High for experimental low-precision research.
+include/hip/hip_fp6.h | include/hip | header | FP6 type/support header. | High for experimental low-precision research.
+include/hip/hip_fp8.h | include/hip | header | FP8 type/support header. | High for AI/tensor low-precision work.
+include/hip/hip_gl_interop.h | include/hip | header | OpenGL interoperability declarations. | Medium later; graphics interop.
+include/hip/hip_hcc.h | include/hip | header | HCC compatibility/history support header. | Low to medium; legacy compatibility context.
+include/hip/hip_math_constants.h | include/hip | header | HIP math constants. | Medium; device math support.
+include/hip/hip_profile.h | include/hip | header | Profiling helpers/hooks. | Medium; ROCN observability/profiling inspiration.
+include/hip/hip_runtime.h | include/hip | header | HIP runtime umbrella header; host/device boundary and kernel launch syntax. | Highest priority; central ROCN mapping target.
+include/hip/hip_runtime_api.h | include/hip | header | HIP runtime API header; core host-side API surface. | Highest priority; map to rocn.host.
+include/hip/hip_texture_types.h | include/hip | header | HIP texture type definitions. | Medium; texture memory support.
+include/hip/hip_vector_types.h | include/hip | header | HIP vector type definitions. | High; vector/scalar/tensor type mapping.
+include/hip/hiprtc.h | include/hip | header | HIP runtime compilation interface. | High; future ROCN runtime compilation/staged kernel compile.
+include/hip/library_types.h | include/hip | header | Library/runtime type definitions. | High; maps to ROCN type wrappers.
+include/hip/linker_types.h | include/hip | header | Linker type definitions. | Medium; future build/link adapter.
+include/hip/math_functions.h | include/hip | header | HIP math functions. | High; device math library mapping.
+include/hip/surface_types.h | include/hip | header | Surface type definitions. | Medium; graphics/surface memory support.
+include/hip/texture_types.h | include/hip | header | Texture type definitions. | Medium; texture memory support.
+
+================================================================================
+CMAKE ENTRIES
+================================================================================
+cmake/FindHIP/ | cmake | folder | CMake helper folder for finding/configuring HIP in external CMake projects. | Medium; future ROCN build adapter.
+cmake/FindHIP.cmake | cmake | CMake module | Main CMake module for locating HIP and exposing HIP build configuration to CMake consumers. | Medium; build integration reference.
+
+================================================================================
+CMAKE/FINDHIP FILES
+================================================================================
+cmake/FindHIP/run_hipcc.cmake | cmake/FindHIP | CMake helper | Helper script for running HIP compiler-driver behavior through CMake. | Medium; compiler driver staging reference.
+cmake/FindHIP/run_make2cmake.cmake | cmake/FindHIP | CMake helper | Helper script for translating or bridging make-style HIP build behavior into CMake flow. | Medium; build translation reference.
+
+================================================================================
+BIN FILES
+================================================================================
+bin/hipcc_cmake_linker_helper | bin | executable/helper | CMake linker helper associated with hipcc build/link flow. | Medium; future ROCN build/link tooling reference.
+bin/hipdemangleatp | bin | executable/helper | HIP demangle/ATP-related helper; exact behavior needs deeper file inspection before mapping. | Low to medium; needs inspection.
+
+================================================================================
+ROCN PRIORITY MAP
+================================================================================
+P0 - Start here:
+include/hip/hip_runtime_api.h | rocn.host runtime API mapping.
+include/hip/hip_runtime.h | ROCN host/device bridge and future kernel launch syntax.
+docs/what_is_hip.rst | HIP concept summary for ROCN overview.
+docs/understand/ | ROCN conceptual vocabulary and execution model.
+
+P1 - Next:
+include/hip/hiprtc.h | Runtime compilation or staged kernel compilation.
+include/hip/driver_types.h | HIP type vocabulary.
+include/hip/library_types.h | Runtime/library type wrappers.
+include/hip/hip_vector_types.h | Vector type mapping.
+include/hip/math_functions.h | Device math mapping.
+docs/how-to/ | Runtime behavior and practical usage.
+docs/reference/ | API reference mapping.
+
+P2 - Build/tooling after core model:
+cmake/FindHIP.cmake | Build integration reference.
+cmake/FindHIP/run_hipcc.cmake | Compiler-driver staging reference.
+bin/hipcc_cmake_linker_helper | Link helper reference.
+hip-lang-config.cmake.in | HIP language CMake config template.
+
+P3 - Later/noise for now:
+.github/ | Upstream GitHub automation.
+.azuredevops/ | Upstream Azure CI.
+.jenkins/ | Upstream Jenkins CI.
+docker/ | Container/test infrastructure.
+
+================================================================================
+NEXT ACTION
+================================================================================
+Use this inventory as the ROCN research map.
+The next useful file to inspect is:
+
+include/hip/hip_runtime_api.h
+
+After that, inspect:
+
+include/hip/hip_runtime.h
+docs/what_is_hip.rst
+docs/understand/programming_model.rst
