@@ -5,8 +5,8 @@
       name: "rocn.overview",
       kind: "research-flatfile",
       namespace: "research.rocn",
-      version: "0.1.0",
-      status: "research-draft",
+      version: "0.1.1",
+      status: "research-stub-cleaned",
       source_model: "conceptual fork",
       upstream_project: "ROCm/HIP",
       upstream_repo: "ROCm/hip",
@@ -14,9 +14,8 @@
       upstream_ref: "develop",
       upstream_license: "MIT License observed in ROCm/HIP LICENSE.md",
       upstream_owner: "Advanced Micro Devices, Inc.",
-      attribution: "ROCm, HIP, AMD, and related project names, marks, code, documentation, and intellectual property belong to their respective owners. ROCN is independent Netiv research and is not an official AMD project.",
       copied_source: false,
-      notes: "This flatfile summarizes the upstream HIP concept in original Netiv terms. It does not vendor ROCm/HIP source. Future files may map API surfaces only after attribution and license boundaries remain clear."
+      book_rule: "The book section contains executable-style method/function stubs only. Research notes stay in meta and edges."
     };</meta>
 
     <edges>{
@@ -25,85 +24,59 @@
       %%   UpstreamHIP --> ROCmPlatform
       %%   UpstreamHIP --> HostRuntimeAPI
       %%   UpstreamHIP --> DeviceKernelLanguage
-      %%   UpstreamHIP --> CUDAStylePortability
-      %%   ROCNOverview --> NetivHostLayer
-      %%   ROCNOverview --> NetivKernelIntentLayer
-      %%   ROCNOverview --> NetivMemoryMovementLayer
-      %%   ROCNOverview --> NetivBuildBridgeFuture
-      %%   NetivHostLayer --> DeviceBuffers
-      %%   NetivHostLayer --> HostDeviceCopies
-      %%   NetivHostLayer --> KernelLaunch
-      %%   NetivHostLayer --> StreamsEvents
-      %%   NetivHostLayer --> Synchronization
-      %%   NetivKernelIntentLayer --> ParallelGPUWork
-      %%   NetivKernelIntentLayer --> DeviceMath
-      %%   NetivKernelIntentLayer --> HardwareCapabilities
+      %%   ROCNOverview --> ROCNBoundary
+      %%   ROCNOverview --> ROCNHostLayer
+      %%   ROCNOverview --> ROCNKernelLayer
+      %%   ROCNOverview --> ROCNMemoryLayer
+      %%   ROCNOverview --> ROCNBuildBridgeFuture
+      %%   ROCNBoundary --> AttributionRequired
+      %%   ROCNBoundary --> NoVendoredSourceYet
+      %%   ROCNHostLayer --> DeviceBuffers
+      %%   ROCNHostLayer --> HostDeviceCopies
+      %%   ROCNHostLayer --> KernelLaunch
+      %%   ROCNKernelLayer --> ParallelGPUWork
+      %%   ROCNMemoryLayer --> ExplicitMovement
     };</edges>
 
     <book>
-      °page •ROCNOverview {
-        °field •name = "ROCN";
-        °field •meaning = "ROCm for Netiv";
-        °field •status = "research draft";
-        °field •upstream = "ROCm/HIP";
-        °field •purpose = "Explore how Netiv can describe AMD GPU compute work without pretending compiler support exists yet";
-        °field •boundary = "Original Netiv research summary, not vendored ROCm/HIP source";
-      };
-
-      °page •ROCNConceptMap {
-        °field •hip_summary = "HIP is understood here as a C++ runtime API plus kernel language for heterogeneous CPU/GPU applications on AMD ROCm systems";
-        °field •rocn_goal = "ROCN should become a Netiv-facing research layer for host orchestration, kernel intent, memory movement, and future build integration";
-        °field •portability_note = "HIP is CUDA-like for portability, but ROCN should not become a blind HIP clone";
-        °field •manual_work_note = "Porting and performance tuning remain explicit responsibilities, not magic compiler claims";
-      };
-
-      °page •ROCNComponentModel {
-        °field •host_layer = "Host-side orchestration creates device buffers, moves data, launches kernels, manages streams/events, and synchronizes work";
-        °field •device_layer = "Device-side kernel intent describes massively parallel work intended for GPU execution";
-        °field •runtime_layer = "Runtime APIs form the host/device control surface";
-        °field •kernel_language_layer = "Kernel language features expose GPU-oriented parallel behavior, math functions, vector types, and hardware-specific capabilities";
-        °field •build_layer = "Future build support may bridge Netiv source to HIP-Clang, hipcc-like driver behavior, or another ROCm-compatible path";
-      };
-
       °method •DefineROCNBoundary() -> °void {
-        °observe "ROCN remains research-only until compiler integration exists";
-        °observe "ROCN may study HIP concepts without copying upstream source into NetivLang";
-        °observe "ROCN must preserve upstream attribution before any adapter, fork, submodule, or vendored source path is chosen";
+        °call •RecordROCNBoundary();
+        °return;
       };
 
       °method •PlanROCNHostLayer() -> °void {
-        °observe "Model host orchestration separately from device kernel intent";
-        °observe "Keep memory movement explicit";
-        °observe "Treat streams, events, and synchronization as graph-visible operations";
-        °call •RecordROCNHostResponsibilities();
+        °call •RecordROCNHostLayer();
+        °call •RecordROCNMemoryLayer();
+        °return;
       };
 
       °method •PlanROCNKernelLayer() -> °void {
-        °observe "Model kernel intent as GPU-directed parallel work";
-        °observe "Do not claim Netiv can emit ROCm kernels until the compiler path exists";
-        °observe "Prepare later mapping from Netiv functions to device-side kernel concepts";
-        °call •RecordROCNKernelResponsibilities();
+        °call •RecordROCNKernelLayer();
+        °return;
       };
 
-      °function •RecordROCNHostResponsibilities() -> °void {
-        °observe "host creates device buffers";
-        °observe "host moves data between CPU memory and GPU memory";
-        °observe "host launches device kernels";
-        °observe "host manages streams and events";
-        °observe "host synchronizes work";
+      °method •PlanROCNResearchSequence() -> °void {
+        °call •RecordROCNBoundary();
+        °call •RecordROCNHostLayer();
+        °call •RecordROCNKernelLayer();
+        °call •RecordROCNMemoryLayer();
+        °return;
       };
 
-      °function •RecordROCNKernelResponsibilities() -> °void {
-        °observe "kernel represents massively parallel device work";
-        °observe "kernel may use GPU hardware capabilities";
-        °observe "kernel may use device math and vector-like types";
-        °observe "kernel design should stay separate from host orchestration";
+      °function •RecordROCNBoundary() -> °void {
+        °return;
       };
 
-      °method •NextROCNForkTargets() -> °void {
-        °observe "Next conceptual file: docs/understand/programming_model.rst -> rocn-programming-model.ntv";
-        °observe "Next API file: include/hip/hip_runtime_api.h -> rocn-runtime-api-map.ntv";
-        °observe "Next type file: include/hip/driver_types.h -> rocn-driver-types-map.ntv";
+      °function •RecordROCNHostLayer() -> °void {
+        °return;
+      };
+
+      °function •RecordROCNKernelLayer() -> °void {
+        °return;
+      };
+
+      °function •RecordROCNMemoryLayer() -> °void {
+        °return;
       };
     </book>
   |■
