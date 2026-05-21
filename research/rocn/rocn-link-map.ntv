@@ -1,0 +1,38 @@
+<Netiv="research/rocn/rocn-link-map.ntv">
+○|
+  □|
+    <meta>{
+      name: "rocn.link_map",
+      kind: "research-flatfile",
+      namespace: "research.rocn",
+      version: "0.1.0",
+      status: "research-stub",
+      source_model: "conceptual map",
+      upstream_project: "ROCm/HIP",
+      upstream_repo: "ROCm/hip",
+      upstream_file: "peer_reference.rst",
+      upstream_ref: "develop",
+      copied_source: false,
+      book_rule: "Book contains method and function stubs only."
+    };</meta>
+
+    <edges>{
+      %% graph TD
+      %%   ROCNLinkMap --> DeviceLink
+      %%   ROCNLinkMap --> SharedTransfer
+      %%   ROCNLinkMap --> CapabilityCheck
+    };</edges>
+
+    <book>
+      °method •DefineROCNLinkMap() -> °void {
+        °call •RecordROCNLinkSteps();
+        °return;
+      };
+
+      °function •RecordROCNLinkSteps() -> °void {
+        °return;
+      };
+    </book>
+  |■
+|●
+</Netiv>
