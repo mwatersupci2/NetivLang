@@ -1,0 +1,61 @@
+# ROCm/HIP docs root-level inventory
+
+upstream_repo: ROCm/hip
+upstream_path: docs/
+source_view: GitHub mobile file browser screenshots supplied by project owner
+created_for: Netiv ROCN research library
+scope: docs/ first-level folders and files only
+status: manual staged inventory
+
+FORMAT:
+path | kind | apparent purpose
+
+================================================================================
+DOCS FIRST-LEVEL FOLDERS
+================================================================================
+docs/data/ | folder | Documentation data assets and generated/input data fragments.
+docs/doxygen/ | folder | Doxygen documentation generation configuration/output support.
+docs/doxygen-input/ | folder | Doxygen input configuration and source fragments.
+docs/extension/ | folder | Sphinx/custom documentation extensions.
+docs/how-to/ | folder | Practical HIP usage guides and how-to documentation.
+docs/install/ | folder | HIP installation and source-build documentation.
+docs/reference/ | folder | HIP API/reference documentation.
+docs/sphinx/ | folder | Sphinx documentation build configuration and table-of-contents support.
+docs/tools/ | folder | Documentation support tools and example-code assets.
+docs/tutorial/ | folder | HIP tutorials and guided examples.
+docs/understand/ | folder | Conceptual explanation of HIP architecture, programming model, compiler model, and hardware behavior.
+
+================================================================================
+DOCS ROOT FILES
+================================================================================
+docs/.gitignore | config | Ignore rules specific to documentation build/generated files.
+docs/conf.py | build config | Sphinx documentation configuration.
+docs/device_md_gen.py | script | Python helper for generating device markdown/documentation metadata.
+docs/environment.yml | environment config | Conda/environment configuration for documentation tooling.
+docs/faq.rst | docs page | HIP frequently asked questions.
+docs/gen_clang_option_doc.sh | script | Shell helper for generating Clang option documentation.
+docs/hip-7-changes.rst | docs page | HIP 7.x/API change notes.
+docs/index.md | docs page | Main HIP documentation landing page.
+docs/license.md | legal/docs page | Documentation/license information.
+docs/what_is_hip.rst | docs page | Introductory explanation of what HIP is.
+
+================================================================================
+ROCN NOTES
+================================================================================
+This folder is high-value for ROCN because it tells us how AMD explains HIP's programming model before we study implementation details.
+
+Best ROCN targets under docs/ for next deeper passes:
+
+1. docs/understand/
+   Use for ROCN vocabulary and conceptual mapping.
+
+2. docs/how-to/
+   Use for host/device runtime behavior, memory movement, kernel launch, streams, graphs, interop, and runtime compilation behavior.
+
+3. docs/reference/
+   Use for API surface mapping after we understand the model.
+
+4. docs/tutorial/
+   Use for simple example-driven Netiv translations later.
+
+Do not vendor docs content into NetivLang yet. Treat this as an upstream map for original ROCN design work.
