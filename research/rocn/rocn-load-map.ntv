@@ -1,0 +1,38 @@
+<Netiv="research/rocn/rocn-load-map.ntv">
+○|
+  □|
+    <meta>{
+      name: "rocn.load_map",
+      kind: "research-flatfile",
+      namespace: "research.rocn",
+      version: "0.1.0",
+      status: "research-stub",
+      source_model: "conceptual map",
+      upstream_project: "ROCm/HIP",
+      upstream_repo: "ROCm/hip",
+      upstream_file: "module_management.rst",
+      upstream_ref: "develop",
+      copied_source: false,
+      book_rule: "Book contains method and function stubs only."
+    };</meta>
+
+    <edges>{
+      %% graph TD
+      %%   ROCNLoadMap --> ImageLoad
+      %%   ROCNLoadMap --> SymbolLookup
+      %%   ROCNLoadMap --> ImageRelease
+    };</edges>
+
+    <book>
+      °method •DefineROCNLoadMap() -> °void {
+        °call •RecordROCNLoadSteps();
+        °return;
+      };
+
+      °function •RecordROCNLoadSteps() -> °void {
+        °return;
+      };
+    </book>
+  |■
+|●
+</Netiv>
