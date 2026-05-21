@@ -1,0 +1,194 @@
+<Netiv="research/rocn/rocn-runtime-compilation-map.ntv">
+○|
+  □|
+    <meta>{
+      name: "rocn.runtime_compilation_map",
+      kind: "research-flatfile",
+      namespace: "research.rocn",
+      version: "0.1.0",
+      status: "research-draft",
+      source_model: "conceptual API map",
+      upstream_project: "ROCm/HIP",
+      upstream_repo: "ROCm/hip",
+      upstream_files: "docs/reference/hip_runtime_api/modules/runtime_compilation.rst; docs/how-to/hip_rtc.rst; include/hip/hiprtc.h",
+      upstream_ref: "develop",
+      upstream_license: "MIT License observed in ROCm/HIP LICENSE.md",
+      upstream_owner: "Advanced Micro Devices, Inc.",
+      attribution: "ROCm, HIP, AMD, and related project names, marks, code, documentation, and intellectual property belong to their respective owners. ROCN is independent Netiv research and is not an official AMD project.",
+      copied_source: false,
+      notes: "This flatfile maps HIP runtime-compilation concepts into ROCN research terms. It does not copy declarations or implement runtime compilation."
+    };</meta>
+
+    <edges>{
+      %% graph TD
+      %%   ROCNRuntimeCompilationMap --> SourceText
+      %%   ROCNRuntimeCompilationMap --> ProgramHandle
+      %%   ROCNRuntimeCompilationMap --> Headers
+      %%   ROCNRuntimeCompilationMap --> CompileOptions
+      %%   ROCNRuntimeCompilationMap --> CompilationLog
+      %%   ROCNRuntimeCompilationMap --> CodeObject
+      %%   ROCNRuntimeCompilationMap --> ModuleLoad
+      %%   ROCNRuntimeCompilationMap --> FunctionLookup
+      %%   ROCNRuntimeCompilationMap --> ModuleLaunch
+      %%   SourceText --> KernelSourceString
+      %%   ProgramHandle --> CreateProgram
+      %%   ProgramHandle --> DestroyProgram
+      %%   CompileOptions --> TargetArchitecture
+      %%   CompileOptions --> ClangOptions
+      %%   CompilationLog --> Warnings
+      %%   CompilationLog --> Errors
+      %%   CodeObject --> GetCodeSize
+      %%   CodeObject --> GetCode
+      %%   ModuleLoad --> LoadCompiledBinary
+      %%   FunctionLookup --> ResolveKernelSymbol
+      %%   ModuleLaunch --> LaunchCompiledKernel
+      %%   ROCNRuntimeCompilationMap --> NetivStagedKernelFuture
+      %%   NetivStagedKernelFuture --> SourceHash
+      %%   NetivStagedKernelFuture --> CompileArtifact
+      %%   NetivStagedKernelFuture --> DeviceArchBinding
+    };</edges>
+
+    <book>
+      °page •ROCNRuntimeCompilationMap {
+        °field •name = "ROCN Runtime Compilation Map";
+        °field •status = "research draft";
+        °field •purpose = "Map runtime kernel compilation into ROCN staged-compilation concepts";
+        °field •upstream = "HIP runtime compilation reference and HIPRTC how-to";
+        °field •boundary = "Conceptual map only; no Netiv compiler/runtime integration exists yet";
+      };
+
+      °page •ROCNRTCConcept {
+        °field •meaning = "Runtime compilation turns kernel source text into a device-loadable code object during application execution or offline staging";
+        °field •source_form = "Kernel source may be stored as text";
+        °field •program_form = "Source text is wrapped in a program handle with optional headers";
+        °field •compile_form = "Program is compiled with options such as target GPU architecture";
+        °field •artifact_form = "Compiled code object is loaded as a module and kernel symbol is resolved";
+        °field •rocn_rule = "ROCN runtime compilation must treat source hash, target device, options, log, and artifact as first-class metadata";
+      };
+
+      °page •ROCNRTCFlow {
+        °field •step_0 = "collect kernel source text";
+        °field •step_1 = "attach source to runtime compilation program";
+        °field •step_2 = "provide optional headers and compile options";
+        °field •step_3 = "compile program";
+        °field •step_4 = "capture compile log and status";
+        °field •step_5 = "extract code object";
+        °field •step_6 = "destroy compile program handle";
+        °field •step_7 = "load code object as module";
+        °field •step_8 = "resolve kernel function symbol";
+        °field •step_9 = "launch resolved kernel using module launch path";
+      };
+
+      °page •ROCNRTCInputs {
+        °field •source_text = "Kernel source text or generated kernel body";
+        °field •program_name = "Logical name used for diagnostics";
+        °field •headers = "Optional header source strings and logical header names";
+        °field •target_arch = "GPU architecture option derived from selected device";
+        °field •compile_options = "Backend compiler options";
+        °field •rocn_rule = "All runtime compile inputs must be hashable and recorded";
+      };
+
+      °page •ROCNRTCOutputs {
+        °field •status = "Compilation success or failure";
+        °field •log = "Warnings and errors from compiler";
+        °field •code_size = "Size of generated code object";
+        °field •code_object = "Binary artifact generated by runtime compiler";
+        °field •module = "Loaded backend module";
+        °field •kernel_function = "Resolved function handle for kernel launch";
+      };
+
+      °page •ROCNRTCErrorPolicy {
+        °field •create_program_error = "Source/header/program creation failed";
+        °field •compile_error = "Compiler rejected source or options";
+        °field •warning_policy = "Warnings should be preserved even when compilation succeeds";
+        °field •missing_code = "Compilation did not produce usable code object";
+        °field •module_load_error = "Compiled binary cannot be loaded";
+        °field •symbol_error = "Kernel symbol cannot be resolved";
+        °field •rocn_rule = "RTC errors should include source hash, target arch, options, and compile log";
+      };
+
+      °page •ROCNNetivStagedKernelFuture {
+        °field •source_hash = "Hash of generated kernel source text";
+        °field •option_hash = "Hash of compile options and target architecture";
+        °field •artifact_hash = "Hash of generated code object";
+        °field •device_binding = "Selected device architecture used for compilation";
+        °field •cache_policy = "Future policy for artifact reuse or forced recompilation";
+        °field •database_fit = "Compiled artifacts could later live in Netiv/Gravitas-style node storage with provenance";
+      };
+
+      °page •ROCNRTCSafetyRules {
+        °field •rule_0 = "Runtime-generated source must be auditable";
+        °field •rule_1 = "Runtime compile options must be explicit";
+        °field •rule_2 = "Target architecture must come from selected-device facts or explicit policy";
+        °field •rule_3 = "Compile logs must be retained";
+        °field •rule_4 = "Generated modules must not bypass launch validation";
+        °field •rule_5 = "Runtime compilation should not silently hide backend cache behavior";
+      };
+
+      °method •DefineROCNRuntimeCompilationMap() -> °void {
+        °observe "ROCN runtime compilation maps source text to compiled code object to loaded module to resolved kernel";
+        °observe "ROCN runtime compilation must preserve logs and provenance";
+        °observe "ROCN runtime compilation still depends on device selection and launch validation";
+        °call •RecordROCNRTCFlow();
+        °call •RecordROCNRTCInputs();
+        °call •RecordROCNRTCOutputs();
+      };
+
+      °method •PlanROCNStagedKernelCompile() -> °void {
+        °observe "generate or receive kernel source text";
+        °observe "hash source and compile options";
+        °observe "choose target architecture from selected device";
+        °observe "compile source";
+        °observe "capture log";
+        °observe "store code object artifact metadata";
+        °observe "load module and resolve kernel symbol";
+      };
+
+      °method •PlanROCNRTCDiagnostics() -> °void {
+        °observe "record source name";
+        °observe "record source hash";
+        °observe "record target architecture";
+        °observe "record compile options";
+        °observe "record compiler log";
+        °observe "record code object size and artifact hash";
+      };
+
+      °function •RecordROCNRTCFlow() -> °void {
+        °observe "create program";
+        °observe "compile program";
+        °observe "get program log";
+        °observe "get code size";
+        °observe "get code object";
+        °observe "destroy program";
+        °observe "load module";
+        °observe "get kernel function";
+        °observe "launch module kernel";
+      };
+
+      °function •RecordROCNRTCInputs() -> °void {
+        °observe "source text";
+        °observe "program name";
+        °observe "header sources";
+        °observe "header names";
+        °observe "compile options";
+        °observe "target architecture";
+      };
+
+      °function •RecordROCNRTCOutputs() -> °void {
+        °observe "status";
+        °observe "compile log";
+        °observe "code size";
+        °observe "code object";
+        °observe "module handle";
+        °observe "kernel function handle";
+      };
+
+      °method •NextROCNForkTargets() -> °void {
+        °observe "Next occupancy file: docs/reference/hip_runtime_api/modules/occupancy.rst -> rocn-occupancy-api-map.ntv";
+        °observe "Next profiler file: docs/reference/hip_runtime_api/modules/profiler_control.rst -> rocn-profiler-api-map.ntv";
+        °observe "Next module-management file: docs/reference/hip_runtime_api/modules/module_management.rst -> rocn-module-api-map.ntv";
+      };
+    </book>
+  |■
+|●
+</Netiv>
