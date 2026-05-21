@@ -1,0 +1,231 @@
+<Netiv="research/rocn/rocn-kernel-language.ntv">
+○|
+  □|
+    <meta>{
+      name: "rocn.kernel_language",
+      kind: "research-flatfile",
+      namespace: "research.rocn",
+      version: "0.1.0",
+      status: "research-draft",
+      source_model: "conceptual fork",
+      upstream_project: "ROCm/HIP",
+      upstream_repo: "ROCm/hip",
+      upstream_file: "docs/how-to/hip_cpp_language_extensions.rst",
+      upstream_ref: "develop",
+      upstream_license: "MIT License observed in ROCm/HIP LICENSE.md",
+      upstream_owner: "Advanced Micro Devices, Inc.",
+      attribution: "ROCm, HIP, AMD, and related project names, marks, code, documentation, and intellectual property belong to their respective owners. ROCN is independent Netiv research and is not an official AMD project.",
+      copied_source: false,
+      notes: "This flatfile maps HIP kernel-language concepts into original Netiv ROCN research terms. It does not copy upstream syntax or implement a compiler backend."
+    };</meta>
+
+    <edges>{
+      %% graph TD
+      %%   ROCNKernelLanguage --> FunctionQualifiers
+      %%   FunctionQualifiers --> HostFunction
+      %%   FunctionQualifiers --> DeviceFunction
+      %%   FunctionQualifiers --> GlobalKernel
+      %%   FunctionQualifiers --> InlineControls
+      %%   FunctionQualifiers --> LaunchBounds
+      %%   ROCNKernelLanguage --> MemoryQualifiers
+      %%   MemoryQualifiers --> DeviceMemoryQualifier
+      %%   MemoryQualifiers --> ConstantMemoryQualifier
+      %%   MemoryQualifiers --> SharedMemoryQualifier
+      %%   MemoryQualifiers --> ManagedMemoryQualifier
+      %%   MemoryQualifiers --> RestrictQualifier
+      %%   ROCNKernelLanguage --> BuiltInConstants
+      %%   BuiltInConstants --> BlockDim
+      %%   BuiltInConstants --> GridDim
+      %%   BuiltInConstants --> ThreadIdx
+      %%   BuiltInConstants --> BlockIdx
+      %%   BuiltInConstants --> WarpSize
+      %%   ROCNKernelLanguage --> LaunchConfiguration
+      %%   LaunchConfiguration --> GridDimensions
+      %%   LaunchConfiguration --> BlockDimensions
+      %%   LaunchConfiguration --> DynamicSharedMemory
+      %%   LaunchConfiguration --> StreamTarget
+      %%   ROCNKernelLanguage --> VectorTypes
+      %%   VectorTypes --> Dim3
+      %%   VectorTypes --> FundamentalVectors
+      %%   ROCNKernelLanguage --> DeviceBuiltIns
+      %%   DeviceBuiltIns --> MemoryFences
+      %%   DeviceBuiltIns --> SynchronizationFunctions
+      %%   DeviceBuiltIns --> DeviceMath
+    };</edges>
+
+    <book>
+      °page •ROCNKernelLanguage {
+        °field •name = "ROCN Kernel Language";
+        °field •status = "research draft";
+        °field •purpose = "Define the Netiv-facing concept of host functions, device functions, kernels, launch geometry, memory qualifiers, and device built-ins";
+        °field •upstream = "ROCm/HIP C++ language extensions";
+        °field •boundary = "Conceptual mapping only; no active ROCm compiler backend exists yet";
+      };
+
+      °page •ROCNFunctionQualifiers {
+        °field •host = "Runs on CPU host side; default for ordinary orchestration work";
+        °field •device = "Runs on GPU device side; callable from device or kernel context";
+        °field •global = "Kernel entry point launched by host and executed on device";
+        °field •host_device = "Dual-context function that must avoid device-only built-ins unless values are passed explicitly";
+        °field •rocn_rule = "Netiv must not blur method orchestration and device function execution";
+      };
+
+      °page •ROCNKernelRules {
+        °field •return_rule = "Kernel entry points should return void-like completion behavior";
+        °field •launch_rule = "Kernels require explicit launch configuration";
+        °field •host_launch_rule = "Kernels are launched from host-side orchestration";
+        °field •device_launch_rule = "Do not assume device-side dynamic kernel launches are available";
+        °field •argument_rule = "Kernel arguments must be layout-safe across host and device assumptions";
+      };
+
+      °page •ROCNLaunchConfiguration {
+        °field •kernel_symbol = "Kernel function or symbol to launch";
+        °field •grid_dim = "Number of blocks to launch across x/y/z dimensions";
+        °field •block_dim = "Number of threads per block across x/y/z dimensions";
+        °field •dynamic_shared = "Additional per-block shared memory requested at launch time";
+        °field •stream = "Stream target for ordered/asynchronous execution; default stream must be explicit in ROCN metadata";
+        °field •arguments = "Kernel arguments follow launch configuration";
+        °field •rocn_rule = "A future ROCN launch must be a typed graph-visible operation, not a hidden call decoration";
+      };
+
+      °page •ROCNLaunchBounds {
+        °field •meaning = "Compiler/resource hint attached to kernel intent";
+        °field •max_threads_per_block = "Programmer guarantee about maximum block size for that kernel";
+        °field •min_warps_per_execution_unit = "Occupancy/resource lower-bound hint";
+        °field •risk = "Resource hints can improve code generation but can also constrain valid launches";
+        °field •rocn_rule = "Launch bounds should be represented as metadata that launch validation can inspect";
+      };
+
+      °page •ROCNMemoryQualifiers {
+        °field •device = "Variable resides in device memory";
+        °field •constant = "Device-visible read-only memory prepared by host before kernel use";
+        °field •shared = "Block-local shared memory with block lifetime";
+        °field •managed = "Host/device accessible managed memory concept";
+        °field •restrict = "Optimization promise that a pointer does not alias another pointer in the function";
+        °field •rocn_rule = "Memory-space qualifiers should become Netiv memory-region annotations";
+      };
+
+      °page •ROCNBuiltInIndices {
+        °field •blockDim = "Launch-time block dimensions";
+        °field •gridDim = "Launch-time grid dimensions";
+        °field •threadIdx = "Thread's position within its block";
+        °field •blockIdx = "Block's position within the grid";
+        °field •global_index = "Computed index derived from thread position, block position, and block dimensions";
+        °field •rocn_rule = "Index built-ins should be exposed as kernel-context values, not host values";
+      };
+
+      °page •ROCNWarpSize {
+        °field •meaning = "Number of threads in a warp or wavefront for the target device";
+        °field •portability_warning = "Do not hard-code one universal warp size across device families";
+        °field •host_query_rule = "Host should query device capability when launch or algorithm specialization depends on warp size";
+        °field •kernel_rule = "Kernel code may use warp-size information, but ROCN should track whether it is runtime, folded, or specialized";
+      };
+
+      °page •ROCNVectorTypes {
+        °field •fundamental_vectors = "1/2/3/4 element vectors derived from scalar integer and floating types";
+        °field •dim3 = "Three-dimensional unsigned integer vector for grid and block dimensions";
+        °field •member_access = "Vector element access through x/y/z/w-style fields";
+        °field •rocn_rule = "dim3-like launch geometry should become a first-class ROCN shape type";
+      };
+
+      °page •ROCNDeviceBuiltIns {
+        °field •memory_fence_block = "Orders memory visibility within a block scope";
+        °field •memory_fence_device = "Orders memory visibility across device scope";
+        °field •memory_fence_system = "Orders memory visibility at system scope where supported";
+        °field •syncthreads = "Barrier for threads in a block";
+        °field •syncthreads_predicates = "Barrier forms that count, AND, or OR predicates across block threads";
+        °field •device_math = "Math functions callable in device context";
+        °field •rocn_rule = "Synchronization and memory-ordering operations must be explicit and graph-visible";
+      };
+
+      °page •ROCNNetivKernelMapping {
+        °field •method_mapping = "Netiv methods remain host orchestration unless a future compiler marks otherwise";
+        °field •function_mapping = "Netiv functions may become candidates for device functions or kernels only with explicit ROCN annotations";
+        °field •kernel_annotation = "Future ROCN needs a Netiv-native way to mark kernel entry points";
+        °field •launch_annotation = "Future ROCN needs a Netiv-native launch form containing grid, block, shared memory, stream, and args";
+        °field •memory_annotation = "Future ROCN should type memory regions before kernel use";
+      };
+
+      °method •DefineROCNKernelLanguage() -> °void {
+        °observe "ROCN separates host functions, device functions, and kernel entry points";
+        °observe "ROCN keeps kernel launch configuration explicit";
+        °observe "ROCN treats memory qualifiers as memory-region semantics";
+        °observe "ROCN treats built-in indices as device-context values";
+        °call •RecordROCNFunctionQualifiers();
+        °call •RecordROCNLaunchFields();
+        °call •RecordROCNMemoryQualifiers();
+      };
+
+      °method •PlanROCNKernelAnnotation() -> °void {
+        °observe "Future Netiv syntax should mark kernel entry points without copying C++ attribute syntax blindly";
+        °observe "Kernel entry points should require void-like return behavior";
+        °observe "Kernel arguments must be checked for host/device layout safety";
+        °observe "Kernel body should expose thread/block/grid index assumptions";
+      };
+
+      °method •PlanROCNLaunchSyntax() -> °void {
+        °observe "A launch must name kernel symbol, grid dimensions, block dimensions, dynamic shared memory, stream, and arguments";
+        °observe "Default stream use should still be represented explicitly";
+        °observe "Launch bounds should be checked against launch dimensions";
+        °observe "Launch failure should report resource and geometry context";
+      };
+
+      °method •PlanROCNDeviceSynchronization() -> °void {
+        °observe "Block-level synchronization must remain inside block scope";
+        °observe "Device/system fences must declare visibility scope";
+        °observe "ROCN should not imply grid-wide synchronization inside a single kernel unless a supported mechanism exists";
+      };
+
+      °function •RecordROCNFunctionQualifiers() -> °void {
+        °observe "host";
+        °observe "device";
+        °observe "global kernel";
+        °observe "host_device dual context";
+        °observe "noinline";
+        °observe "forceinline";
+        °observe "launch bounds";
+      };
+
+      °function •RecordROCNLaunchFields() -> °void {
+        °observe "kernel symbol";
+        °observe "grid dimensions";
+        °observe "block dimensions";
+        °observe "dynamic shared memory bytes";
+        °observe "stream target";
+        °observe "kernel arguments";
+      };
+
+      °function •RecordROCNMemoryQualifiers() -> °void {
+        °observe "device";
+        °observe "constant";
+        °observe "shared";
+        °observe "managed";
+        °observe "restrict";
+      };
+
+      °function •RecordROCNBuiltInKernelValues() -> °void {
+        °observe "blockDim";
+        °observe "gridDim";
+        °observe "threadIdx";
+        °observe "blockIdx";
+        °observe "warpSize";
+      };
+
+      °function •RecordROCNDeviceBuiltIns() -> °void {
+        °observe "thread fence block";
+        °observe "thread fence device";
+        °observe "thread fence system";
+        °observe "block synchronization";
+        °observe "predicate synchronization";
+        °observe "device math functions";
+      };
+
+      °method •NextROCNForkTargets() -> °void {
+        °observe "Next runtime detail file: docs/reference/hip_runtime_api/modules/memory_management.rst -> rocn-memory-api-map.ntv";
+        °observe "Next stream/event files: stream_management and event_management references -> rocn-stream-event-map.ntv";
+        °observe "Next launch detail file: docs/reference/hip_runtime_api/modules/launch_api.rst -> rocn-launch-api-map.ntv";
+      };
+    </book>
+  |■
+|●
+</Netiv>
