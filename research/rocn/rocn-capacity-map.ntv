@@ -1,0 +1,38 @@
+<Netiv="research/rocn/rocn-capacity-map.ntv">
+○|
+  □|
+    <meta>{
+      name: "rocn.capacity_map",
+      kind: "research-flatfile",
+      namespace: "research.rocn",
+      version: "0.1.0",
+      status: "research-stub",
+      source_model: "conceptual map",
+      upstream_project: "ROCm/HIP",
+      upstream_repo: "ROCm/hip",
+      upstream_file: "occupancy.rst",
+      upstream_ref: "develop",
+      copied_source: false,
+      book_rule: "Book contains method and function stubs only."
+    };</meta>
+
+    <edges>{
+      %% graph TD
+      %%   ROCNCapacityMap --> WorkShape
+      %%   ROCNCapacityMap --> UnitCount
+      %%   ROCNCapacityMap --> LocalSpace
+    };</edges>
+
+    <book>
+      °method •DefineROCNCapacityMap() -> °void {
+        °call •RecordROCNCapacitySteps();
+        °return;
+      };
+
+      °function •RecordROCNCapacitySteps() -> °void {
+        °return;
+      };
+    </book>
+  |■
+|●
+</Netiv>
