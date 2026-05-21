@@ -1,0 +1,61 @@
+# ROCm/HIP root-level inventory
+
+upstream_repo: ROCm/hip
+upstream_url: https://github.com/ROCm/hip
+source_view: GitHub mobile file browser screenshots + prior upstream metadata
+created_for: Netiv ROCN research library
+scope: first-level folders and root files only
+status: manual root-level inventory
+
+FORMAT:
+path | kind | apparent purpose
+
+================================================================================
+FIRST-LEVEL FOLDERS
+================================================================================
+.azuredevops/ | folder | Azure DevOps CI configuration.
+.github/ | folder | GitHub repository metadata and workflow automation.
+.jenkins/ | folder | Jenkins CI support files.
+bin/ | folder | HIP command/tool helper scripts.
+cmake/ | folder | CMake integration and FindHIP/build support.
+docker/ | folder | Docker/container build or test support.
+docs/ | folder | HIP documentation source.
+include/ | folder | Public HIP include headers.
+
+================================================================================
+ROOT FILES
+================================================================================
+.clang-format | config | Clang-format source formatting rules.
+.gitattributes | config | Git attributes for repository file handling.
+.gitignore | config | Git ignore rules.
+.markdownlint-cli2.yaml | config | Markdown linting configuration.
+.readthedocs.yaml | config | ReadTheDocs documentation build configuration.
+.spellcheck.local.yaml | config | Local spellcheck configuration.
+.wordlist.txt | text/config | Custom accepted word list for documentation/spellcheck.
+CODEOWNERS | repo metadata | GitHub code owner routing/review metadata.
+CONTRIBUTING.md | documentation | Contribution rules and process notes.
+Jenkinsfile | CI config | Root Jenkins pipeline entry.
+LICENSE.md | legal | HIP repository license file.
+README-doc.md | documentation | Detailed HIP project documentation README.
+README.md | documentation | Short HIP repository overview.
+VERSION | metadata | Version marker file.
+configure | script | Configure helper script.
+hip-lang-config.cmake.in | build config | CMake HIP language configuration template.
+install.sh | script | Install helper script.
+
+================================================================================
+ROCN NOTES
+================================================================================
+This file intentionally stops at the first level of the upstream ROCm/HIP repo.
+Do not treat this as a complete recursive manifest.
+
+Next staged scans can go folder-by-folder:
+
+1. .github/
+2. bin/
+3. cmake/
+4. docs/
+5. include/
+6. docker/
+7. .azuredevops/
+8. .jenkins/
